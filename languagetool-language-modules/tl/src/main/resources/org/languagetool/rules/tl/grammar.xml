@@ -105,7 +105,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="ala-1" type="incorrect"><marker>alas 1</marker></example>
 			<example type="correct"><marker>ala-una</marker></example>
 		</rule>
-		<rule id="FUSED_ALA_UNA" name="Fused 'alauna' or 'ala1'">
+		<rule id="FUSED_ALA_UNA" name="Pinagdikit na 'alauna'">
 			<pattern case_sensitive="no">
 				<token regexp="yes">ala(una|1)</token>
 			</pattern>
@@ -115,7 +115,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="ala-1" type="incorrect"><marker>ala1</marker></example>
 			<example type="correct"><marker>ala-una</marker></example>
 		</rule>
-		<rule id="FUSED_ALAS_DOS_TO_DOSE" name="Fused 'alasdos' to 'alasdose'">
+		<rule id="FUSED_ALAS_DOS_TO_DOSE" name="Pinagdikit na 'alas(dos->dose)'">
 			<pattern case_sensitive="no">
 				<token regexp="yes">alas(1[0-2]|[2-9]|dos|tres|kwatro|singko|sais|siete|otso|nwebe|dyes|onse|dose)</token>
 			</pattern>
@@ -126,7 +126,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>alas-dos</marker></example>
 			<example type="correct"><marker>alas-2</marker></example>
 		</rule>
-		<rule id="FUSED_INVALID_ALA" name="Fused 'ala' with invalid time">
+		<rule id="FUSED_INVALID_ALA" name="Pinagdikit na 'ala' na may maling oras">
 			<pattern case_sensitive="no">
 				<token regexp="yes">ala(1[0-2]|[2-9]|dos|tres|kwatro|singko|sais|siete|otso|nwebe|dyes|onse|dose)</token>
 			</pattern>
@@ -138,12 +138,12 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>alas-2</marker></example>
 			<example type="correct"><marker>alas-dos</marker></example>
 		</rule>
-		<rule id="FUSED_INVALID_ALAS" name="Fused 'alas' with invalid time">
+		<rule id="FUSED_INVALID_ALAS" name="Pinagdikit na 'alas' na may maling oras">
 			<pattern case_sensitive="no">
 				<token regexp="yes">alas(una|1)</token>
 			</pattern>	
-			<message>Did you mean <suggestion><match no="1" regexp_match="^(alas)(.+)$" regexp_replace="ala-una"/></suggestion>?</message>
-			<short>Use ala (not alas) with una.</short>	
+			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(alas)(.+)$" regexp_replace="ala-una"/></suggestion>?</message>
+			<short>Gamitin ang ala (not alas) para sa ala-una.</short>	
 			<example correction="ala-una" type="incorrect"><marker>alasuna</marker></example>
 			<example correction="ala-1" type="incorrect"><marker>alas1</marker></example>
 			<example type="correct"><marker>ala-una</marker></example>
