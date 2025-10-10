@@ -152,7 +152,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 	<category id="CONSONANT_ALTERNATION" name="Pagpapalit ng D tungo sa R">
 		<rule id="KATINIG_RIN" name="Maling paggamit ng 'rin' pagkatapos ng katinig">
 			<pattern case_sensitive="no">
-				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[b-df-hj-np-tv-z]$</token>
+				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[b-df-hj-np-tv-xz]$</token>
 				<token>rin</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> din</suggestion>?</message>
@@ -161,9 +161,9 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="lumakad din" type="incorrect"><marker>lumakad rin</marker></example>
 			<example type="correct"><marker>kumain din</marker></example>
 		</rule>
-		<rule id="PATINIG_DIN" name="Maling paggamit ng 'din' pagkatapos ng patinig">
+		<rule id="PATINIG_DIN" name="Maling paggamit ng 'din' pagkatapos ng patinig o malapatinig">
 			<pattern case_sensitive="no">
-				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[aeiou]$</token>
+				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[aeiouwy]$</token>
 				<token>din</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> rin</suggestion>?</message>
