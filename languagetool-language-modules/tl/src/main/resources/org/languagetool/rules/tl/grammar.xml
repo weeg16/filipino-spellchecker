@@ -172,6 +172,28 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="umiyak rin" type="incorrect"><marker>umiyak din</marker></example>
 			<example type="correct"><marker>kumain rin</marker></example>
 		</rule>
+		<rule id="KATINIG_RAW" name="Maling paggamit ng 'raw' pagkatapos ng katinig">
+			<pattern case_sensitive="no">
+				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[bdfghjklmnpqrstvxz]$</token>
+				<token>raw</token>
+			</pattern>
+			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> daw</suggestion>?</message>
+			<short>Gamitin ang daw kung ang sinusundang salita ay nagtatapos sa katinig.</short>
+			<example correction="kumain daw" type="incorrect"><marker>kumain raw</marker></example>
+			<example correction="lumakad daw" type="incorrect"><marker>lumakad raw</marker></example>
+			<example type="correct"><marker>kumain daw</marker></example>
+		</rule>
+		<rule id="PATINIG_DAW" name="Maling paggamit ng 'daw' pagkatapos ng patinig o malapatinig">
+			<pattern case_sensitive="no">
+				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[aeiouwy]$</token>
+				<token>daw</token>
+			</pattern>
+			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> raw</suggestion>?</message>
+			<short>Gamitin ang raw kung ang sinusundang salita ay nagtatapos sa patinig o malapatinig.</short>
+			<example correction="kumain raw" type="incorrect"><marker>kumain daw</marker></example>
+			<example correction="umiyak raw" type="incorrect"><marker>umiyak daw</marker></example>
+			<example type="correct"><marker>kumain raw</marker></example>
+		</rule>
 		<rule id="EXCEPTION_RIN" name="Eksepsiyon sa paggamit ng 'rin' pagkatapos ng -ra, -ri, -raw, o -ray">
 			<pattern case_sensitive="no">
 				<token regexp="yes">.*(ra|ri|raw|ray)$</token>
