@@ -215,8 +215,8 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<short>Gamitin ang "daw" imbes na "raw".</short>
 			<example correction="maaari raw" type="incorrect"><marker>maaari raw</marker></example>
 			<example correction="araw raw" type="incorrect"><marker>araw raw</marker></example>
-			<example type="correct">maaari din</example>
-			<example type="correct">araw din</example>
+			<example type="correct">maaari daw</example>
+			<example type="correct">araw daw</example>
 		</rule>
 	</category>
 </rules>
