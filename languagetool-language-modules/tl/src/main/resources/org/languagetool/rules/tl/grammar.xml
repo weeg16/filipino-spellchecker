@@ -152,7 +152,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 	<category id="CONSONANT_ALTERNATION" name="Pagpapalit ng D tungo sa R">
 		<rule id="KATINIG_RIN" name="Maling paggamit ng 'rin' pagkatapos ng katinig">
 			<pattern case_sensitive="no">
-			<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[bdfghjklmnpqrstvxz]$</token>
+			<token regexp="yes">.*[bdfghjklmnpqrstvxz]$</token>
 				<token>rin</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> din</suggestion>?</message>
@@ -163,7 +163,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 		<rule id="PATINIG_DIN" name="Maling paggamit ng 'din' pagkatapos ng patinig o malapatinig">
 			<pattern case_sensitive="no">
-				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[aeiouwy]$</token>
+				<token regexp="yes">.*[aeiouwy]$</token>
 				<token>din</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> rin</suggestion>?</message>
@@ -174,7 +174,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 		<rule id="KATINIG_RAW" name="Maling paggamit ng 'raw' pagkatapos ng katinig">
 			<pattern case_sensitive="no">
-				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[bdfghjklmnpqrstvxz]$</token>
+				<token regexp="yes">.*[bdfghjklmnpqrstvxz]$</token>
 				<token>raw</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> daw</suggestion>?</message>
@@ -185,7 +185,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 		<rule id="PATINIG_DAW" name="Maling paggamit ng 'daw' pagkatapos ng patinig o malapatinig">
 			<pattern case_sensitive="no">
-				<token postag_regexp="yes" postag="^V.*" regexp="yes">.*[aeiouwy]$</token>
+				<token regexp="yes">.*[aeiouwy]$</token>
 				<token>daw</token>
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> raw</suggestion>?</message>
@@ -194,7 +194,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="umiyak raw" type="incorrect"><marker>umiyak daw</marker></example>
 			<example type="correct"><marker>kumain raw</marker></example>
 		</rule>
-		<rule id="EXCEPTION_RIN" name="Eksepsiyon sa paggamit ng 'rin' pagkatapos ng -ra, -ri, -raw, o -ray">
+<!--	<rule id="EXCEPTION_RIN" name="Eksepsiyon sa paggamit ng 'rin' pagkatapos ng -ra, -ri, -raw, o -ray">
 			<pattern case_sensitive="no">
 				<token regexp="yes">.*(ra|ri|raw|ray)$</token>
 				<token>rin</token>
@@ -217,6 +217,10 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="araw raw" type="incorrect"><marker>araw raw</marker></example>
 			<example type="correct">maaari daw</example>
 			<example type="correct">araw daw</example>
-		</rule>
+		</rule> -->
 	</category>
+	<category id="PALITANG_E_I_AT_O_U" name="Palitang E/I at O/U">
+		<rule_id="PALITANG_E_I" name="Palitang E at I">
+			
+
 </rules>
