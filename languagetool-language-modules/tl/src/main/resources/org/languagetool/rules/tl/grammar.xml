@@ -243,7 +243,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>araw daw</marker></example>
 		</rule>
 	</category>
-	<category id="PALITANG_E_I_AT_O_U" name="Palitang E/I at O/U">
+	<!--<category id="PALITANG_E_I_AT_O_U" name="Palitang E/I at O/U">
 		<rule_id="PALITANG_E_I" name="Palitang E at I (unang letra)">
 			<pattern case_sensitive="no">
 				<token>(istasyon|iskandalo|istilo)</token>
@@ -255,6 +255,24 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 				<token></token>
 			</pattern>
 			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="" regexp_replace=""></suggestion>?</message>
+		</rule>
+	</category>-->
+	<category id="WASTONG_PAGGAMIT_NG_GITLING" name="Wastong Paggamit ng Gitling">
+		<rule id="PAGHIHIWALAY_NG_KATINIG_SA_PATINIG" name="Paghiwalay ng katinig sa patinig gamit ang gitling">
+			<pattern case_sensitive="no">
+				<token regexp="yes">(pag|mag|nag|pang)</token>
+				<token regexp="yes">^[aeiou].*</token>
+			</pattern>
+			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
+			<short>Gamitin ang gitling upang paghiwalayin ang unang katinig sa sumusunod na patinig.</short>
+			<example correction="pag-ibig" type="incorrect"><marker>pag ibig</marker></example>
+			<example correction="mag-aral" type="incorrect"><marker>mag aral</marker></example>
+			<example correction="nag-iisa" type="incorrect"><marker>nag iisa</marker></example>
+			<example correction="pang-ulo" type="incorrect"><marker>pang ulo</marker></example>
+			<example type="correct"><marker>pag-ibig</marker></example>
+			<example type="correct"><marker>mag-aral</marker></example>
+			<example type="correct"><marker>nag-iisa</marker></example>
+			<example type="correct"><marker>pang-ulo</marker></example>
 		</rule>
 	</category>
 </rules>
