@@ -298,15 +298,15 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 	</category>
 	<category id="WASTONG_PAGIKLI_NG_SALITA" name="Pagpapaikli ng mga Salita">
-		<rule id="KUDLIT_YAN_YUN_YON" name="Paggamit ng kudlit sa yan/yun/yon">
+		<rule id="KUDLIT_YAN_YON" name="Paggamit ng kudlit sa yan/yon">
 			<pattern case_sensitive="no">
 				<token regexp="yes">[a-zA-Z]+</token>
-				<token regexp="yes">yan|yun|yon</token>
+				<token regexp="yes">yan|yon</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng kudlit? Gamitin ang <suggestion>'<match no="1"/></suggestion>.</message>
-			<short>Gamitin ang kudlit sa pagitan ng salita at 'yan.</short>
-			<example correction="bahay 'yan" type="incorrect"><marker>bahay yan</marker></example>
-			<example correction="kapatid 'yan" type="incorrect"><marker>kapatid yan</marker></example>
+			<short>Gamitin ang kudlit sa pagitan ng salita at 'yan/'yon.</short>
+			<example correction="bahay yan" type="incorrect"><marker>bahay yan</marker></example>
+			<example correction="kapatid yan" type="incorrect"><marker>kapatid yan</marker></example>
 			<example type="correct"><marker>bahay 'yan</marker></example>
 			<example type="correct"><marker>kapatid 'yan</marker></example>
 		</rule>
