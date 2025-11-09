@@ -265,27 +265,39 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling upang paghiwalayin ang unang katinig sa sumusunod na patinig.</short>
-			<example correction="pag-ibig" type="incorrect"><marker>pag ibig</marker></example>
-			<example correction="mag-aral" type="incorrect"><marker>mag aral</marker></example>
-			<example correction="nag-iisa" type="incorrect"><marker>nag iisa</marker></example>
+			<example correction="pag ibig" type="incorrect"><marker>pag ibig</marker></example>
+			<example correction="mag aral" type="incorrect"><marker>mag aral</marker></example>
+			<example correction="nag iisa" type="incorrect"><marker>nag iisa</marker></example>
 			<example type="correct"><marker>pag-ibig</marker></example>
 			<example type="correct"><marker>mag-aral</marker></example>
 			<example type="correct"><marker>nag-iisa</marker></example>
 		</rule>
-		<rule id="DE_DI_GITLING" name="Paggamit ng gitling sa 'de' at 'di'">
+		<rule id="DE_GITLING" name="Paggamit ng gitling sa 'de'">
 			<pattern case_sensitive="no">
-				<token>de|di</token>
+				<token>de</token>
 				<token regexp="yes">[a-zA-Z]</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion>de-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'de' kapag sinusundan ito ng salita.</short>
-			<example correction="de-lata" type="incorrect"><marker>de lata</marker></example>
-			<example correction="de-kalidad" type="incorrect"><marker>de kalidad</marker></example>
+			<example correction="de lata" type="incorrect"><marker>de lata</marker></example>
+			<example correction="de kalidad" type="incorrect"><marker>de kalidad</marker></example>
 			<example type="correct"><marker>de-lata</marker></example>
 			<example type="correct"><marker>de-kalidad</marker></example>	]
 		</rule>
+		<rule id="DI_GITLING" name="Paggamit ng gitling sa 'di'">
+			<pattern case_sensitive="no">
+				<token>di</token>
+				<token regexp="yes">[a-zA-Z]</token>
+			</pattern>
+			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion>di-<match no="2"/></suggestion>.</message>
+			<short>Gamitin ang gitling pagkatapos ng 'di' kapag sinusundan ito ng salita.</short>
+			<example correction="di kagandahan" type="incorrect"><marker>di kagandahan</marker></example>
+			<example correction="di mahipo" type="incorrect"><marker>di mahipo</marker></example>
+			<example type="correct"><marker>di-kagandahan</marker></example>
+			<example type="correct"><marker>di-mahipo</marker></example>	]
+		</rule>
 	</category>
-	<category id="CONTRACTIONS" name="Pagpapaikli ng mga Salita">
+	<category id="WASTONG_PAGIKLI_NG_SALITA" name="Pagpapaikli ng mga Salita">
 		<rule id="KUDLIT_YAN_YUN_YON" name="Paggamit ng kudlit sa yan/yun/yon">
 			<pattern case_sensitive="no">
 				<token regexp="yes">[a-zA-Z]+</token>
