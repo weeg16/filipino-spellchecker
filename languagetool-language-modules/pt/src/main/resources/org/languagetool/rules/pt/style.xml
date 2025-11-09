@@ -4191,7 +4191,7 @@ USA
             </antipattern>
             <antipattern>
                 <token regexp='yes' inflected='yes'>estar|ter|ser</token>
-                <token postag='DI0M.+' postag_regexp='yes'/>
+                <token postag='Z0.+|DI0M.+' postag_regexp='yes'/>
                 <token regexp='yes'>pedidos?</token>
                 <example>Tenho um pedido a fazer-lhes, amigos.</example>
                 <example>A parte queixosa tem um pedido a fazer?</example>
@@ -4254,8 +4254,7 @@ USA
                 <example>Ao menos já adiante as peças mais delicadas e levinhas.</example>
             </antipattern>
             <antipattern>
-                <token inflected='yes' regexp='no'>pedir</token>
-                <token skip='1' regexp='yes'>[ao]s?|d[ao]s?|de|em</token>
+                <token skip='2' inflected='yes' regexp='no'>pedir</token> <!-- more than skip='2' causes false positives -->
                 <token regexp='yes'>casamento|conselhos?|desculpas?|demissão|divórcio|mãos?|namoro|oração|palavra|perdão|socorro</token> <!-- The same words below -->
                 <example>O Sr. Lino de Carvalho (PCP): - Peço a palavra, Sr. Presidente.</example>
                 <example>Tito pede a mão de Filomena em casamento para Querêncio.</example>
@@ -4266,10 +4265,17 @@ USA
                 <example>Não quero pedir a sua mão!</example>
                 <example>Ministra Marina Silva entrega pedido de demissão a...</example>
                 <example>Temas do primeiro pedido de desculpas.</example>
+                <example>Peço muitas desculpas pelo sucedido.</example>
+                <example>Pedimos imensa desculpa pelo atraso.</example>
+                <example>Gostaria de pedir uma oração em favor da minha familia.</example>
+                <example>Pedimos sinceras desculpas e sempre que precisar, pode contar conosco!</example>
+                <example>Eu peço profusas desculpas por meu atraso.</example>
+                <example>Peço mil desculpas.</example>
             </antipattern>
+
             <pattern>
                 <marker>
-                    <token inflected='yes' regexp='no'>pedir
+                    <token postag='V.+' postag_regexp='yes' inflected='yes' regexp='no'>pedir
                         <exception scope='next' regexp='yes'>casamento|conselhos?|desculpas?|demissão|divórcio|mãos?|namoro|oração|palavra|perdão|socorro</exception></token>
                 </marker>
             </pattern>
@@ -12859,6 +12865,62 @@ USA
     <category id='SHORTEN_IT' name="Linguagem concisa" type="style">
 
 
+        <rulegroup id='OUTRA_ALTERNATIVA' name="Simplificar: Outra opção/hipótese/possibilidade/solução/via/saída → alternativa">
+            <!-- ChatGPT 5 and new disambiguator for 2026+ -->
+
+            <rule> <!-- #1: Negative (triggered first): "alternativa" -->
+                <pattern>
+                    <token skip='2' regexp='yes'>sempre|quando|caso|se|enquanto</token> <!-- GPT 5 said these work 100% accurately -->
+                    <token>não</token>
+                    <token regexp='yes' inflected='yes'>haver|existir</token>
+                    <token min='0' max='1'>sem</token>
+                    <marker>
+                        <token regexp='yes'>outras?</token>
+                        <token regexp='yes' inflected='yes'>opção|hipótese|possibilidade|solução|via|saída</token> <!-- GPT 5 said it is 100% safe -->
+                    </marker>
+                </pattern>
+                <message>Prefira &quot;alternativa&quot; para maior concisão/consistência.</message>
+                <suggestion><match no='5' postag='DI0F(.)0' postag_replace='NCF$1000'>alternativa</match></suggestion>
+                <example correction="alternativa">Faz isso só quando não houver <marker>outra hipótese</marker>.</example>
+                <example correction="alternativa">Faz o cálculo sempre que não houver <marker>outra opção</marker>.</example>
+                <example>É sempre pior quando não há alternativas.</example>
+            </rule>
+
+            <rule> <!-- #2: Positive (triggered only if #1 fails) "uma alternativa" (singular) -->
+                <pattern>
+                    <token regexp='yes' inflected='yes'>haver|existir<exception scope='previous'>não</exception></token>
+                    <marker>
+                        <token>outra</token>
+                        <token regexp='yes' inflected='yes'>opção|hipótese|possibilidade|solução|via|saída</token> <!-- GPT 5 said it is 100% safe -->
+                    </marker>
+                </pattern>
+                <message>Prefira &quot;alternativa&quot; para maior concisão/consistência.</message>
+                <suggestion>uma alternativa</suggestion>
+                <example correction="uma alternativa">Faz isso se houver <marker>outra hipótese</marker>.</example>
+                <example correction="uma alternativa">Evita o cálculo se houver <marker>outra opção</marker>.</example>
+                <example>É sempre melhor quando há uma alternativa.</example>
+            </rule>
+
+            <rule> <!-- #3: Positive (triggered only if #1 and #2 fail) "alternativas"/"outras alternativas" (plural) -->
+                <pattern>
+                    <token regexp='yes' inflected='yes'>haver|existir<exception scope='previous'>não</exception></token>
+                    <marker>
+                        <token>outras</token>
+                        <token regexp='yes' inflected='yes'>opção|hipótese|possibilidade|solução|via|saída</token> <!-- GPT 5 said it is 100% safe -->
+                    </marker>
+                    <token><exception regexp='yes' inflected='yes'>formular|propor|postular|sugerir|testar|avaliar|analisar|investigar|verificar|confirmar|refutar|considerar|discutir|explorar|apresentar|mencionar|descrever|explicar|defender|sustentar|comprovar|validar|apoiar|corroborar|rejeitar|comparar|contrastar|relacionar|interpretar|demonstrar|abordar|examinar|estudar|enunciar</exception></token> <!-- Exception verbs (scientific/technical) -->
+                </pattern>
+                <message>Prefira &quot;alternativa&quot; para maior concisão/consistência.</message>
+                <suggestion>alternativas</suggestion>
+                <suggestion>outras alternativas</suggestion>
+                <example correction="alternativas|outras alternativas">Faz isso se houver <marker>outras hipóteses</marker>.</example>
+                <example>É sempre melhor quando há alternativas.</example>
+                <example>É sempre melhor quando há outras alternativas.</example>
+            </rule>
+
+        </rulegroup>
+
+
         <rule id='DEPOIS_DE_APÓS' name="Simplificar: Depois de → após">
             <antipattern>
                 <token>depois</token>
@@ -19805,7 +19867,7 @@ USA
         <rule id='QUE_TER_COMO_POR_NOME_ADJ' name="cujo(a) + substantivo + verbo ser">
             <pattern>
                 <marker>
-                    <token>que</token>
+                    <token>que<exception scope='previous' postag_regexp='yes' postag='V.+'/></token>
                     <token postag='VM..3.0' postag_regexp='yes' inflected='yes'>ter</token>
                     <token regexp='yes'>como|por</token>
                     <token postag='NC[^C].+' postag_regexp='yes'/>
@@ -19818,6 +19880,7 @@ USA
             <example correction="cuja meta era">Assim surgiu o ISIS <marker>que tinha como meta</marker> criar um califado.</example>
             <example correction="cujo objetivo é">Assim surgiu o ISIS <marker>que tem como objetivo</marker> criar um califado.</example>
             <example correction="cujo objetivo era">Assim surgiu o ISI <marker>que tinha como objetivo</marker> criar um califado.</example>
+            <example>O que o Rui diz é que tem como objetivo ajudar na pesquisa.</example>
         </rule>
 
 

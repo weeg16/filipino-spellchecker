@@ -1378,7 +1378,8 @@ tincions de Gram
 nouvelle cuisine
 Museu Nacional de Praga
 Museu Nacional del Bardo
-Museu Britànic
+#Museu Britànic
+Museu del Louvre
 Museu del Prado
 Museu d'Història Natural de Londres
 Museu Nacional Centre d'Art Reina Sofia
@@ -2339,3 +2340,60 @@ vicerectora de Relacions Institucionals, Comunicació i Política Lingüística
 vicerectora de Relacions Laborals
 vicerectora de Sostenibilitat i Acció Climàtica
 vicerectora de Transformació Digital
+Centre d'Investigació en Gestió i Enginyeria de Producció
+màster en Formació del Professorat de Secundària Obligatòria i Batxillerat
+màster en Formació del Professorat de Secundària Obligatòria
+màster en Formació del Professorat de Secundària
+màster universitari
+set meravelles del món
+set meravelles del món antic
+noves set meravelles del món modern
+set noves meravelles del món modern
+set meravelles del món modern
+Euro 7
+habitatge amb protecció oficial
+habitatges amb protecció oficial
+habitatge de protecció oficial
+habitatges de protecció oficial
+salari mínim interprofessional
+sistema monetari internacional
+esplanada de les Mesquites
+mont del Temple
+mur de les Lamentacions
+mesquita d'Al-Aqsa
+cúpula de la Roca
+porta de la Misericòrdia
+Eumo Editorial
+El Corte Inglés
+Bora Bora
+fallera major
+fallera major infantil
+falleres majors
+falleres majors infantils
+home de Neandertal
+homes de Neandertal
+Le Mont-Saint-Michel
+mont Saint-Michel
+déu-vos-guard
+déu-vos-guards
+Premi Sàkharov
+illa de Man
+Costa d'Ivori
+De la Rúa
+Fernando de la Rúa
+Teatre Borràs
+illa de Man
+Ciutat de les Arts i de les Ciències
+Burj Khalifa
+Burj Dubai
+Monarquia de Juliol
+ingrés mínim vital
+renda garantida de ciutadania
+renda garantida ciutadana
+Bòsnia i Hercegovina
+Front Polisario
+Gabinet del President
+Gabinet de la President
+Gabinet de Presidència
+Gabinet de la Presidència
+Sàhara Occidental

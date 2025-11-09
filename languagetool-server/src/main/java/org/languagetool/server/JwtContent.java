@@ -1,5 +1,6 @@
-/* LanguageTool, a natural language style checker
- * Copyright (C) 2020 Daniel Naber (http://www.danielnaber.de)
+/*
+ * LanguageTool, a natural language style checker
+ * Copyright (C) 2025 Stefan Viol (https://stevio.de)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,22 +18,11 @@
  * USA
  */
 
-package org.languagetool.rules.ca;
+package org.languagetool.server;
 
-import org.languagetool.rules.AbstractAdvancedSynthesizerFilter;
-import static org.languagetool.rules.ca.NounToVerbHelper.getVerbFromNoun;
+import java.util.Collections;
+import java.util.Map;
 
-/*
- * Synthesize suggestions using the lemma from one token (lemma_from)
- * and the POS tag from another one (postag_from).
- *
- * The lemma_select and postag_select attributes are required
- * to choose one among several possible readings.
- */
-public class AdvancedSynthesizerFilter extends AbstractAdvancedSynthesizerFilter {
-
-  @Override
-  protected String getNewLemma(String word, String newLemma) {
-    return getVerbFromNoun(word);
-  }
+public record JwtContent(boolean isValid, boolean isPremium, Map<String, Object> claims) {
+  public final static JwtContent NONE = new JwtContent(false, false, Collections.emptyMap());
 }

@@ -8894,6 +8894,8 @@ Soufflee/S
 Heißlust.*
 Überganglösung
 Blockhain/S
+Suchtherapie/N
+Rehgips.*
 Elementarschjudenversicherung #strange suggestion
 .*ministein   # statt ...ministerin
 .*farbend/A

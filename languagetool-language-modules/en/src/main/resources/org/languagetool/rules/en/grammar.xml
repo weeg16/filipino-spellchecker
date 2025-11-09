@@ -4289,13 +4289,14 @@ USA
         </rule>
         <rule id="DELETE_SPACE" name="does n't (doesn't)">
             <pattern>
-                <token/>
+                <token regexp="yes">do|did|does|can|could|have|has|had|should|ought|might|may|wo|would|ai|is|are|was|were|must|sha|need|dare</token>
                 <token spacebefore="yes">n't</token>
             </pattern>
             <message>Please check whether the space between '\1' and '\2' is correct.</message>
             <suggestion>\1\2</suggestion>
             <url>https://languagetool.org/insights/post/grammar-forms-of-do/</url>
             <example correction="doesn't">He <marker>does n't</marker> like her.</example>
+            <example>He asked when n't stands for "not".</example>
         </rule>
 
       <rulegroup id="INCORRECT_CONTRACTIONS" name="Contraction errors: e.g. did'nt (didn't)">
@@ -19056,7 +19057,7 @@ USA
             </rule>
             <rule>
                 <antipattern>
-                    <token regexp="yes">with|of|in|at|on</token>
+                    <token regexp="yes">with|of|in|at|on|to</token>
                     <token>your</token>
                 </antipattern>
                 <pattern>
@@ -19076,6 +19077,7 @@ USA
                 <example>I have written the testimonial using the link you provided in <marker>your</marker> e-mail.</example>
                 <example>Unfortunately, we don't sell it in <marker>your</marker> colour.</example>
                 <example>After that, move on to your next.</example><!-- #2626 -->
+                <example>I have sent it to your Gmail.</example>
             </rule>
             <rule>
                 <pattern>
@@ -32644,6 +32646,13 @@ USA
         <rule id="UKRAINE_NO_THE" name="...the situation in the (*omit the*) Ukraine">
             <antipattern>
                 <token>the</token>
+                <token>Ukraine</token>
+                <token spacebefore='no'>–</token>
+                <token postag="NNP"/>
+                <token postag="NN:UN"/>
+            </antipattern>
+            <antipattern>
+                <token>the</token>
                 <token chunk_re="[BI]-NP.*">Ukraine</token>
                 <token min="0" max="2" chunk_re="I-NP.*" />
                 <token postag="N.*" postag_regexp="yes" chunk_re="[IE]-NP.*" />
@@ -46184,14 +46193,28 @@ USA
                     <token regexp="yes">I|s?he|you|they|we|it</token>
                     <marker>
                         <token regexp="yes">not?</token>
-                        <token regexp="yes">can|will|[cw]ould|must|should|shall|may|might</token>
+                        <token regexp="yes">will|[cw]ould|must|should|shall|may|might</token>
                     </marker>
                     <token postag="VB" />
                 </pattern>
                 <message>The word "\2" seems incorrect in this context.</message>
                 <suggestion>\3 not</suggestion>
                 <suggestion>now \3</suggestion>
-                <example correction="can not|now can">I <marker>no can</marker> find my bike!</example>
+                <example correction="will not|now will">I <marker>no will</marker> find my bike!</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">I|s?he|you|they|we|it</token>
+                    <marker>
+                        <token regexp="yes">not?</token>
+                        <token regexp="yes">can</token>
+                    </marker>
+                    <token postag="VB" />
+                </pattern>
+                <message>The word "\2" seems incorrect in this context.</message>
+                <suggestion>cannot</suggestion>
+                <suggestion>now can</suggestion>
+                <example correction="cannot|now can">I <marker>no can</marker> find my bike!</example>
             </rule>
         </rulegroup>
         <rule id="IN_SANE" name="in sane (insane)">
@@ -87586,7 +87609,7 @@ USA
                     <token>scan</token>
                 </antipattern>
                 <antipattern>
-                    <token regexp="yes">Excel|Photoshop|Powerpoint|Sketch|Dropbox</token>
+                    <token regexp="yes">Excel|Photoshop|PowerPoint|Sketch|Dropbox|Figma|Canva</token>
                     <token>file</token>
                 </antipattern>
                 <antipattern>
@@ -96433,8 +96456,8 @@ USA
                     <exception regexp="yes" case_sensitive="yes">US|IT|one|One|ONE|all|[HM]E|YA|mine|itself</exception>
                 </token>
             </pattern>
-            <message>Possible typo. Did you mean <suggestion>\1</suggestion> or <suggestion>\2</suggestion>?</message>
-            <short>Possible typo</short>
+            <message>Using a determiner and a pronoun together is incorrect. Did you mean <suggestion>\1</suggestion> or <suggestion>\2</suggestion>?</message>
+            <short>Using a determiner and a pronoun together is incorrect.</short>
             <example>The cat is on the mat.</example>
             <example correction="the|he">Strode past the now frightened man, entered <marker>the he</marker> house.</example>
             <example>It was an impulse when she was here in Me'a She'arim.</example>
@@ -104371,7 +104394,7 @@ The accident victim died from her injuries.
          <marker>
           <token regexp="yes">consequences?</token>
           <token postag="IN">
-            <exception regexp="yes">of|for|in|on|as|than|along|under|over</exception></token>
+            <exception regexp="yes">of|for|in|on|as|than|along|under|over|before</exception></token>
          </marker>
       </pattern>
       <message>The usual preposition to use after "\2" is not "\3". Did you mean <suggestion>\2 of</suggestion>, <suggestion>\2 for</suggestion>, or <suggestion>\2 on</suggestion>?</message>
@@ -104382,6 +104405,7 @@ The accident victim died from her injuries.
       <example>It is of little consequence to me.</example>
       <example>Should the situation deteriorate further, it will also have economic consequences as companies hurry to reduce their debt burdens.</example>
       <example>There are a lot of consequences to begin with.</example>
+      <example>One should evaluate the consequences before making any decision.</example>
     </rule>
     <rule id='ASK_TO' name='Collocation: ask (to)'>
     <!-- Created by Nicholas Walker (Bokomaru), 2018-05-16 -->
@@ -109829,6 +109853,13 @@ The accident victim died from her injuries.
         </rulegroup>
         <rulegroup id="COMMA_COMPOUND_SENTENCE_2" name="comma between independent clauses">
             <url>https://languagetool.org/insights/post/types-of-sentences/#compound-sentence</url>
+            <antipattern>
+                <token regexp="yes">have|has|had</token>
+                <token regexp="yes" min="0">not|n't|n’t</token>
+                <token postag="VBN" skip="-1"/>
+                <token postag_regexp="yes" postag="RB.*">yet</token>
+                <example>​I haven't seen anything yet that would make me believe this kind of thing may exist.</example>
+            </antipattern>
             <antipattern>
                 <token regexp="yes">all|many|(any|every)(thing|one|body)</token>
                 <token>but</token>
@@ -116564,6 +116595,10 @@ The accident victim died from her injuries.
             <example correction="fit">I could <marker>fir</marker> our needs.</example>
         </rule>
         <rulegroup id="EM_ME" name="let em (me) know">
+            <antipattern>
+                <token>em</token>
+                <token regexp="yes">dash(?:es)?</token>
+            </antipattern>
             <antipattern>
                 <token regexp="yes" skip="-1">pixels?|px|units?|rems?|s?css|sass|font.*|margin.*|padding.*</token>
                 <token>em</token>
@@ -130143,6 +130178,12 @@ The accident victim died from her injuries.
             <url>https://languagetool.org/insights/post/your-vs-youre/</url>
             <rule>
                 <antipattern>
+                    <token>your</token>
+                    <token regexp="yes">meanings?</token>
+                    <token><exception>to</exception></token>
+                    <example>They think about your tone, your meaning, and even who you’re writing for.</example>
+                </antipattern>
+                <antipattern>
                     <token>not</token>
                     <token>your</token>
                     <token>doing</token>
@@ -134588,10 +134629,12 @@ The accident victim died from her injuries.
             <rule>
                 <pattern>
                     <marker><token>personal</token></marker>
-                    <token regexp="yes">d(epartment|irector)s?|manag(er|ment)s?|files?|officer?s?</token>
+                    <token regexp="yes">d(epartment|irector)s?|manag(er|ment)s?|officers?</token>
                 </pattern>
                 <message>Did you mean the noun <suggestion>personnel</suggestion>?</message>
                 <example correction="personnel">He is the <marker>personal</marker> director.</example>
+                <example>This is my personal office.</example>
+                <example>Each of you has a personal file.</example>
             </rule>
         </rulegroup>
         <rulegroup id="WHORE_WORE" name="whore (wore)">
@@ -139902,20 +139945,20 @@ The accident victim died from her injuries.
                     <token>Covid</token>
                     <token>19</token>
                 </pattern>
-                <message>Did you mean <suggestion>COVID-19</suggestion> or the alternative spelling <suggestion>Covid-19</suggestion> (= coronavirus)?</message>
-                <url>https://languagetool.org/insights/post/covid-19/</url>
-                <example correction="COVID-19|Covid-19"><marker>Covid 19</marker> is a contagious disease caused by SARS-CoV-2.</example>
+                <message>Did you mean <suggestion>COVID-19</suggestion> (= coronavirus)?</message>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
+                <example correction="COVID-19"><marker>Covid 19</marker> is a contagious disease caused by SARS-CoV-2.</example>
             </rule>
             <rule>
                 <antipattern case_sensitive="yes">
-                    <token regexp="yes">(Covid|COVID)-19</token>
+                    <token regexp="yes">COVID-19</token>
                 </antipattern>
                 <pattern>
-                    <token regexp="yes">covid\-?19</token>
+                    <token regexp="yes">[Cc]ovid\-?19</token>
                 </pattern>
-                <message>Did you mean <suggestion>COVID-19</suggestion> or the alternative spelling <suggestion>Covid-19</suggestion> (= coronavirus)?</message>
-                <url>https://languagetool.org/insights/post/covid-19/</url>
-                <example correction="COVID-19|Covid-19"><marker>Covid19</marker> is a contagious disease caused by SARS-CoV-2.</example>
+                <message>Did you mean <suggestion>COVID-19</suggestion> (= coronavirus)?</message>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
+                <example correction="COVID-19"><marker>Covid19</marker> is a contagious disease caused by SARS-CoV-2.</example>
             </rule>
             <rule>
                 <pattern>
@@ -139923,7 +139966,7 @@ The accident victim died from her injuries.
                     <token regexp="yes">virus(es)?</token>
                 </pattern>
                 <message>The term <suggestion><match no="1" /><match no="2" case_conversion="alllower" /></suggestion> (= disease) is spelled as one word.</message>
-                <url>https://languagetool.org/insights/post/covid-19/</url>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
                 <example correction="coronavirus">The <marker>corona virus</marker> pandemia.</example>
             </rule>
             <rule>
@@ -139931,7 +139974,7 @@ The accident victim died from her injuries.
                     <token regexp="yes">corona\-virus(es)?</token>
                 </pattern>
                 <message>The term <suggestion><match no="1" regexp_match="\-" regexp_replace="" /></suggestion> (= disease) is spelled as one word.</message>
-                <url>https://languagetool.org/insights/post/covid-19/</url>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
                 <example correction="coronavirus">The <marker>corona-virus</marker> pandemia.</example>
             </rule>
             <rule tags="picky">
@@ -139940,20 +139983,29 @@ The accident victim died from her injuries.
                     <token>Covid</token>
                 </antipattern>
                 <pattern>
-                    <token>Covid</token>
+                    <token regexp="yes">[Cc]ovid</token>
                 </pattern>
-                <message>Did you mean <suggestion>COVID-19</suggestion> or the alternative spelling <suggestion>Covid-19</suggestion> (= coronavirus)?</message>
-                <url>https://languagetool.org/insights/post/covid-19/</url>
-                <example correction="COVID-19|Covid-19"><marker>Covid</marker> is a contagious disease caused by SARS-CoV-2.</example>
+                <message>Did you mean <suggestion>COVID-19</suggestion> (= coronavirus)?</message>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
+                <example correction="COVID-19"><marker>Covid</marker> is a contagious disease caused by SARS-CoV-2.</example>
             </rule>
             <rule>
                 <pattern>
                     <token>pre</token>
-                    <token regexp="yes" case_sensitive="yes">C(OVID|ovid)-19|[Cc]orona(virus)?</token>
+                    <token regexp="yes" case_sensitive="yes">COVID-?19|[Cc]orona(virus)?</token>
                 </pattern>
                 <message>The word <suggestion>pre-\2</suggestion> is spelled with a hyphen.</message>
-                <url>https://languagetool.org/insights/post/hyphen/#compound-nouns-with-and-without-hyphens</url>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
                 <example correction="pre-corona">The <marker>pre corona</marker> revenue looked much better.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token>pre</token>
+                    <token regexp="yes" case_sensitive="yes">[Cc]ovid-?19</token>
+                </pattern>
+                <message>The word <suggestion>pre-COVID-19</suggestion> is spelled with a hyphen and is capitalized.</message>
+                <url>https://www.who.int/emergencies/diseases/novel-coronavirus-2019</url>
+                <example correction="pre-COVID-19">The <marker>pre covid19</marker> revenue looked much better.</example>
             </rule>
         </rulegroup>
         <rulegroup id="WALTER_REED" name="Walter Reed Hospital">
