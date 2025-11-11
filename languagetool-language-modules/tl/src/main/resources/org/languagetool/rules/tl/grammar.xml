@@ -275,26 +275,26 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		<rule id="DE_GITLING" name="Paggamit ng gitling sa 'de'">
 			<pattern case_sensitive="no">
 				<token>de</token>
-				<token regexp="yes">[a-zA-Z]</token>
+				<token regexp="yes">^[a-zA-Z].*</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion>de-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'de' kapag sinusundan ito ng salita.</short>
 			<example correction="de lata" type="incorrect"><marker>de lata</marker></example>
 			<example correction="de kalidad" type="incorrect"><marker>de kalidad</marker></example>
 			<example type="correct"><marker>de-lata</marker></example>
-			<example type="correct"><marker>de-kalidad</marker></example>	]
+			<example type="correct"><marker>de-kalidad</marker></example>
 		</rule>
 		<rule id="DI_GITLING" name="Paggamit ng gitling sa 'di'">
 			<pattern case_sensitive="no">
 				<token>di</token>
-				<token regexp="yes">[a-zA-Z]</token>
+				<token regexp="yes">^[a-zA-Z].*</token>
 			</pattern>
-			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion>di-<match no="2"/></suggestion>.</message>
+			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'di' kapag sinusundan ito ng salita.</short>
 			<example correction="di kagandahan" type="incorrect"><marker>di kagandahan</marker></example>
 			<example correction="di mahipo" type="incorrect"><marker>di mahipo</marker></example>
 			<example type="correct"><marker>di-kagandahan</marker></example>
-			<example type="correct"><marker>di-mahipo</marker></example>	]
+			<example type="correct"><marker>di-mahipo</marker></example>	
 		</rule>
 	</category>
 	<category id="WASTONG_PAGIKLI_NG_SALITA" name="Pagpapaikli ng mga Salita">
@@ -303,12 +303,66 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 				<token regexp="yes">[a-zA-Z]+</token>
 				<token regexp="yes">yan|yon</token>
 			</pattern>
-			<message>Ibig mo bang gumamit ng kudlit? Gamitin ang <suggestion>'<match no="1"/></suggestion>.</message>
+			<message>Ibig mo bang gumamit ng kudlit? Gamitin ang <suggestion>'<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang kudlit sa pagitan ng salita at 'yan/'yon.</short>
 			<example correction="bahay yan" type="incorrect"><marker>bahay yan</marker></example>
-			<example correction="kapatid yan" type="incorrect"><marker>kapatid yan</marker></example>
+			<example correction="kapatid yan" type="incorrect"><marker>kapatid yon</marker></example>
 			<example type="correct"><marker>bahay 'yan</marker></example>
-			<example type="correct"><marker>kapatid 'yan</marker></example>
+			<example type="correct"><marker>kapatid 'yon</marker></example>
+		</rule>
+		<rule id="MADALAS_NA_MGA_PINAPAIKLI" name="Mga salitang pinaikli">
+			<pattern case_sensitive="no">
+				<token>sya</token>
+			</pattern>
+			<message>Ibig mo bang sabihin, <suggestion>s'ya</suggestion>?</message>
+			<short>Gamitin ang kudlit sa s'ya.</short>
+		</rule>
+	</category>
+	<category id="SALITANG_INUULIT" name="Salitang Inuulit">
+		<rule id="INUUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita">
+			<pattern case_sensitive="no">
+				<token regexp="yes">[a-zA-Z]+</token>
+				<token regexp="yes">\1</token>
+			</pattern>
+			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="1"/></suggestion>.</message>
+			<short>Gamitin ang gitling sa pagitan ng inuulit na salita.</short>
+			<example correction="gabi gabi" type="incorrect"><marker>gabi gabi</marker></example>
+			<example correction="araw araw" type="incorrect"><marker>araw araw</marker></example>
+			<example type="correct"><marker>gabi-gabi</marker></example>
+			<example type="correct"><marker>araw-araw</marker></example>
+		</rule>
+	</category>
+	<category id="HULAPI" name="Wastong Pagbaybay ng Salita na may Hulapi">
+		<rule id="O_U_HAN_HIN" name="Pagbaybay ng hulaping -han/-hin">
+			<pattern case_sensitive="no">
+				<token regexp="yes">[a-zA-Z]+</token>
+				<token regexp="yes" spacebefore="no">(han|hin)</token>
+			</pattern>
+			<message>Ibig mo bang sabihin <suggestion><
+		</rule>
+	</category>
+	<category id="SAMPLE_TWO" name="Two Suggestions">
+		<rule id="Two suggestions" name="Rule with two suggestions">
+			<pattern>
+				<token>TEKSTO</token>
+			</pattern>
+			<message>Did you mean <suggestion>testone</suggestion> or <suggestion>testthree</suggestion>?</message>
+			<short>Rule that offers two suggestions.</short>
+			<example correction="testone" type="incorrect"><marker>teksto</marker></example>
+			<example correction="testthree" type="incorrect"><marker>teksto</marker></example>
+			<example type="correct"><marker>testone</marker></example>
+			<example type="correct"><marker>testthree</marker></example>
+		</rule>
+		<rule id="Another two suggestions" name="Another rule with two suggestions">
+			<pattern>
+				<token>TEKSTO</token>
+			</pattern>
+			<message>Did you mean <suggestion>optionone</suggestion> or <suggestion>optiontwo</suggestion>?</message>
+			<short>Another rule that offers two suggestions.</short>
+			<example correction="optionone" type="incorrect"><marker>teksto</marker></example>
+			<example correction="optiontwo" type="incorrect"><marker>teksto</marker></example>
+			<example type="correct"><marker>optionone</marker></example>
+			<example type="correct"><marker>optiontwo</marker></example>
 		</rule>
 	</category>
 </rules>
