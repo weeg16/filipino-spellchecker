@@ -218,45 +218,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">maaari daw</example>
 			<example type="correct">araw daw</example>
 		</rule> 
-	<!--	<rule id="EXCEPTION_RIN" name="Eksepsiyon sa paggamit ng 'rin' pagkatapos ng -ra, -ri, -raw, o -ray">
-			<pattern case_sensitive="no">
-				<token>(maaari|araw|biray|)</token>
-				<token>rin</token>
-			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><match no="1"/> din</suggestion>? Kapag nagtatapos sa -ra, -ri, -raw, o -ray, huwag gumamit ng "rin".</message>
-			<short>Gamitin ang "din" imbes na "rin".</short>
-			<example correction="maaari din" type="incorrect"><marker>maaari rin</marker></example>
-			<example correction="araw din" type="incorrect"><marker>araw rin</marker></example>
-			<example type="correct"><marker>maaari din</marker></example>
-			<example type="correct"><marker>araw din</marker></example>
-		</rule>
-		<rule id="EXCEPTION_RAW" name="Eksepsiyon sa paggamit ng 'raw' pagkatapos ng -ra, -ri, -raw, o -ray">
-			<pattern case_sensitive="no">
-				<token>(maaari|araw|biray|)</token>
-				<token>raw</token>
-			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><match no="1"/> daw</suggestion>? Kapag nagtatapos sa -ra, -ri, -raw, o -ray, huwag gumamit ng "raw".</message>
-			<short>Gamitin ang "daw" imbes na "raw".</short>
-			<example correction="maaari daw" type="incorrect"><marker>maaari raw</marker></example>
-			<example correction="araw daw" type="incorrect"><marker>araw raw</marker></example>
-			<example type="correct"><marker>maaari daw</marker></example>
-			<example type="correct"><marker>araw daw</marker></example>
-		</rule>-->
 	</category>
-	<!--<category id="PALITANG_E_I_AT_O_U" name="Palitang E/I at O/U">
-		<rule_id="PALITANG_E_I" name="Palitang E at I (unang letra)">
-			<pattern case_sensitive="no">
-				<token>(istasyon|iskandalo|istilo)</token>
-			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="\bi(.*)" regexp_replace="e$1"></suggestion>?</message>
-		</rule>
-		<rule_id="PALITANG_O_U" name="Palitang O at U (unang letra)">
-			<pattern case_sensitive="no">
-				<token></token>
-			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="" regexp_replace=""></suggestion>?</message>
-		</rule>
-	</category>-->
 	<category id="WASTONG_PAGGAMIT_NG_GITLING" name="Wastong Paggamit ng Gitling">
 		<rule id="PAGHIHIWALAY_NG_KATINIG_SA_PATINIG" name="Paghiwalay ng katinig sa patinig gamit ang gitling">
 			<pattern case_sensitive="no">
@@ -296,6 +258,18 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>di-kagandahan</marker></example>
 			<example type="correct"><marker>di-mahipo</marker></example>	
 		</rule>
+		<rule id="INUUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita">
+			<pattern case_sensitive="no">
+				<token regexp="yes">[a-zA-Z]+</token>
+				<token regexp="yes">\1</token>
+			</pattern>
+			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="1"/></suggestion>.</message>
+			<short>Gamitin ang gitling sa pagitan ng inuulit na salita.</short>
+			<example correction="gabi gabi" type="incorrect"><marker>gabi gabi</marker></example>
+			<example correction="araw araw" type="incorrect"><marker>araw araw</marker></example>
+			<example type="correct"><marker>gabi-gabi</marker></example>
+			<example type="correct"><marker>araw-araw</marker></example>
+		</rule>
 	</category>
 	<category id="WASTONG_PAGIKLI_NG_SALITA" name="Pagpapaikli ng mga Salita">
 		<rule id="KUDLIT_YAN_YON" name="Paggamit ng kudlit sa yan/yon">
@@ -318,27 +292,24 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<short>Gamitin ang kudlit sa s'ya.</short>
 		</rule>
 	</category>
-	<category id="SALITANG_INUULIT" name="Salitang Inuulit">
-		<rule id="INUUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita">
+	<category id="PALITANG E/I AT O/U" name="Palitang E/I at O/U">
+		<rule id="KAPAG_NAGBAGO_ANG_PANTIG_KUMP" name="Palitang O/U (con/kon/kom -> kump)">
+			<antipattern>
+				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon)</token>
+			</antipattern>
+		
 			<pattern case_sensitive="no">
-				<token regexp="yes">[a-zA-Z]+</token>
-				<token regexp="yes">\1</token>
+				<token regexp="yes">(con|kon|kom)[pf].*</token>
 			</pattern>
-			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="1"/></suggestion>.</message>
-			<short>Gamitin ang gitling sa pagitan ng inuulit na salita.</short>
-			<example correction="gabi gabi" type="incorrect"><marker>gabi gabi</marker></example>
-			<example correction="araw araw" type="incorrect"><marker>araw araw</marker></example>
-			<example type="correct"><marker>gabi-gabi</marker></example>
-			<example type="correct"><marker>araw-araw</marker></example>
-		</rule>
-	</category>
-	<category id="HULAPI" name="Wastong Pagbaybay ng Salita na may Hulapi">
-		<rule id="O_U_HAN_HIN" name="Pagbaybay ng hulaping -han/-hin">
-			<pattern case_sensitive="no">
-				<token regexp="yes">[a-zA-Z]+</token>
-				<token regexp="yes" spacebefore="no">(han|hin)</token>
-			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><
+			
+			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(con|kon|kom)[pf](.*)$" regexp_replace="kump$2"/></suggestion>?</message>
+			<short>Palitan ng 'kump-' (ang F ay nagiging P).</short>
+			<example correction="conferencia">conferencia</example>
+			<example correction="komportable">komportable</example>
+			<example correction="kumpleto">kumpleto</example>
+			
+			<example type="correct">kompanya</example>
+			<example type="correct">kompleto</example>
 		</rule>
 	</category>
 	<category id="SAMPLE_TWO" name="Two Suggestions">
