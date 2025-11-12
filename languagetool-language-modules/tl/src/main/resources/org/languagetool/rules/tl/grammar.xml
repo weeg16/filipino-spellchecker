@@ -333,8 +333,8 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
                 <token regexp="yes">kum(panya|pleto|petisyon|binasyon)</token>
             </pattern>
-            <message>Ang salitang ito ay nagmula sa Espanyol, kaya ang tamang baybay ay <suggestion><match no="1" regexp_match="^(kum)(panya|pleto|petisyon|binasyon)$" regexp_replace="kom$2"/></suggestion>.</message>
-            <short>Dapat 'kom-' (hindi 'kum-') ang baybay ng salitang ito.</short>
+            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(kum)(panya|pleto|petisyon|binasyon)$" regexp_replace="kom$2"/></suggestion>?</message>
+            <short>Dapat 'kom-' (hindi 'kum-') ang baybay ng salitang ito. Isa itong eksepsiyon.</short>
             <example correction="kumpanya">kumpanya</example>
             <example correction="kumpleto">kumpleto</example>
             <example type="correct">kompanya</example>
@@ -344,11 +344,43 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
                 <token regexp="yes">[km]un(?!p|b|f|v).*</token>
             </pattern>
-            <message>Ayon sa tuntunin, ang 'o' ay nagiging 'u' lamang kapag ang 'n' ay nagiging 'm' (bago ang P/B/F/V). Sa kasong ito, dapat manatili ang 'o'. Isaalang-alang ang <suggestion><match no="1" regexp_match="^([km])(un)(.*)$" regexp_replace="$1on$3"/></suggestion>.</message>
+            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^([km])(un)(.*)$" regexp_replace="$1on$3"/></suggestion>?</message>
             <short>Dapat manatili ang 'o' sa salitang ito.</short>
             <example correction="kuntrata">kuntrata</example>
             <example correction="munumento">munumento</example>
             <example type="correct">kontrata</example>
+        </rule>
+
+		<rule id="	EPEKTO_NG_HULAPI_E_TO_I" name="Pagpalit ng E sa I (Epekto ng Hulapi)">
+            <antipattern>
+                <token regexp="yes">(?i)(basehan|kortehan)</token>
+            </antipattern>
+            <pattern case_sensitive="no">
+                <token regexp="yes">.*e(han|hin|in|an)$</token>
+            </pattern>
+            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(.*)e(han|hin|in|an)$" regexp_replace="$1i$2"/></suggestion>?</message>
+            <short>Palitan ang 'e' ng 'i' kapag may hulapi.</short>
+            <example correction="kababaihan">Ang <marker>kababaehan</marker> ay para sa lahat.</example>
+            <example correction="balaihin">Siya ay <marker>balaehin</marker> ko.</example>
+            <example correction="onsihan">Ang <marker>onsehan</marker> ay nauwi sa gulo.</example>
+            <example type="correct">kababaihan</example>
+            <example type="correct" anti_example="yes">basehan</example>
+        </rule>
+
+        <rule id="EPEKTO_NG_HULAPI_O_TO_U" name="Pagpalit ng O sa U (Epekto ng Hulapi)">
+            <antipattern>
+                <token regexp="yes">(?i)(bobohan|teleponohan)</token>
+            </antipattern>
+            <pattern case_sensitive="no">
+                <token regexp="yes">.*o(han|hin|in|an)$</token>
+            </pattern>
+            <message>Ibig mo bang sabihin<suggestion><match no="1" regexp_match="^(.*)o(han|hin|in|an)$" regexp_replace="$1u$2"/></suggestion>?</message>
+            <short>Palitan ang 'o' ng 'u' kapag may hulapi.</short>
+            <example correction="biruin">Huwag mo siyang <marker>biroin</marker>.</example>
+            <example correction="kalbuhin">Balak niyang <marker>kalbohin</marker> ang aso.</example>
+            <example correction="takbuhan">Agad niyang <marker>takbohan</marker> ang bata.</example>
+            <example type="correct">biruin</example>
+            <example type="correct" anti_example="yes">bobohan</example>
         </rule>
 	</category>
 	<category id="SAMPLE_TWO" name="Two Suggestions">
