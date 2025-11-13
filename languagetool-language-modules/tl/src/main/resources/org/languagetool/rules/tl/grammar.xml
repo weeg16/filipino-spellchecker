@@ -131,17 +131,20 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>di-kagandahan</marker></example>
 			<example type="correct"><marker>di-mahipo</marker></example>	
 		</rule>
-		<rule id="INUUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita">
+		<rule id="INUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita (pinagdikit)">
+			<antipattern>
+				<token regexp="yes">(paroparo|gamogamo)</token>
+			</antipattern>
 			<pattern case_sensitive="no">
-				<token regexp="yes">[a-zA-Z]+</token>
-				<token regexp="yes">\1</token>
+				<token regexp="yes">^(\w{3,})\1$</token>
 			</pattern>
-			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="1"/></suggestion>.</message>
-			<short>Gamitin ang gitling sa pagitan ng inuulit na salita.</short>
-			<example correction="gabi gabi" type="incorrect">gabi gabi</example>
-			<example correction="araw araw" type="incorrect">araw araw</example>
-			<example type="correct"><marker>gabi-gabi</marker></example>
-			<example type="correct"><marker>araw-araw</marker></example>
+			<message>Ginagamit ang gitling (-) sa mga salitang inuulit. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w{3,})\1$" regexp_replace="$1-$1"/></suggestion>.</message>
+			<short>Lagyan ng gitling ang inuulit na salita.</short>
+			<example correction="araw-araw">Ginagawa niya ito <marker>arawaraw</marker>.</example>
+			<example correction="gabi-gabi">Umuulan tuwing <marker>gabigabi</marker>.</example>
+			<example correction="balik-balik">Siya ay <marker>balikbalik</marker> sa tindahan.</example>
+			<example type="correct">araw-araw</example>
+			<example type="correct">paruparo</example> 
 		</rule>
 		<rule id="PASULAT_NA_ORAS_IKA" name="Paggamit ng gitling sa 'ika-' na sinusundan ng numero">
             <pattern case_sensitive="no">
