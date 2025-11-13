@@ -146,6 +146,28 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">araw-araw</example>
 			<example type="correct">paruparo</example> 
 		</rule>
+		<rule id="INUULIT_NA_SALITA_MAHIGIT_DALAWANG_PANTIG" name="Paggamit ng gitling sa inuulit na salita (pinagdikit)">
+			<pattern case_sensitive="no">
+				<token regexp="yes">(palipalito|balubaluktot|balibaligtad|bulabulagsak)</token>
+			</pattern>
+			<message>Ginagamit ang gitling (-) sa mga salitang inuulit. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(pali)(palito)$" regexp_replace="$1-$2"/></suggestion><suggestion><match no="1" regexp_match="^(balu)(baluktot)$" regexp_replace="$1-$2"/></suggestion><suggestion><match no="1" regexp_match="^(bali)(baligtad)$" regexp_replace="$1-$2"/></suggestion><suggestion><match no="1" regexp_match="^(bula)(bulagsak)$" regexp_replace="$1-$2"/></suggestion>.</message>
+			<short>Lagyan ng gitling ang inuulit na salita.</short>
+			<example correction="pali-palito">palipalito</example>
+			<example correction="balu-baluktot">balubaluktot</example>
+			<example correction="bali-baligtad">balibaligtad</example>
+			<example type="correct">pali-palito</example>
+		</rule>
+		<rule id="INUULIT_NA_SALITA_MAHIGIT_DALAWANG_PANTIG_SPACE" name="Paggamit ng gitling sa inuulit na salita (may espasyo)">
+			<pattern>
+				<token regexp="yes">(?i)(pali|balu|bali|bula)</token>
+				<token regexp="yes">(?i)(palito|baluktot|baligtad|bulagsak)</token>
+			</pattern>
+			<message>Ginagamit ang gitling (-) sa mga salitang inuulit. Isaalang-alang ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
+			<short>Lagyan ng gitling ang inuulit na salita.</short>
+			<example correction="pali-palito">pali palito</example>
+			<example correction="balu-baluktot">balu baluktot</example>
+			<example type="correct">pali-palito</example>
+		</rule>
 		<rule id="PASULAT_NA_ORAS_IKA" name="Paggamit ng gitling sa 'ika-' na sinusundan ng numero">
             <pattern case_sensitive="no">
                 <token regexp="yes">ika(\d+)</token>
