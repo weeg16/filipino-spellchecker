@@ -30,11 +30,14 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			</pattern>
 			<message>Ibig mo bang gamitin ang <suggestion><match no="1"/> din</suggestion>?</message>
 			<short>Gamitin ang din kung ang sinusundang salita ay nagtatapos sa katinig.</short>
-			<example correction="kumain din" type="incorrect"><marker>kumain rin</marker></example>
+			<example correction="kumain din" type="incorrect"><marker>Kumain rin</marker> siya.</example>
 			<example correction="lumakad din" type="incorrect"><marker>lumakad rin</marker></example>
 			<example type="correct"><marker>kumain din</marker></example>
 		</rule>
 		<rule id="KASONG_DIN" name="Maling paggamit ng 'din' pagkatapos ng patinig o malapatinig">
+			<antipattern>
+				<token regexp="yes">.*(ra|ri|raw|ray)$</token>
+			</antipattern>
 			<pattern case_sensitive="no">
 				<token regexp="yes">.*[aeiouwy]$</token>
 				<token>din</token>
@@ -57,6 +60,9 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct"><marker>kumain daw</marker></example>
 		</rule>
 		<rule id="KASONG_DAW" name="Maling paggamit ng 'daw' pagkatapos ng patinig o malapatinig">
+			<antipattern>
+				<token regexp="yes">.*(ra|ri|raw|ray)$</token>
+			</antipattern>
 			<pattern case_sensitive="no">
 				<token regexp="yes">.*[aeiouwy]$</token>
 				<token>daw</token>
@@ -238,7 +244,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<message>Tandaan: Ayon sa tuntunin, laging binabaybay ang oras na "ala-una".</message>
 			<suggestion>ala-una</suggestion>
 			<short>Laging 'ala-una' ang baybay.</short>
-			<example correction="ala una" type="incorrect">ala una</example>
+			<example correction="ala-una" type="incorrect">ala una</example>
 			<example type="correct">ala-una</example>
 		</rule>
 	</category>
