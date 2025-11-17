@@ -545,7 +545,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">ano-ano</example>
 			<example type="correct">biro-biro</example>
 		</rule>
-		<rule id="FIL_UO_HULAPI" name="Pagpapanatili ng 'uo'">
+		<rule id="HUWAG_BAGUHIN_ANG_DOBLENG_OO_OU" name="Pagpapanatili ng 'uo'">
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(kabuuan|buurin|pagtuunan|tuusin|kasalimuutan)\b</token>
 			</pattern>
@@ -558,7 +558,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="kasalimuotan">Ang <marker>kasalimuutan</marker> ng problèma.</example>
 			<example type="correct">kabuoan</example>
 		</rule>
-		<rule id="FIL_OO_HULAPI" name="Pagpapanatili ng 'oo'">
+		<rule id="HUWAG_BAGUHIN_ANG_DOBLENG_OO" name="Pagpapanatili ng 'oo'">
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(panuorin|paruonan|kapuotan|kanuonan)\b</token>
 			</pattern>
