@@ -27,7 +27,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(benepisio)\b</token>
 			</pattern>
-            <message>Ayon sa pangkalahatang tuntunin ng KWF, ang 'io' ay nagiging 'yo' sa salitang ito. Isaalang-alang ang <suggestion>benepisyo</suggestion>.</message>
+            <message>Ang 'io' ay nagiging 'yo' sa salitang ito. Isaalang-alang ang <suggestion>benepisyo</suggestion>.</message>
             <short>Palitan ng 'yo' (benepisyo).</short>
             <example correction="benepisyo">Malaki ang <marker>benepisio</marker> nito.</example>
         </rule>
@@ -35,7 +35,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(indibidual)\b</token>
 			</pattern>
-            <message>Ayon sa pangkalahatang tuntunin ng KWF, ang 'ua' ay nagiging 'wa' sa salitang ito. Isaalang-alang ang <suggestion>indibidwal</suggestion>.</message>
+            <message>Ang 'ua' ay nagiging 'wa' sa salitang ito. Isaalang-alang ang <suggestion>indibidwal</suggestion>.</message>
             <short>Palitan ng 'wa' (indibidwal).</short>
             <example correction="indibidwal">Isang <marker>indibidual</marker> ang lumapit.</example>
         </rule>
@@ -43,7 +43,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(perwisio)\b</token>
 			</pattern>
-            <message>Ayon sa pangkalahatang tuntunin ng KWF, ang 'io' ay nagiging 'yo' sa salitang ito. Isaalang-alang ang <suggestion>perwisyo</suggestion>.</message>
+            <message>Ang 'io' ay nagiging 'yo' sa salitang ito. Isaalang-alang ang <suggestion>perwisyo</suggestion>.</message>
             <short>Palitan ng 'yo' (perwisyo).</short>
             <example correction="perwisyo">Nagdulot ng <marker>perwisio</marker>.</example>
         </rule>
@@ -51,7 +51,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(kompaniya|kompania)\b</token>
 			</pattern>
-            <message>Ayon sa pangkalahatang tuntunin ng KWF, ang 'ia' ay nagiging 'ya' sa salitang ito. Isaalang-alang ang <suggestion>kompanya</suggestion>.</message>
+            <message>Ang 'ia' ay nagiging 'ya' sa salitang ito. Isaalang-alang ang <suggestion>kompanya</suggestion>.</message>
             <short>Palitan ng 'ya' (kompanya).</short>
             <example correction="kompanya">Ang <marker>kompania</marker> ay nagsara.</example>
         </rule>
@@ -59,7 +59,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(teniente)\b</token>
 			</pattern>
-            <message>Ayon sa pangkalahatang tuntunin ng KWF, ang 'ie' ay nagiging 'ye' sa salitang ito. Isaalang-alang ang <suggestion>tenyente</suggestion>.</message>
+            <message>Ang 'ie' ay nagiging 'ye' sa salitang ito. Isaalang-alang ang <suggestion>tenyente</suggestion>.</message>
             <short>Palitan ng 'ye' (tenyente).</short>
             <example correction="tenyente">Si <marker>teniente</marker> ay dumating.</example>
         </rule>
@@ -67,23 +67,23 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(kwento|kuento)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.1), ang kambal-patinig na 'ue' sa unang pantig ay nagiging 'uwe'. Ang tamang baybay ay <suggestion>kuwento</suggestion>.</message>
-            <short>Ang 'cuento' o 'kuento' ay dapat 'kuwento'.</short>
+            <message>Ang kambal-patinig na 'ue' sa unang pantig ay nagiging 'uwe'. Ang tamang baybay ay <suggestion>kuwento</suggestion>.</message>
+            <short>Ang 'kwento' o 'kuento' ay dapat 'kuwento'.</short>
             <example correction="kuwento">Nagbasa siyá ng <marker>kuento</marker>.</example>
         </rule>
         <rule id="FIL_KAMBAL_PATINIG_PUWERSA" name="Kataliwasan 5.1: puwersa">
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(pwersa|puersa)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.1), ang kambal-patinig na 'ue' ay nagiging 'uwe' at ang 'f' ay nagiging 'p'. Ang tamang baybay ay <suggestion>puwersa</suggestion>.</message>
-            <short>Ang 'fuerza' o 'puersa' ay dapat 'puwersa'.</short>
+            <message>Ang kambal-patinig na 'ue' ay nagiging 'uwe' at ang 'f' ay nagiging 'p'. Ang tamang baybay ay <suggestion>puwersa</suggestion>.</message>
+            <short>Ang 'pwersa' o 'puersa' ay dapat 'puwersa'.</short>
             <example correction="puwersa">Ginamit niya ang <marker>fuerza</marker>.</example>
         </rule>
         <rule id="FIL_KAMBAL_PATINIG_PIYANO" name="Kataliwasan 5.1: piyano">
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(piano|pyano)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.1), ang kambal-patinig na 'ia' sa unang pantig ay nagiging 'iya'. Ang tamang baybay ay <suggestion>piyano</suggestion>.</message>
+            <message>Ang kambal-patinig na 'ia' sa unang pantig ay nagiging 'iya'. Ang tamang baybay ay <suggestion>piyano</suggestion>.</message>
             <short>Ang 'piano' ay dapat 'piyano'.</short>
             <example correction="piyano">Tumugtog siya ng <marker>piano</marker>.</example>
         </rule>
@@ -91,23 +91,23 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(pyesa|piesa)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.1), ang kambal-patinig na 'ie' ay nagiging 'iye' at ang 'z' ay nagiging 's'. Ang tamang baybay ay <suggestion>piyesa</suggestion>.</message>
-            <short>Ang 'pieza' o 'piesa' ay dapat 'piyesa'.</short>
+            <message>Ang kambal-patinig na 'ie' ay nagiging 'iye' at ang 'z' ay nagiging 's'. Ang tamang baybay ay <suggestion>piyesa</suggestion>.</message>
+            <short>Ang 'pyesa' o 'piesa' ay dapat 'piyesa'.</short>
             <example correction="piyesa">Ito ang kulang na <marker>piesa</marker>.</example>
         </rule>
         <rule id="FIL_KAMBAL_PATINIG_BIYUDA" name="Kataliwasan 5.1: biyuda">
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(byuda|biuda)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.1), ang kambal-patinig na 'iu' ay nagiging 'iyu' at ang 'v' ay nagiging 'b'. Ang tamang baybay ay <suggestion>biyuda</suggestion>.</message>
-            <short>Ang 'viuda' o 'biuda' ay dapat 'biyuda'.</short>
+            <message>Ang kambal-patinig na 'iu' ay nagiging 'iyu' at ang 'v' ay nagiging 'b'. Ang tamang baybay ay <suggestion>biyuda</suggestion>.</message>
+            <short>Ang 'byuda' o 'biuda' ay dapat 'biyuda'.</short>
             <example correction="biyuda">Isang <marker>biuda</marker> si Aling Nena.</example>
         </rule>
         <rule id="FIL_KAMBAL_PATINIG_LEKSIYON" name="Kataliwasan 5.2: leksiyon">
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(leksyon|leksion)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.2), kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>leksiyon</suggestion>.</message>
+            <message>Kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>leksiyon</suggestion>.</message>
             <short>Panatilihin ang patinig (leksiyon).</short>
             <example correction="leksiyon">Tapos na ang <marker>leksyon</marker>.</example>
         </rule>
@@ -115,7 +115,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(kontrobersia|kontrobersya|kuntrobersya)\b</token>
 			</pattern>
-			<message>Ayon sa KWF Manwal (5.2), kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>kontrobersiya</suggestion>.</message>
+			<message>Kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>kontrobersiya</suggestion>.</message>
 			<short>Panatilihin ang patinig (kontrobersiya).</short>
 			<example correction="kontrobersiya">Maraming <marker>controbersia</marker> tungkol dito.</example>
         </rule>
@@ -123,7 +123,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(lenggwahe)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.2), kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>lengguwahe</suggestion>.</message>
+            <message>Kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>lengguwahe</suggestion>.</message>
             <short>Panatilihin ang patinig (lengguwahe).</short>
             <example correction="lengguwahe">Iba ang <marker>lenggwahe</marker> nila.</example>
         </rule>
@@ -131,7 +131,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(kolehyo|kolehio)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.3), kapag ang kambal-patinig ay sumusunod sa 'h', pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>kolehiyo</suggestion>.</message>
+            <message>Kapag ang kambal-patinig ay sumusunod sa 'h', pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>kolehiyo</suggestion>.</message>
             <short>Panatilihin ang patinig (kolehiyo).</short>
             <example correction="kolehiyo">Nasa <marker>kolehyo</marker> na siya.</example>
         </rule>
@@ -139,7 +139,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
 				<token regexp="yes">\b(rehyon|rehion)\b</token>
 			</pattern>
-            <message>Ayon sa KWF Manwal (5.3), kapag ang kambal-patinig ay sumusunod sa 'h', pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>rehiyon</suggestion>.</message>
+            <message>Kapag ang kambal-patinig ay sumusunod sa 'h', pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>rehiyon</suggestion>.</message>
             <short>Panatilihin ang patinig (rehiyon).</short>
             <example correction="rehiyon">Saang <marker>rehyon</marker> iyon?</example>
         </rule>
@@ -363,7 +363,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<pattern case_sensitive="no">
                 <token regexp="yes">(alas-1|alas1|ala-1|ala1|alas-una|alasuna|ala-uno|alauna|alauno)</token>
             </pattern>
-            <message>Tandaan: Ayon sa tuntunin, laging binabaybay ang oras na "ala-una".</message>
+            <message>Laging binabaybay ang oras na "ala-una".</message>
             <suggestion>ala-una</suggestion>
             <short>Laging 'ala-una' ang baybay.</short>
             <example correction="alas-1" type="incorrect">alas-1</example>
@@ -376,20 +376,22 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 				<token>ala</token>
 				<token>una</token>
 			</pattern>
-			<message>Ayon sa tuntunin, laging binabaybay ang oras na "ala-una".</message>
+			<message>Laging binabaybay ang oras na "ala-una".</message>
 			<suggestion>ala-una</suggestion>
 			<short>Laging 'ala-una' ang baybay.</short>
 			<example correction="ala-una" type="incorrect">ala una</example>
 			<example type="correct">ala-una</example>
 		</rule>
-		<rule id="WALANG_GITLING_SA_IBA_T_IBA" name="Walang gitling sa iba't iba">
+		<rule id="WALANG_GITLING_SA_IBAT_IBA" name="Walang gitling sa iba't iba (MMP 11.1)">
 			<pattern case_sensitive="no">
-				<token regexp="yes">iba't-iba</token>
+				<token regexp="yes">iba't</token>
+				<token>-</token>
+				<token>iba</token>
 			</pattern>
-			<message>Ang wastong baybay ay <suggestion>iba't iba</suggestion> (walang gitling).</message>
-			<short>Walang gitling sa pagitan ng iba't iba.</short>
-			<example correction="iba't iba" type="incorrect"><marker>iba't-iba</marker></example>
-			<example type="correct"><marker>iba't iba</marker></example>
+			<message>Ang wastong baybay ay <suggestion>iba’t iba</suggestion> (walang gitling).</message>
+			<short>Walang gitling; ang tamang anyo ay "iba't iba".</short>
+			<example correction="iba’t iba" type="incorrect"><marker>iba't</marker><marker>-</marker><marker>iba</marker></example>
+			<example type="correct">iba’t iba</example>
 		</rule>
 	</category>
 	<category id="WASTONG_PAGGAMIT_NG_KUDLIT" name="Pagpapaikli ng mga Salita">
@@ -442,6 +444,44 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 	</category>
 	<category id="PALITANG E/I AT O/U" name="Palitang E/I at O/U">
+		<rule id="DISIPLINA_SA_PAGBIGKAS_NG_E_I_IS" name="Disiplina sa E/I">
+            <pattern case_sensitive="no">
+                <token regexp="yes">\b(iskandalo|istasyon|istilo)\b</token>
+            </pattern>
+            <message>Iwasan ang balbal na ugaling gawing 'i' ang 'e' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(is)(kandalo|tasyon|tilo)$" regexp_replace="es$2"/></suggestion>.</message>
+            <short>Ang tamang baybay ay 'eskandalo', 'estasyon', o 'estilo'.</short>
+            <example correction="eskandalo">Gumawa siyá ng <marker>iskandalo</marker>.</example>
+            <example correction="estasyon">Pumunta sa <marker>istasyon</marker> ng pulis.</example>
+            <example correction="estilo">Mag-iba ka ng <marker>istilo</marker>.</example>
+            <example type="correct">eskandalo</example>
+            <example type="correct">estasyon</example>
+        </rule>
+        <rule id="DISIPLINA_SA_PAGBIGKAS_NG_E_I_IBANG_SALITA" name="Disiplina sa E/I (ibang salita)">
+            <pattern case_sensitive="no">
+                <token regexp="yes">\b(minudo|liyon|nigatibo)\b</token>
+            </pattern>
+            <message>Iwasan ang balbal na ugaling gawing 'i' ang 'e' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w)i(\w*)$" regexp_replace="$1e$2"/></suggestion>.</message>
+            <short>Ang tamang baybay ay 'menudo', 'leon', o 'negatibo'.</short>
+            <example correction="menudo">Magluto ka ng <marker>minudo</marker>.</example>
+            <example correction="leon">Mukhang <marker>liyon</marker> ang aso.</example>
+            <example correction="negatibo">Laging <marker>nigatibo</marker> ang sagot niya.</example>
+            <example type="correct">menudo</example>
+        </rule>
+        <rule id="DISIPLINA_SA_PAGBIGKAS_NG_O_U" name="Disiplina sa O/U">
+            <pattern case_sensitive="no">
+                <token regexp="yes">\b(kuryente|Kuryano|dunasyon|murado|sumbrero|pulitika)\b</token>
+            </pattern>
+            <message>Iwasan ang balbal na ugaling gawing 'u' ang 'o' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w)u(\w*)$" regexp_replace="$1o$2"/></suggestion>.</message>
+            <short>Ang tamang baybay ay 'koryente', 'Koreano', 'donasyon', 'morado', 'kompanya', 'sombrero', o 'politika'.</short>
+            <example correction="koryente">Nawalan ng <marker>kuryente</marker>.</example>
+            <example correction="Koreano">Isang <marker>Kuryano</marker> ang kumanta.</example>
+            <example correction="donasyon">Nakatanggap ng <marker>dunasyon</marker>.</example>
+            <example correction="morado">Kulay <marker>murado</marker> ang damit.</example>
+            <example correction="sombrero">Magsuot ka ng <marker>sumbrero</marker>.</example>
+            <example correction="politika">Ayaw niya sa <marker>pulitika</marker>.</example>
+            <example type="correct">koryente</example>
+            <example type="correct">kompanya</example>
+        </rule>
 		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMP" name="Palitang O/U (con/kon/kom -> kump)">
 			<antipattern>
 				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon)</token>
