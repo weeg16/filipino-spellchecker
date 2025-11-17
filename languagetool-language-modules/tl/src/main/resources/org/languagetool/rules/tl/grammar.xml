@@ -549,7 +549,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(kabuuan|buurin|pagtuunan|tuusin|kasalimuutan)\b</token>
 			</pattern>
-			<message>Ayon sa KWF Manwal (7.7), ang kambal-patinig na 'uo' ay karaniwang hindi nagbabago kapag hinuhulapian. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w*)uu(\w*)$" regexp_replace="$1uo$2"/></suggestion>.</message>
+			<message>Ang kambal-patinig na 'uo' ay karaniwang hindi nagbabago kapag hinuhulapian. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w*)uu(\w*)$" regexp_replace="$1uo$2"/></suggestion>.</message>
 			<short>Huwag palitan ang 'uo' ng 'uu'.</short>
 			<example correction="kabuoan">Ang <marker>kabuuan</marker> ng kuwento.</example>
 			<example correction="buorin">Subukang <marker>buurin</marker> ang teksto.</example>
@@ -562,8 +562,8 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(panuorin|paruonan|kapuotan|kanuonan)\b</token>
 			</pattern>
-			<message>Ayon sa KWF Manwal (7.7), ang dobleng 'oo' ay karaniwang hindi nagbabago kapag hinuhulapian. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w*)uo(\w*)$" regexp_replace="$1oo$2"/></suggestion>.</message>
-			<short>Huwag palitan ang 'oo' ng 'uu' (hal. panoorin).</short>
+			<message>Ang dobleng 'oo' ay karaniwang hindi nagbabago kapag hinuhulapian. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w*)uo(\w*)$" regexp_replace="$1oo$2"/></suggestion>.</message>
+			<short>Huwag palitan ang 'oo' ng 'uo'.</short>
 			<example correction="panoorin">Gusto kong <marker>panuorin</marker> iyon.</example>
 			<example correction="paroonan">Ang <marker>paruonan</marker> nila.</example>
 			<example correction="kapootan">Puno ng <marker>kapuotan</marker>.</example>
