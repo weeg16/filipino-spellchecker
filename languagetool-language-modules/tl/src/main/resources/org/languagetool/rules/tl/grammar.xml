@@ -375,10 +375,10 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 				<token>-</token>
 				<token>iba</token>
 			</pattern>
-			<message>Ang wastong baybay ay <suggestion>iba’t iba</suggestion> (walang gitling).</message>
+			<message>Ang wastong baybay ay <suggestion>iba't iba</suggestion> (walang gitling).</message>
 			<short>Walang gitling; ang tamang anyo ay "iba't iba".</short>
-			<example correction="iba’t iba" type="incorrect"><marker>iba't</marker><marker>-</marker><marker>iba</marker></example>
-			<example type="correct">iba’t iba</example>
+			<example correction="iba't iba" type="incorrect"><marker>iba't</marker><marker>-</marker><marker>iba</marker></example>
+			<example type="correct">iba't iba</example>
 		</rule>
 	</category>
 	<category id="WASTONG_PAGGAMIT_NG_KUDLIT" name="Pagpapaikli ng mga Salita">
@@ -437,7 +437,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             </pattern>
             <message>Iwasan ang balbal na ugaling gawing 'i' ang 'e' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(is)(kandalo|tasyon|tilo)$" regexp_replace="es$2"/></suggestion>.</message>
             <short>Ang tamang baybay ay 'eskandalo', 'estasyon', o 'estilo'.</short>
-            <example correction="eskandalo">Gumawa siyá ng <marker>iskandalo</marker>.</example>
+            <example correction="eskandalo">Gumawa siya ng <marker>iskandalo</marker>.</example>
             <example correction="estasyon">Pumunta sa <marker>istasyon</marker> ng pulis.</example>
             <example correction="estilo">Mag-iba ka ng <marker>istilo</marker>.</example>
             <example type="correct">eskandalo</example>
@@ -506,19 +506,6 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <example correction="kumpleto" type="incorrect">kumpleto</example>
             <example type="correct">kompanya</example>
         </rule>
-        <!--<rule id="KAPAG_NAGBAGO_ANG_KATINIG_EKSEPSIYON" name="Maling pagpalit ng O sa U (ibang kaso)">
-            <antipattern>
-				<token regexp="yes">(?i)(kuntrobersya)</token>
-			</antipattern>
-			<pattern case_sensitive="no">
-                <token regexp="yes">[km]un(?!p|b|f|v).*</token>
-            </pattern>
-            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^([km])(un)(.*)$" regexp_replace="$1on$3"/></suggestion>?</message>
-            <short>Dapat manatili ang 'o' sa salitang ito kung 'N' ang kasunod sa orihinal na salita.</short>
-            <example correction="kuntrata" type="incorrect">kuntrata</example>
-            <example correction="munumento" type="incorrect">munumento</example>
-            <example type="correct">kontrata</example>
-        </rule>-->
 		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_EKSEPSIYON" name="Maling pagpalit ng O sa U (ibang kaso) (MMP 7.3)">
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(kuntrata|kunsumo|munumento)\b</token>
