@@ -121,7 +121,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
         </rule>
         <rule id="FIL_KAMBAL_PATINIG_LENGGUWAHE" name="Kataliwasan 5.2: lengguwahe">
             <pattern case_sensitive="no">
-				<token regexp="yes">\b(lenggwahe)\b</token>
+				<token regexp="yes">\b(lenggwahe|lengguahe)\b</token>
 			</pattern>
             <message>Kapag ang kambal-patinig ay sumusunod sa kumpol-katinig, pinapanatili ang unang patinig. Ang tamang baybay ay <suggestion>lengguwahe</suggestion>.</message>
             <short>Panatilihin ang patinig (lengguwahe).</short>
@@ -238,19 +238,19 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		<rule id="KASUNOD_NG_DE" name="Paggamit ng gitling sa 'de'">
 			<pattern case_sensitive="no">
 				<token>de</token>
-				<token regexp="yes">^[a-zA-Z].*</token>
+				<token regexp="yes">(kolor|mano|lata|bola|bote|kahon)</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion>de-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'de' kapag sinusundan ito ng salita.</short>
 			<example correction="de lata" type="incorrect"><marker>de lata</marker></example>
-			<example correction="de kalidad" type="incorrect"><marker>de kalidad</marker></example>
+			<example correction="de kahon" type="incorrect"><marker>de kahon</marker></example>
 			<example type="correct"><marker>de-lata</marker></example>
-			<example type="correct"><marker>de-kalidad</marker></example>
+			<example type="correct"><marker>de-kahon</marker></example>
 		</rule>
 		<rule id="KASUNOD_NG_DI" name="Paggamit ng gitling sa 'di'">
 			<pattern case_sensitive="no">
 				<token>di</token>
-				<token regexp="yes">^[a-zA-Z].*</token>
+				<token regexp="yes">(mahapayang-gatang|mahipo|kagandahan|maitulak-kabigin|mahugot=hugot|maliparang-uwak)</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'di' kapag sinusundan ito ng salita.</short>
@@ -261,7 +261,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
 		<rule id="INUULIT_NA_SALITA" name="Paggamit ng gitling sa inuulit na salita (pinagdikit)">
 			<antipattern>
-				<token regexp="yes">(paroparo|gamogamo)</token>
+				<token regexp="yes">(paroparo|gamogamo|dagdag|baybay|siksik|dingding)</token>
 			</antipattern>
 			<pattern case_sensitive="no">
 				<token regexp="yes">^(\w{3,})\1$</token>
@@ -320,9 +320,77 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">ika-8</example>
 			<example type="correct">ikawalo</example>
 		</rule>
+		<rule id="PASULAT_NA_ORAS_IKA_WORD_HYPHEN" name="Paggamit ng 'ika' sa mga salitang bilang (may gitling)">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token>-</token>
+                <token regexp="yes">apat|lima|anim|pito|walo|siyam|sampu|daan|libo</token>
+            </pattern>
+            <message>Hindi ginagamitan ng gitling ang "ika" kapag sinusundan ng salitang bilang (maliban kung ika-dalawa o ika-tatlo). Gamitin ang <suggestion>ika<match no="3"/></suggestion>.</message>
+            <short>Dapat pinagdikit (hal. ikalima).</short>
+            <example correction="ikalima" type="incorrect"><marker>ika-lima</marker></example>
+            <example correction="ikaapat" type="incorrect"><marker>ika-apat</marker></example>
+            <example correction="ikaanim" type="incorrect"><marker>ika-anim</marker></example>
+            <example type="correct">ikalima</example>
+        </rule>
+
+        <rule id="PASULAT_NA_ORAS_IKA_WORD_SPACE" name="Paggamit ng 'ika' sa mga salitang bilang (may espasyo)">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token regexp="yes">apat|lima|anim|pito|walo|siyam|sampu|daan|libo</token>
+            </pattern>
+            <message>Pinagdidikit ang "ika" at ang salitang bilang. Gamitin ang <suggestion>ika<match no="2"/></suggestion>.</message>
+            <short>Dapat pinagdikit (hal. ikalima).</short>
+            <example correction="ikalima" type="incorrect"><marker>ika lima</marker></example>
+            <example correction="ikaanim" type="incorrect"><marker>ika anim</marker></example>
+            <example type="correct">ikalima</example>
+        </rule>
+        <rule id="PASULAT_NA_ORAS_IKALAWA" name="Wastong baybay ng Ikalawa">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token regexp="yes">-?</token> 
+				<token>dalawa</token>
+            </pattern>
+            <message>Ang wastong baybay ay <suggestion>ikalawa</suggestion>.</message>
+            <short>Gamitin ang 'ikalawa'.</short>
+            <example correction="ikalawa" type="incorrect"><marker>ika-dalawa</marker></example>
+            <example correction="ikalawa" type="incorrect"><marker>ikadalawa</marker></example>
+            <example type="correct">ikalawa</example>
+        </rule>
+        <rule id="PASULAT_NA_ORAS_IKATLO" name="Wastong baybay ng Ikatlo">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token regexp="yes">-?</token>
+                <token>tatlo</token>
+            </pattern>
+            <message>Ang wastong baybay ay <suggestion>ikatlo</suggestion>.</message>
+            <short>Gamitin ang 'ikatlo'.</short>
+            <example correction="ikatlo" type="incorrect"><marker>ika-tatlo</marker></example>
+            <example type="correct">ikatlo</example>
+        </rule>
+		<rule id="PASULAT_NA_ORAS_IKALAWA_SPACE" name="Wastong baybay ng Ikalawa (may espasyo)">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token>dalawa</token>
+            </pattern>
+            <message>Ang wastong baybay ay <suggestion>ikalawa</suggestion>.</message>
+            <short>Gamitin ang 'ikalawa'.</short>
+            <example correction="ikalawa" type="incorrect"><marker>ika dalawa</marker></example>
+            <example type="correct">ikalawa</example>
+        </rule>
+		<rule id="PASULAT_NA_ORAS_IKATLO" name="Wastong baybay ng Ikatlo">
+            <pattern case_sensitive="no">
+                <token>ika</token>
+                <token>tatlo</token>
+            </pattern>
+            <message>Ang wastong baybay ay <suggestion>ikatlo</suggestion>.</message>
+            <short>Gamitin ang 'ikatlo'.</short>
+            <example correction="ikatlo" type="incorrect"><marker>ika tatlo</marker></example>
+            <example type="correct">ikatlo</example>
+        </rule>
 		<rule id="PASULAT_NA_ORAS_ALAS" name="Paggamit ng gitling sa 'alas-' na sinusundan ng numero o salita">
             <pattern case_sensitive="no">
-                <token regexp="yes">alas(1[0-2]|[2-9]|dos|tres|kwatro|singko|sais|siete|otso|nwebe|dyes|onse|dose)</token>
+                <token regexp="yes">alas(1[0-2]|[2-9]|dos|tres|kuwatro|singko|sais|siyete|otso|nuwebe|diyes|onse|dose)</token>
             </pattern>
             <message>Ginagamit ang gitling (-) upang ihiwalay ang numero o binaybay na oras sa 'alas-'. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(alas)(.*)$" regexp_replace="alas-$2"/></suggestion>.</message>
             <short>Dapat may gitling sa pagitan ng 'alas-' at oras.</short>
@@ -335,7 +403,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		<rule id="PASULAT_NA_ORAS_ALAS_SPACE" name="Paggamit ng gitling sa 'alas-' (may espasyo)">
 			<pattern case_sensitive="no">
 				<token>alas</token>
-				<token regexp="yes">(1[0-2]|[2-9]|dos|tres|kwatro|singko|sais|siete|otso|nwebe|dyes|onse|dose)</token>
+				<token regexp="yes">(1[0-2]|[2-9]|dos|tres|kuwatro|singko|sais|siyete|otso|nuwebe|diyes|onse|dose)</token>
 			</pattern>
 			<message>Ginagamit ang gitling (-) upang ihiwalay ang numero o binaybay na oras sa 'alas-'. Isaalang-alang ang <suggestion>alas-<match no="2"/></suggestion>.</message>
 			<short>Dapat may gitling sa pagitan ng 'alas-' at oras.</short>
@@ -345,6 +413,55 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">alas-12</example>
 			<example type="correct">alas-tres</example>
 			<example type="correct">ala-una</example> 
+		</rule>
+		<rule id="PASULAT_NA_ORAS_ALA_DOS-DOSE" name="Paggamit ng ala sa maling oras">
+			<pattern case_sensitive="no">
+				<token>ala</token>
+				<token>-</token>
+				<token regexp="yes">dos|tres|kuwatro|singko|sais|siyete|otso|nuwebe|diyes|onse|dose</token>
+			</pattern>
+			<message>Ang wastong baybay ay <suggestion>alas-<match no="3"/></suggestion>.</message>
+			<short>Gamitin ang 'alas-' sa halip na 'ala-'.</short>
+			<example correction="alas-dos" type="incorrect">ala-dos</example>
+			<example type="correct">alas-dos</example>
+			<example type="correct">ala-una</example>
+		</rule>
+		<rule id="PASULAT_NA_ORAS_ALA_2-12" name="Paggamit ng ala sa maling oras (numero)">
+			<pattern case_sensitive="no">
+				<token>ala</token>
+				<token>-</token>
+				<token regexp="yes">([2-9]|1[0-2])</token>
+			</pattern>
+			<message>Ang wastong baybay ay <suggestion>alas-<match no="3"/></suggestion>.</message>
+			<short>Gamitin ang 'alas-' sa halip na 'ala-' para sa oras na 2-12.</short>
+			<example correction="alas-2" type="incorrect">ala-2</example>
+			<example correction="alas-10" type="incorrect">ala-10</example>
+			<example type="correct">alas-2</example>
+			<example type="correct">ala-1</example>
+		</rule>
+		<rule id="PASULAT_NA_ORAS_ALA_SPACE_WORDS" name="Paggamit ng ala (na may space) sa maling oras">
+			<pattern case_sensitive="no">
+				<token>ala</token>
+				<token regexp="yes">dos|tres|kuwatro|singko|sais|siyete|otso|nuwebe|diyes|onse|dose</token>
+			</pattern>
+			<message>Dapat ay may 's' at gitling ang 'alas-'. Gamitin ang <suggestion>alas-<match no="2"/></suggestion>.</message>
+			<short>Gamitin ang 'alas-' sa halip na 'ala'.</short>
+			<example correction="alas-tres" type="incorrect">ala tres</example>
+			<example correction="alas-onse" type="incorrect">ala onse</example>
+			<example type="correct">alas-tres</example>
+			<example type="correct">ala una</example>
+		</rule>
+		<rule id="PASULAT_NA_ORAS_ALA_SPACE_NUMERO" name="Paggamit ng ala (may espasyo - numero)">
+			<pattern case_sensitive="no">
+				<token>ala</token>
+				<token regexp="yes">([2-9]|1[0-2])</token>
+			</pattern>
+			<message>Dapat ay may 's' at gitling ang 'alas-'. Gamitin ang <suggestion>alas-<match no="2"/></suggestion>.</message>
+			<short>Gamitin ang 'alas-' sa halip na 'ala'.</short>
+			<example correction="alas-3" type="incorrect">ala 3</example>
+			<example correction="alas-12" type="incorrect">ala 12</example>
+			<example type="correct">alas-3</example>
+			<example type="correct">ala 1</example>
 		</rule>
 		<rule id="PASULAT_NA_ORAS_ALA" name="Pagbaybay ng 'una' sa 'ala-una'">
 			<pattern case_sensitive="no">
@@ -456,12 +573,11 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
         </rule>
         <rule id="DISIPLINA_SA_PAGBIGKAS_NG_O_U" name="Disiplina sa O/U">
             <pattern case_sensitive="no">
-                <token regexp="yes">\b(kuryente|Kuryano|dunasyon|murado|sumbrero|pulitika)\b</token>
+                <token regexp="yes">\b(kuryente|dunasyon|murado|sumbrero|pulitika)\b</token>
             </pattern>
             <message>Iwasan ang balbal na ugaling gawing 'u' ang 'o' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w)u(\w*)$" regexp_replace="$1o$2"/></suggestion>.</message>
             <short>Ang tamang baybay ay 'koryente', 'Koreano', 'donasyon', 'morado', 'kompanya', 'sombrero', o 'politika'.</short>
             <example correction="koryente">Nawalan ng <marker>kuryente</marker>.</example>
-            <example correction="Koreano">Isang <marker>Kuryano</marker> ang kumanta.</example>
             <example correction="donasyon">Nakatanggap ng <marker>dunasyon</marker>.</example>
             <example correction="morado">Kulay <marker>murado</marker> ang damit.</example>
             <example correction="sombrero">Magsuot ka ng <marker>sumbrero</marker>.</example>
@@ -469,31 +585,31 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <example type="correct">koryente</example>
             <example type="correct">kompanya</example>
         </rule>
-		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMP" name="Palitang O/U (con/kon/kom -> kump)">
+		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMP" name="Palitang O/U (kon-/kom- → kump)">
 			<antipattern>
 				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon)</token>
 			</antipattern>
 			<pattern case_sensitive="no">
-				<token regexp="yes">(con|kon|kom)[pf].*</token>
+				<token regexp="yes">(?i)(con|kon|kom)[pf][a-záéíóúñ]+</token>
 			</pattern>
-			<message>Ibig mo bang sabihin, <suggestion><match no="1" regexp_match="^(con|kon|kom)[pf](.*)$" regexp_replace="kump$2"/></suggestion>?</message>
-			<short>Palitan ng 'kump-' (ang F ay nagiging P).</short>
+			<message>Ibig mo bang sabihin, <suggestion><match no="1" regexp_match="(?i)^(?:con|kon|kom)[pf](.+)$" regexp_replace="kump$1"/></suggestion>?</message>
 			<example correction="conferencia" type="incorrect">conferencia</example>
 			<example correction="komportable" type="incorrect">komportable</example>
 			<example correction="confortable" type="incorrect">confortable</example>
 			<example type="correct" anti_example="yes">kompanya</example>
 			<example type="correct" anti_example="yes">kompleto</example>
 		</rule>
-		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMB" name="Palitang O/U (con/kon/kom -> kumb)">
+
+		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMB" name="Palitang O/U (kon-/kom- → kumb-)">
 			<antipattern>
-				<token regexp="yes">(?i)(kombinasyon|kombat)</token>
+				<token regexp="yes">(?i)(kombinasyon|kombat|kumb.*)</token>
 			</antipattern>
 			<pattern case_sensitive="no">
-				<token regexp="yes">(con|kon|kom)[bv].*</token>
+				<token regexp="yes">(?i)(con|kon|kom)[bv][a-záéíóúñ]+</token>
 			</pattern>
-			<message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(con|kon|kom)[bv](.*)$" regexp_replace="kumb$2"/></suggestion>?</message>
-			<short>Palitan ng 'kumb-' (ang V ay nagiging B).</short>
-			<example correction="kombensiyon" type="incorrect">kombensiyon</example>
+			<message>Ibig mo bang sabihin, <suggestion><match no="1" regexp_match="(?i)^(?:con|kon|kom)[bv](.+)$" regexp_replace="kumb$1"/></suggestion>?</message>
+			<example correction="kumbensiyon" type="incorrect">kombensiyon</example>
+			<example correction="kumbensiyon" type="incorrect">konbensiyon</example>
 			<example type="correct">kumbensiyon</example>
 		</rule>
         <rule id="KAPAG_NAGBAGO_ANG_KATINIG_ESPANYOL_EKSEPSIYON" name="Palitang O/U (mga eksepsiyon, kum -> kom)">
@@ -506,11 +622,11 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <example correction="kumpleto" type="incorrect">kumpleto</example>
             <example type="correct">kompanya</example>
         </rule>
-		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_EKSEPSIYON" name="Maling pagpalit ng O sa U (ibang kaso) (MMP 7.3)">
+		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_EKSEPSIYON" name="Maling pagpalit ng O sa U (ibang kaso)">
 			<pattern case_sensitive="no">
-				<token regexp="yes">\b(kuntrata|kunsumo|munumento)\b</token>
+				<token regexp="yes">\b(kuntrata|kunsumo|kuntrobersiya|munumento)\b</token>
 			</pattern>
-			<message>Dapat manatili ang 'o' sa mga salitang ito. Isaalang-alang ang <suggestion><match no="1" regexp_match="^([km])un(.*)$" regexp_replace="$1on$2"/></suggestion>?</message>
+		<message>Dapat manatili ang 'o' sa salitang ito. Isaalang-alang ang <suggestion><match no="1" regexp_match="(?i)^([km])un(.+)$" regexp_replace="$1on$2"/></suggestion>.</message>
 			<short>Dapat manatili ang 'o' sa salitang ito.</short>
 			<example correction="kontrata">Pirmahan ang <marker>kuntrata</marker>.</example>
 			<example correction="konsumo">Bawasan ang <marker>kunsumo</marker> ng kuryente.</example>
@@ -561,8 +677,8 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 				<token>-</token>
 				<token regexp="yes">\b(ano|alon|taon|piso|pito|patong|biro|palungan)\b</token>
 			</pattern>
-			<message>Hindi kailangang baguhin ang 'o' sa 'u' kapag inuulit ang salitang-ugat. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w+)u$" regexp_replace="$1o"/>-<match no="3"/></suggestion>.</message>
-			<short>Panatilihin ang 'o' sa salitang inuulit.</short>
+			<message>Hindi kailangang baguhin ang 'o' sa 'u' kapag inuulit ang salitang-ugat. Isaalang-alang ang <suggestion><match no="1" regexp_match="(?i)^(.+)u(n|ng)?$" regexp_replace="$1o$2"/>-<match no="3"/></suggestion>.</message>			
+  			<short>Panatilihin ang 'o' sa salitang inuulit.</short>
 			<example correction="ano-ano">Nagdala siya ng <marker>anu</marker><marker>-</marker><marker>ano</marker>.</example>
 			<example correction="alon-alon">Ang buhok niya ay <marker>alun</marker><marker>-</marker><marker>alon</marker>.</example>
 			<example correction="taon-taon">Ginagawa ito <marker>taun</marker><marker>-</marker><marker>taon</marker>.</example>
@@ -571,7 +687,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example correction="palong-palungan">Ang <marker>palung</marker><marker>-</marker><marker>palungan</marker> ng manok.</example>
 			<example type="correct">ano-ano</example>
 			<example type="correct">biro-biro</example>
-		</rule>
+		</rule>	
 		<rule id="HUWAG_BAGUHIN_ANG_DOBLENG_OO_OU" name="Pagpapanatili ng 'uo'">
 			<pattern case_sensitive="no">
 				<token regexp="yes">\b(kabuuan|buurin|pagtuunan|tuusin|kasalimuutan)\b</token>
