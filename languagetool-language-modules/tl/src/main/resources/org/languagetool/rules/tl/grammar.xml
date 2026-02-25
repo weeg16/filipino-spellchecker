@@ -501,7 +501,9 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 	<category id="WASTONG_PAGGAMIT_NG_KUDLIT" name="Pagpapaikli ng mga Salita">
 		<rule id="KUDLIT_YAN_YON" name="Paggamit ng kudlit sa yan/yon">
 			<pattern case_sensitive="no">
-				<token regexp="yes">yan|yon</token>
+				<token regexp="yes">yan|yon
+                    <exception scope="previous" regexp="yes">['’‘]</exception>
+                </token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng kudlit? Gamitin ang <suggestion>'<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang kudlit sa pagitan ng salita at 'yan/'yon.</short>
