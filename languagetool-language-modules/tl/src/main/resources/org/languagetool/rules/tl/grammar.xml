@@ -589,7 +589,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
         </rule>
 		<rule id="KAPAG_NAGBAGO_ANG_KATINIG_KUMP" name="Palitang O/U (kon-/kom- → kump)">
 			<antipattern>
-				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon)</token>
+				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon|komplikado|kompanyang|kompletong|kompetisyon|kompromisong|komplikadong)</token>
 			</antipattern>
 			<pattern case_sensitive="no">
 				<token regexp="yes">(?i)(con|kon|kom)[pf][a-záéíóúñ]+</token>
@@ -616,7 +616,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		</rule>
         <rule id="KAPAG_NAGBAGO_ANG_KATINIG_ESPANYOL_EKSEPSIYON" name="Palitang O/U (mga eksepsiyon, kum -> kom)">
             <pattern case_sensitive="no">
-                <token regexp="yes">kum(panya|pleto|petisyon|binasyon)</token>
+                <token regexp="yes">kum(panya|pleto|petisyon|binasyon|plikado)</token>
             </pattern>
             <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(kum)(panya|pleto|petisyon|binasyon)$" regexp_replace="kom$2"/></suggestion>?</message>
             <short>Dapat 'kom-' (hindi 'kum-') ang baybay ng salitang ito. Isa itong eksepsiyon.</short>
