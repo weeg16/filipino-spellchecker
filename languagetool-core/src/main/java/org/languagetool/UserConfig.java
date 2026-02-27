@@ -18,6 +18,7 @@
  */
 package org.languagetool;
 
+import lombok.Getter;
 import org.languagetool.rules.Rule;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,7 +49,7 @@ public class UserConfig {
   private final Long userDictCacheSize;
   private final String userDictName;
   private final Long premiumUid;
-  private final Map<String, Integer> configurableRuleValues = new HashMap<>();
+  private final Map<String, Object[]> configurableRuleValues = new HashMap<>();
   private final LinguServices linguServices;
   // needs to be in UserConfig so it is considered both in ResultCache and in PipelinePool
   private final boolean filterDictionaryMatches;
@@ -57,8 +58,20 @@ public class UserConfig {
   // partially indifferent for comparing UserConfigs (e.g. in PipelinePool)
   // provided to rules only for A/B tests
   private final Long textSessionId;
-  private final String abTest;
+  private final List<String> abTest;
   private final String preferredLanguages;
+  @Getter
+  private boolean trustedSource;
+
+  @Getter
+  private boolean optInThirdPartyAI;
+
+  @Getter
+  private boolean isPremium;
+
+  @Getter
+  private final Map<String, Object> tokenClaims;
+  private final boolean suggestionsEnabled;
 
   public UserConfig() {
     this(new ArrayList<>(), new HashMap<>());
@@ -68,35 +81,82 @@ public class UserConfig {
     this(userSpecificSpellerWords, new HashMap<>());
   }
 
-  public UserConfig(Map<String, Integer> ruleValues) {
+  public UserConfig(Map<String, Object[]> ruleValues) {
     this(new ArrayList<>(), Objects.requireNonNull(ruleValues));
   }
 
-  public UserConfig(Map<String, Integer> ruleValues, LinguServices linguServices) {
+  public UserConfig(Map<String, Object[]> ruleValues, LinguServices linguServices) {
     this(new ArrayList<>(), Objects.requireNonNull(ruleValues), 0, 0L, null, 0L, linguServices);
   }
 
-  public UserConfig(List<String> userSpecificSpellerWords, Map<String, Integer> ruleValues) {
+  public UserConfig(List<String> userSpecificSpellerWords, Map<String, Object[]> ruleValues) {
     this(userSpecificSpellerWords, ruleValues, 0, null, null, null, null);
   }
 
-  public UserConfig(List<String> userSpecificSpellerWords, Map<String, Integer> ruleValues,
+  public UserConfig(List<String> userSpecificSpellerWords, Map<String, Object[]> ruleValues,
                     int maxSpellingSuggestions, Long premiumUid, String userDictName, Long userDictCacheSize,
                     LinguServices linguServices) {
     this(userSpecificSpellerWords, Collections.emptyList(), ruleValues, maxSpellingSuggestions, premiumUid, userDictName, userDictCacheSize, linguServices,
-      false, null, null, false, null);
+      false, null, null, false, null, false, false, false, Collections.emptyMap());
   }
 
   public UserConfig(List<String> userSpecificSpellerWords,
                     List<Rule> userSpecificRules,
-                    Map<String, Integer> ruleValues,
+                    Map<String, Object[]> ruleValues,
                     int maxSpellingSuggestions, Long premiumUid, String userDictName,
                     Long userDictCacheSize,
                     LinguServices linguServices, boolean filterDictionaryMatches,
-                    @Nullable String abTest, @Nullable Long textSessionId, boolean hidePremiumMatches, List<String> preferredLanguages) {
+                    @Nullable List<String> abTest, @Nullable Long textSessionId,
+                    boolean hidePremiumMatches, List<String> preferredLanguages) {
+    this(userSpecificSpellerWords, userSpecificRules, ruleValues, maxSpellingSuggestions, premiumUid, userDictName, userDictCacheSize, linguServices, filterDictionaryMatches, abTest, textSessionId, hidePremiumMatches, preferredLanguages, false, false, false, Collections.emptyMap());
+  }
+
+
+  public UserConfig(List<String> userSpecificSpellerWords,
+                    List<Rule> userSpecificRules,
+                    Map<String, Object[]> ruleValues,
+                    int maxSpellingSuggestions, Long premiumUid, String userDictName,
+                    Long userDictCacheSize,
+                    LinguServices linguServices, boolean filterDictionaryMatches,
+                    @Nullable List<String> abTest, @Nullable Long textSessionId,
+                    boolean hidePremiumMatches, List<String> preferredLanguages,
+                    boolean trustedSource,
+                    boolean optInThirdPartyAI,
+                    boolean isPremium) {
+    this(userSpecificSpellerWords, userSpecificRules, ruleValues, maxSpellingSuggestions, premiumUid, userDictName, userDictCacheSize, linguServices, filterDictionaryMatches, abTest, textSessionId, hidePremiumMatches, preferredLanguages, trustedSource, optInThirdPartyAI, isPremium, Collections.emptyMap());
+  }
+  
+  public UserConfig(List<String> userSpecificSpellerWords,
+                    List<Rule> userSpecificRules,
+                    Map<String, Object[]> ruleValues,
+                    int maxSpellingSuggestions, Long premiumUid, String userDictName,
+                    Long userDictCacheSize,
+                    LinguServices linguServices, boolean filterDictionaryMatches,
+                    @Nullable List<String> abTest, @Nullable Long textSessionId,
+                    boolean hidePremiumMatches, List<String> preferredLanguages,
+                    boolean trustedSource,
+                    boolean optInThirdPartyAI,
+                    boolean isPremium, 
+                    Map<String, Object> tokenClaims) {
+    this(userSpecificSpellerWords, userSpecificRules, ruleValues, maxSpellingSuggestions, premiumUid, userDictName, userDictCacheSize, linguServices, filterDictionaryMatches, abTest, textSessionId, hidePremiumMatches, preferredLanguages, trustedSource, optInThirdPartyAI, isPremium, tokenClaims, true);
+  }
+  
+  public UserConfig(List<String> userSpecificSpellerWords,
+                    List<Rule> userSpecificRules,
+                    Map<String, Object[]> ruleValues,
+                    int maxSpellingSuggestions, Long premiumUid, String userDictName,
+                    Long userDictCacheSize,
+                    LinguServices linguServices, boolean filterDictionaryMatches,
+                    @Nullable List<String> abTest, @Nullable Long textSessionId,
+                    boolean hidePremiumMatches, List<String> preferredLanguages,
+                    boolean trustedSource,
+                    boolean optInThirdPartyAI,
+                    boolean isPremium,
+                    Map<String, Object> tokenClaims,
+                    boolean suggestionsEnabled) {
     this.userSpecificSpellerWords = Objects.requireNonNull(userSpecificSpellerWords);
     this.userSpecificRules = Objects.requireNonNull(userSpecificRules);
-    for (Map.Entry<String, Integer> entry : ruleValues.entrySet()) {
+    for (Map.Entry<String, Object[]> entry : ruleValues.entrySet()) {
       this.configurableRuleValues.put(entry.getKey(), entry.getValue());
     }
     this.maxSpellingSuggestions = maxSpellingSuggestions;
@@ -110,6 +170,11 @@ public class UserConfig {
     this.hidePremiumMatches = hidePremiumMatches;
     this.acceptedPhrases = buildAcceptedPhrases();
     this.preferredLanguages = removeAllButMainLanguagesAndSort(preferredLanguages);
+    this.trustedSource = trustedSource;
+    this.optInThirdPartyAI = optInThirdPartyAI;
+    this.isPremium = isPremium;
+    this.tokenClaims = tokenClaims;
+    this.suggestionsEnabled = suggestionsEnabled;
   }
 
   private String removeAllButMainLanguagesAndSort(List<String> preferredLanguages) {
@@ -153,25 +218,26 @@ public class UserConfig {
     return userSpecificRules;
   }
 
+
   public int getMaxSpellingSuggestions() {
     return maxSpellingSuggestions;
   }
 
-  public Map<String, Integer> getConfigValues() {
+  public Map<String, Object[]> getConfigValues() {
     return configurableRuleValues;
   }
   
-  public void insertConfigValues(Map<String, Integer>  ruleValues) {
-    for (Map.Entry<String, Integer> entry : ruleValues.entrySet()) {
+  public void insertConfigValues(Map<String, Object[]>  ruleValues) {
+    for (Map.Entry<String, Object[]> entry : ruleValues.entrySet()) {
       this.configurableRuleValues.put(entry.getKey(), entry.getValue());
     }
   }
   
-  public int getConfigValueByID(String ruleID) {
+  public Object[] getConfigValueByID(String ruleID) {
     if (configurableRuleValues.containsKey(ruleID)) {
       return configurableRuleValues.get(ruleID);
     }
-    return -1;
+    return null;
   }
   
   public boolean hasLinguServices() {
@@ -205,6 +271,14 @@ public class UserConfig {
     return premiumUid;
   }
 
+  /**
+   * If the generation of suggestions should be enabled (default true)
+   * @since 6.8
+   */
+  public boolean isSuggestionsEnabled() {
+    return suggestionsEnabled;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -228,6 +302,11 @@ public class UserConfig {
       .append(abTest, other.abTest)
       .append(hidePremiumMatches, other.hidePremiumMatches)
       .append(preferredLanguages, other.preferredLanguages)
+      .append(trustedSource, other.trustedSource)
+      .append(optInThirdPartyAI, other.optInThirdPartyAI)
+      .append(isPremium, other.isPremium)
+      .append(tokenClaims, other.tokenClaims)
+      .append(suggestionsEnabled, other.suggestionsEnabled)
       .isEquals();
   }
 
@@ -246,6 +325,11 @@ public class UserConfig {
       .append(filterDictionaryMatches)
       .append(hidePremiumMatches)
       .append(preferredLanguages)
+      .append(trustedSource)
+      .append(optInThirdPartyAI)
+      .append(isPremium)
+      .append(tokenClaims)
+      .append(suggestionsEnabled)
       .toHashCode();
   }
 
@@ -261,6 +345,8 @@ public class UserConfig {
       ", textSessionId=" + textSessionId +
       ", hidePremiumMatches=" + hidePremiumMatches +
       ", abTest='" + abTest + '\'' +
+      ", optInThirdPartyAI=" + optInThirdPartyAI +
+      ", suggestionsEnabled=" + suggestionsEnabled +
       '}';
   }
 
@@ -268,7 +354,7 @@ public class UserConfig {
     return textSessionId;
   }
 
-  public String getAbTest() {
+  public List<String> getAbTest() {
     return abTest;
   }
 

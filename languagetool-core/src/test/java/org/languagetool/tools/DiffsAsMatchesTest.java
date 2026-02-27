@@ -31,6 +31,15 @@ public class DiffsAsMatchesTest {
   @Test
   public void testDiffsAsMatches() throws IOException {
     DiffsAsMatches diffsAsMatches = new DiffsAsMatches();
+
+    String original0 = "This is a \"thing\". This is.";
+    String revised0 = "This is a \"thing.\" This is.";
+    List<PseudoMatch> matches0 = diffsAsMatches.getPseudoMatches(original0, revised0);
+    assertEquals(1, matches0.size());
+    assertEquals("[\"thing.\"]", matches0.get(0).getReplacements().toString());
+    assertEquals(10, matches0.get(0).getFromPos());
+    assertEquals(18, matches0.get(0).getToPos());
+
     String original = "This are a sentence with too mistakes.";
     String revised = "This is a sentence with two mistakes.";
     List<PseudoMatch> matches = diffsAsMatches.getPseudoMatches(original, revised);
@@ -132,7 +141,39 @@ public class DiffsAsMatchesTest {
     assertEquals("[It describes]", matches.get(0).getReplacements().toString());
     assertEquals(0, matches.get(0).getFromPos());
     assertEquals(10, matches.get(0).getToPos());
+
+    original = "(Calle)Hace falta tener en cuenta una economía estable, un trabajo bueno.";
+    revised = "Hace falta tener en cuenta una economía estable, un trabajo bueno.";
+    matches = diffsAsMatches.getPseudoMatches(original, revised);
+    assertEquals(1, matches.size());
+    assertEquals("[]", matches.get(0).getReplacements().toString());
+    assertEquals(0, matches.get(0).getFromPos());
+    assertEquals(7, matches.get(0).getToPos());
+
+    original = "(Calle)Hace falta tener en cuenta una economía estable, un trabajo bueno.";
+    revised = "(Calle) Hace falta tener en cuenta una economía estable, un trabajo bueno.";
+    matches = diffsAsMatches.getPseudoMatches(original, revised);
+    assertEquals(1, matches.size());
+    assertEquals("[Calle) ]", matches.get(0).getReplacements().toString());
+    assertEquals(1, matches.get(0).getFromPos());
+    assertEquals(7, matches.get(0).getToPos());
+
+    original = "Joan Caprí fou un actor humorista i monologuista català.";
+    revised =  "Joan Caprí fou un actor, humorista i monologuista català.";
+    matches = diffsAsMatches.getPseudoMatches(original, revised);
+    assertEquals(1, matches.size());
+    assertEquals("[actor,]", matches.get(0).getReplacements().toString());
+    assertEquals(18, matches.get(0).getFromPos());
+    assertEquals(23, matches.get(0).getToPos());
     
+    original = "Ei he vist el teu amic!";
+    revised =  "Ei, he vist el teu amic!";
+    matches = diffsAsMatches.getPseudoMatches(original, revised);
+    assertEquals(1, matches.size());
+    assertEquals("[Ei,]", matches.get(0).getReplacements().toString());
+    assertEquals(0, matches.get(0).getFromPos());
+    assertEquals(2, matches.get(0).getToPos());
+
   }
 
 }

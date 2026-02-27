@@ -29,12 +29,12 @@ import org.languagetool.rules.patterns.RuleFilter;
 
 public abstract class AbstractTextToNumberFilter extends RuleFilter {
 
-  protected static Map<String, Float> numbers = new HashMap<String, Float>();
-  protected static Map<String, Float> multipliers = new HashMap<String, Float>();
+  protected static Map<String, Float> numbers = new HashMap<>();
+  protected static Map<String, Float> multipliers = new HashMap<>();
 
   @Override
   public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> arguments, int patternTokenPos,
-      AnalyzedTokenReadings[] patternTokens) throws IOException {
+                                   AnalyzedTokenReadings[] patternTokens, List<Integer> tokenPositions) throws IOException {
 
     int posWord = 0;
     float total = 0;

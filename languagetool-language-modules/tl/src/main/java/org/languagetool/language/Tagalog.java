@@ -89,7 +89,7 @@ public class Tagalog extends Language {
             //new UppercaseSentenceStartRule(messages, this),
             new MultipleWhitespaceRule(messages, this),
             // specific to Tagalog:
-            new MorfologikTagalogSpellerRule(messages, this, userConfig, altLanguages)
+            ,new MorfologikTagalogSpellerRule(messages, this, userConfig, altLanguages)
     );
   }
 

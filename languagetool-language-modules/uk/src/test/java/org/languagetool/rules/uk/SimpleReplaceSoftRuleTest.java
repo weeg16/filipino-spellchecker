@@ -33,13 +33,13 @@ import static org.junit.Assert.assertTrue;
 
 
 public class SimpleReplaceSoftRuleTest {
+  private JLanguageTool lt = new JLanguageTool(Ukrainian.DEFAULT_VARIANT);
 
   @Test
   public void testRule() throws IOException {
-    SimpleReplaceSoftRule rule = new SimpleReplaceSoftRule(TestTools.getEnglishMessages());
+    SimpleReplaceSoftRule rule = new SimpleReplaceSoftRule(TestTools.getEnglishMessages(), lt.getLanguage());
 
     RuleMatch[] matches;
-    JLanguageTool lt = new JLanguageTool(new Ukrainian());
 
     // correct sentences:
     matches = rule.match(lt.getAnalyzedSentence("Ці рядки повинні збігатися."));
@@ -68,4 +68,15 @@ public class SimpleReplaceSoftRuleTest {
 //    matches = rule.match(lt.getAnalyzedSentence("щедроти"));
 //    assertEquals(0, matches.length);
   }
+  
+
+  @Test
+  public void testRuleForDerivats() throws IOException {
+    SimpleReplaceSoftRule rule = new SimpleReplaceSoftRule(TestTools.getEnglishMessages(), lt.getLanguage());
+    
+    RuleMatch[] matches = rule.match(lt.getAnalyzedSentence("Підключивши"));
+    assertEquals(1, matches.length);
+    assertEquals(Arrays.asList("Увімкнувши", "Під'єднавши", "Приєднавши"), matches[0].getSuggestedReplacements());
+  }
+
 }

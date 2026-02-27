@@ -24,8 +24,10 @@ import org.languagetool.tools.StringTools;
 import org.languagetool.tools.Tools;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.*;
 import static org.languagetool.rules.en.AvsAnData.getWordsRequiringA;
 import static org.languagetool.rules.en.AvsAnData.getWordsRequiringAn;
 
@@ -46,7 +48,11 @@ public class AvsAnRule extends Rule {
     A, AN, A_OR_AN, UNKNOWN
   }
 
-  private static final Pattern cleanupPattern = Pattern.compile("[^αa-zA-Z0-9.;,:']");
+  private static final Pattern cleanupPattern = compile("[^αa-zA-Z0-9.;,:']");
+  private static final Pattern delimPattern = compile("[-\"“'‘()\\[\\]]+");
+  private static final Pattern dashQuotePattern = compile("[-']");
+  private static final Pattern anPrefixes = compile("^(unidentif|uni[mn])[a-z]+$", Pattern.CASE_INSENSITIVE);
+  private static final Pattern anExceptionPrefixes = compile("^(eu|one|uni|u[rst][aeiou])[a-z]*$", Pattern.CASE_INSENSITIVE);
 
   public AvsAnRule(ResourceBundle messages) {
     super.setCategory(Categories.MISC.getCategory(messages));
@@ -82,9 +88,7 @@ public class AvsAnRule extends Rule {
     for (int i = 1; i < tokens.length; i++) {  // ignoring token 0, i.e., SENT_START
       AnalyzedTokenReadings token = tokens[i];
       String prevTokenStr = prevTokenIndex > 0 ? tokens[prevTokenIndex].getToken() : null;
-
       isSentenceStart = prevTokenIndex == 1;
-
       if (!isSentenceStart) {
         equalsA = "a".equals(prevTokenStr);
         equalsAn = "an".equals(prevTokenStr);
@@ -92,7 +96,6 @@ public class AvsAnRule extends Rule {
       	equalsA = "a".equalsIgnoreCase(prevTokenStr);
         equalsAn = "an".equalsIgnoreCase(prevTokenStr);
       }
-
       if (equalsA || equalsAn) {
         Determiner determiner = getCorrectDeterminerFor(token);
         String msg = null;
@@ -118,7 +121,7 @@ public class AvsAnRule extends Rule {
       }
       if (token.hasPosTag("DT")) {
         prevTokenIndex = i;
-      } else if (token.getToken().matches("[-\"“'‘()\\[\\]]+") && nextToken.length() > 1) {
+      } else if (nextToken.length() > 1 && delimPattern.matcher(token.getToken()).matches()) {
         // skip e.g. the quote in >>an "industry party"<<
       } else {
         prevTokenIndex = 0;
@@ -148,7 +151,9 @@ public class AvsAnRule extends Rule {
   static Determiner getCorrectDeterminerFor(AnalyzedTokenReadings token) {
     String word = token.getToken();
     Determiner determiner = Determiner.UNKNOWN;
-    String[] parts = word.split("[-']");  // for example, in "one-way" only "one" is relevant
+    String[] parts = dashQuotePattern.split(word);  // for example, in "one-way" only "one" is relevant
+    Matcher anPrefix = anPrefixes.matcher(token.getToken());
+    Matcher anExceptionPrefix = anExceptionPrefixes.matcher(token.getToken());
     if (parts.length >= 1 && !parts[0].equalsIgnoreCase("a")) {  // avoid false alarm on "A-levels are..."
       word = parts[0];
     }
@@ -174,7 +179,9 @@ public class AvsAnRule extends Rule {
         // we don't know how all-uppercase words (often abbreviations) are pronounced,
         // so never complain about these
         determiner = Determiner.UNKNOWN;
-      } else if (isVowel(tokenFirstChar)) {
+      } else if (anPrefix.find()) {
+        determiner = Determiner.AN;
+      } else if (isVowel(tokenFirstChar) && !anExceptionPrefix.find()) {
         determiner = Determiner.AN;
       } else {
         determiner = Determiner.A;

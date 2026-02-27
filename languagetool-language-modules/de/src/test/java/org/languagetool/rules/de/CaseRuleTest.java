@@ -210,6 +210,7 @@ public class CaseRuleTest {
     assertGood("Während Besagtes Probleme verursachte.");
     assertGood("Während der Befragte Geschichten erzählte.");
     assertGood("Während ein Befragter Geschichten erzählte.");
+    assertGood("... für welche ein Befragter Geld ausgegeben hat.");
     assertGood("Während die Befragte Geld verdiente.");
     assertGood("Während die Besagte Geschichten erzählte.");
     assertGood("Sind dem Zahlungspflichtigen Kosten entstanden?");
@@ -534,6 +535,7 @@ public class CaseRuleTest {
     assertGood("Das lesen Sie doch sicher in einer Minute durch!");
     assertGood("Formationswasser, das oxidiert war.");
     assertGood("Um das herauszubekommen diskutieren zwei Experten.");
+    assertGood("Ich würde ihn dann mal nach München schicken, damit die beiden das planen/entwickeln können.");
 
     // Source of the following examples: https://dict.leo.org/grammatik/deutsch/Rechtschreibung/Amtlich/GrossKlein/pgf57-58.html
     assertGood("Das Lesen fällt mir schwer.");

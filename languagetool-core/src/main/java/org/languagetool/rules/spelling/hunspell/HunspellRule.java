@@ -20,7 +20,6 @@
 package org.languagetool.rules.spelling.hunspell;
 
 import com.google.common.io.Resources;
-import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.languagetool.*;
@@ -32,6 +31,7 @@ import org.languagetool.rules.SuggestedReplacement;
 import org.languagetool.rules.spelling.ForeignLanguageChecker;
 import org.languagetool.rules.spelling.RuleWithLanguage;
 import org.languagetool.rules.spelling.SpellingCheckRule;
+import org.languagetool.tools.StringTools;
 import org.languagetool.tools.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +40,13 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -66,18 +69,25 @@ public class HunspellRule extends SpellingCheckRule {
   private static final Logger logger = LoggerFactory.getLogger(HunspellRule.class);
   private static final ConcurrentLinkedQueue<String> activeChecks = new ConcurrentLinkedQueue<>();
   private static final String NON_ALPHABETIC = "[^\\p{L}]";
+  private static final Pattern NON_ALPHABETIC_PATTERN = Pattern.compile(NON_ALPHABETIC);
+  private static final Pattern STARTS_WITH_TWO_UPPERCASE_CHARS = Pattern.compile("[A-Z][A-Z]\\p{javaLowerCase}+");
 
   private static final boolean monitorRules = System.getProperty("monitorActiveRules") != null;
 
   //300 most common Portuguese words. They are used to avoid wrong split suggestions
   private final List<String> commonPortugueseWords = Arrays.asList("eu", "ja", "so", "de", "e", "a", "o", "da", "do", "em", "que", "uma", "um", "com", "no", "se", "na", "para", "por", "os", "foi", "como", "dos", "as", "ao", "mais", "sua", "das", "não", "ou", "km", "seu", "pela", "ser", "pelo", "são", "também", "anos", "cidade", "entre", "era", "tem", "mas", "habitantes", "nos", "seus", "área", "até", "ele", "onde", "foram", "população", "região", "sobre", "nas", "nome", "parte", "quando", "ano", "aos", "grande", "mesmo", "pode", "primeiro", "segundo", "sendo", "suas", "ainda", "dois", "estado", "está", "família", "já", "muito", "outros", "americano", "depois", "durante", "maior", "primeira", "forma", "apenas", "banda", "densidade", "dia", "então", "município", "norte", "tempo", "após", "duas", "num", "pelos", "qual", "século", "ter", "todos", "três", "vez", "água", "acordo", "cobertos", "comuna", "contra", "ela", "grupo", "principal", "quais", "sem", "tendo", "às", "álbum", "alguns", "assim", "asteróide", "bem", "brasileiro", "cerca", "desde", "este", "localizada", "mundo", "outras", "período", "seguinte", "sido", "vida", "através", "cada", "conhecido", "final", "história", "partir", "país", "pessoas", "sistema", "terra", "teve", "tinha", "época", "administrativa", "censo", "departamento", "dias", "esta", "filme", "francesa", "música", "província", "série", "vezes", "além", "antes", "eles", "eram", "espécie", "governo", "podem", "vários", "censos", "distrito", "estão", "exemplo", "hoje", "início", "jogo", "lhe", "lugar", "muitos", "média", "novo", "numa", "número", "pois", "possui", "sob", "só", "todo", "tornou", "trabalho", "algumas", "devido", "estava", "fez", "filho", "fim", "grandes", "há", "isso", "lado", "local", "morte", "orbital", "outro", "passou", "países", "quatro", "representa", "seja", "sempre", "sul", "várias", "capital", "chamado", "começou", " enquanto", "fazer", "lançado", "meio", "nova", "nível", "pelas", "poder", "presidente", "redor", "rio", "tarde", "todas", "carreira", "casa", "década", "estimada", "guerra", "havia", "livro", "localidades", "maioria", "muitas", "obra", "origem", "pai", "pouco", "principais", "produção", "programa", "qualquer", "raio", "seguintes", "sucesso", "título", "aproximadamente", "caso", "centro", "conhecida", "construção", "desta", "diagrama", "faz", "ilha", "importante", "mar", "melhor", "menos", "mesma", "metros", "mil", "nacional", "populacional", "quase", "rei", "sede", "segunda", "tipo", "toda", "uso", "velocidade", "vizinhança", "volta", "base", "brasileira", "clube", "desenvolvimento", "deste", "diferentes", "diversos", "empresa", "entanto", "futebol", "geral", "junto", "longo", "obras", "outra", "pertencente", "política", "português", "principalmente", "processo", "quem", "seria", "têm", "versão", "TV", "acima", "atual", "bairro", "chamada", "cinco", "conta", "corpo", "dentro", "deve");
-  private final List<String> commonGermanWords = Arrays.asList("das", "sein", "mein", "meine", "meinen", "meines", "meiner", "haben", "kein", "keine", "keinen", "keinem", "keines", "keiner", "ein", "eines", "eins", "einen", "einem", "eine", "einer", "rund", "sehr", "mach", "noch", "nein", "ja", "hallo", "hi", "das", "die", "der", "den", "dem", "des", "nacht", "diesen", "dieser", "dies", "dieses", "diesem", "zum", "zur", "beim", "noch", "nichts", "aufs", "aufm", "aufn", "ausn", "ausm", "aus", "fürs", "für", "osten", "rein", "raus", "namen", "shippen", "amt", "wir");
+  private final List<String> commonGermanWords = Arrays.asList("-", "das", "sein", "mein", "meine", "meinen", "meines", "meiner", "haben", "kein", "keine", "keinen", "keinem", "keines", "keiner", "ein", "eines", "eins", "einen", "einem", "eine", "einer", "rund", "sehr", "mach", "noch", "nein", "ja", "hallo", "hi", "das", "die", "der", "den", "dem", "des", "nacht", "diesen", "dieser", "dies", "dieses", "diesem", "zum", "zur", "beim", "noch", "nichts", "aufs", "aufm", "aufn", "ausn", "ausm", "aus", "fürs", "für", "osten", "rein", "raus", "namen", "shippen", "amt", "wir");
+  private final Pattern MINUS_PLUS = Pattern.compile("-+");
+
+  private static final ConcurrentMap<URL, List<String>> ignoreFileContents = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<String, Pattern> nonWordPatterns = new ConcurrentHashMap<>();
 
   public static Queue<String> getActiveChecks() {
     return activeChecks;
   }
 
   private static final String[] WHITESPACE_ARRAY = new String[20];
+
   static {
     for (int i = 0; i < 20; i++) {
       WHITESPACE_ARRAY[i] = StringUtils.repeat(' ', i);
@@ -188,9 +198,14 @@ public class HunspellRule extends SpellingCheckRule {
           continue;
         }
         if (isMisspelled(word)) {
+          if (ignorePotentiallyMisspelledWord(word)) {
+            prevStartPos = len;
+            len += word.length() + 1;
+            continue;
+          }
           String cleanWord = word.endsWith(".") ? word.substring(0, word.length() - 1) : word;
           if (word.startsWith("-")) {
-            if (!isMisspelled(cleanWord.substring(1)) || cleanWord.matches("-+")) {
+            if (!isMisspelled(cleanWord.substring(1)) || MINUS_PLUS.matcher(cleanWord).matches() )  {
               len += word.length() + 1;
               continue;
             } else {
@@ -236,28 +251,32 @@ public class HunspellRule extends SpellingCheckRule {
             messages.getString("desc_spelling_short"));
           ruleMatch.setType(RuleMatch.Type.UnknownWord);
           String cleanWord2 = cleanWord.substring(dashCorr);
-          if (userConfig == null || userConfig.getMaxSpellingSuggestions() == 0 || ruleMatches.size() <= userConfig.getMaxSpellingSuggestions()) {
-            ruleMatch.setLazySuggestedReplacements(() -> {
-              try {
-                List<SuggestedReplacement> sugg = calcSuggestions(word, cleanWord2);
-                if (isFirstItemHighConfidenceSuggestion(word, sugg)) {
-                  sugg.get(0).setConfidence(HIGH_CONFIDENCE);
-                }
-                return sugg;
-              } catch (IOException e) {
-                throw new RuntimeException(e);
-              }
-            });
+          // log non-accepted de-DE words for debugging - only log hour to make aggregation easier:
+          //if (language.getShortCodeWithCountryAndVariant().equals("de-DE") && cleanWord2.matches("[A-ZÖÄÜ][a-zöäüß]{6,30}+")) {
+          //  SimpleDateFormat sdf = new SimpleDateFormat("HH");
+          //  System.out.println(sdf.format(new Date()) + " - speller: " + cleanWord2);
+          //}
+          if (userConfig != null && !userConfig.isSuggestionsEnabled()) {
+            ruleMatch.setSuggestedReplacements(List.of());
+          } else if (userConfig == null || userConfig.getMaxSpellingSuggestions() == 0 || ruleMatches.size() <= userConfig.getMaxSpellingSuggestions()) {
+            List<SuggestedReplacement> sugg = calcSuggestions(word, cleanWord2);
+            if (isFirstItemHighConfidenceSuggestion(word, sugg)) {
+              sugg.get(0).setConfidence(HIGH_CONFIDENCE);
+            }
+            if (sugg.size() > 0) {
+              ruleMatch.setMessage(getMessage(cleanWord2, sugg.get(0)));
+            }
+            ruleMatch.setSuggestedReplacementObjects(sugg);
           } else {
             // limited to save CPU
             ruleMatch.setSuggestedReplacement(messages.getString("too_many_errors"));
           }
           ruleMatches.add(ruleMatch);
           if (foreignLanguageChecker != null && !gotResultsFromForeignLanguageChecker) {
-            String langCode = foreignLanguageChecker.check(ruleMatches.size());
-            if (langCode != null) {
-              if (!langCode.equals(ForeignLanguageChecker.NO_FOREIGN_LANG_DETECTED)) {
-                ruleMatches.get(0).setErrorLimitLang(langCode);
+            Map<String, Float> langCodesScoring = foreignLanguageChecker.check(ruleMatches.size());
+            if (!langCodesScoring.isEmpty()) {
+              if (langCodesScoring.get(ForeignLanguageChecker.NO_FOREIGN_LANG_DETECTED) == null) {
+                ruleMatches.get(0).setNewLanguageMatches(langCodesScoring);
               }
               gotResultsFromForeignLanguageChecker = true;
             }
@@ -289,6 +308,16 @@ public class HunspellRule extends SpellingCheckRule {
     return toRuleMatchArray(ruleMatches);
   }
 
+  @NotNull
+  protected String getMessage(String origWord, SuggestedReplacement firstSuggestion) {
+    return messages.getString("spelling");
+  }
+
+  @NotNull
+  protected String getShortMessage(String origWord, SuggestedReplacement firstSuggestion) {
+    return messages.getString("desc_spelling_short");
+  }
+
   protected boolean acceptSuggestion(String suggestion) {
     return true;
   }
@@ -298,7 +327,7 @@ public class HunspellRule extends SpellingCheckRule {
     if (sugg.size() > 0 &&
         !word.equals("IPs") &&
         word.equalsIgnoreCase(sugg.get(0).getReplacement()) &&
-        word.matches("[A-Z][A-Z]\\p{javaLowerCase}+") &&
+      STARTS_WITH_TWO_UPPERCASE_CHARS.matcher(word).matches() &&
         language.getShortCode().equals("de")) {
       //System.out.println("speller high conf case: " + word + "; " + sugg.get(0).getReplacement() + "; " + language.getShortCodeWithCountryAndVariant());
       if (word.endsWith("s") && StringUtils.isAllUpperCase(sugg.get(0).getReplacement())) {
@@ -437,7 +466,8 @@ public class HunspellRule extends SpellingCheckRule {
     AnalyzedTokenReadings[] sentenceTokens = getSentenceWithImmunization(sentence).getTokens();
     for (int i = 1; i < sentenceTokens.length; i++) {
       String token = sentenceTokens[i].getToken();
-      if (sentenceTokens[i].isImmunized() || sentenceTokens[i].isIgnoredBySpeller() || isUrl(token) || isEMail(token) || isQuotedCompound(sentence, i, token)) {
+      if (sentenceTokens[i].isImmunized() || sentenceTokens[i].isIgnoredBySpeller() || isUrl(token) || isEMail(token)
+        || isQuotedCompound(sentence, i, token) || sentenceTokens[i].hasPosTag("_english_ignore_")) {
         if (isQuotedCompound(sentence, i, token)) {
           sb.append(' ').append(token.substring(1));
         }
@@ -449,14 +479,8 @@ public class HunspellRule extends SpellingCheckRule {
             sb.append(' ');
           }
         }
-      } else if (token.length() > 1 && token.codePointCount(0, token.length()) != token.length()) {
-        // some symbols such as emojis (😂) have a string length larger than 1 
-        List<String> emojis = EmojiParser.extractEmojis(token);
-        for (String emoji : emojis) {
-          token = StringUtils.replace(token, emoji, WHITESPACE_ARRAY[emoji.length()]);
-        }
-        sb.append(token);
       } else {
+        token = StringTools.stringForSpeller(token);
         sb.append(token);
       }
     }
@@ -485,37 +509,64 @@ public class HunspellRule extends SpellingCheckRule {
       langCountry += "_" + language.getCountries()[0];
     }
     String shortDicPath = getDictFilenameInResources(langCountry);
-    String wordChars = "";
     // set dictionary only if there are dictionary files:
-    Path affPath = null;
-    if (JLanguageTool.getDataBroker().resourceExists(shortDicPath)) {
-      String path = getDictionaryPath(langCountry, shortDicPath);
-      if ("".equals(path)) {
-        hunspell = null;
-      } else {
-        affPath = Paths.get(path + ".aff");
-        hunspell = Hunspell.getDictionary(Paths.get(path + ".dic"), affPath);
-        addIgnoreWords();
-      }
-    } else if (new File(shortDicPath + ".dic").exists()) {
-      // for dynamic languages
-      affPath = Paths.get(shortDicPath + ".aff");
-      hunspell = Hunspell.getDictionary(Paths.get(shortDicPath + ".dic"), affPath);
-    }
-    if (affPath != null) {
-      try (Scanner sc = new Scanner(affPath)) {
-        while (sc.hasNextLine()) {
-          String line = sc.nextLine();
-          if (line.startsWith("WORDCHARS ")) {
-            String wordCharsFromAff = line.substring("WORDCHARS ".length());
-            //System.out.println("#" + wordCharsFromAff+ "#");
-            wordChars = "(?![" + wordCharsFromAff.replace("-", "\\-") + "])";
-            break;
+    if(!Tools.isExternSpeller()) {    //  use of external speller for OO extension (32-bit)
+                                      //  hunspell doesn't support 32-bit java
+      if (JLanguageTool.getDataBroker().resourceExists(shortDicPath)) {
+        if (Hunspell.FORCE_TEMP_FILES) {
+          String path = getDictionaryPath(langCountry, shortDicPath);
+          if ("".equals(path)) {
+            hunspell = null;
+          } else {
+            Path affPath = Paths.get(path + ".aff");
+            hunspell = Hunspell.getDictionary(Paths.get(path + ".dic"), affPath);
+            addIgnoreWords();
+            nonWordPattern = nonWordPatternFromPath(affPath);
           }
+        } else {
+          String aff = shortDicPath.substring(0, shortDicPath.length() - 3) + "aff";
+          hunspell = Hunspell.forDictionaryInResources(langCountry, shortDicPath, aff);
+          addIgnoreWords();
+          nonWordPattern = nonWordPatterns.computeIfAbsent("resource:" + shortDicPath, __ ->
+            computeNonWordPattern(JLanguageTool.getDataBroker().getFromResourceDirAsStream(aff)));
+        }
+      } else if (new File(shortDicPath + ".dic").exists()) {
+        // for dynamic languages
+        Path affPath = Paths.get(shortDicPath + ".aff");
+        hunspell = Hunspell.getDictionary(Paths.get(shortDicPath + ".dic"), affPath);
+        nonWordPattern = nonWordPatternFromPath(affPath);
+      }
+    }
+
+    if (nonWordPattern == null) {
+      nonWordPattern = NON_ALPHABETIC_PATTERN;
+    }
+  }
+
+  private static Pattern nonWordPatternFromPath(Path affPath) {
+    return nonWordPatterns.computeIfAbsent(affPath.toString(), (path) -> {
+      String wordChars = "";
+      try (var stream = Files.newInputStream(Paths.get(path))) {
+        return computeNonWordPattern(stream);
+      } catch (IOException e) {
+        logger.error("Could not read aff file: " + path, e);
+      }
+      return Pattern.compile(wordChars + NON_ALPHABETIC);
+    });
+  }
+
+  private static Pattern computeNonWordPattern(InputStream stream) {
+    try (Scanner sc = new Scanner(stream)) {
+      while (sc.hasNextLine()) {
+        String line = sc.nextLine();
+        if (line.startsWith("WORDCHARS ")) {
+          String wordCharsFromAff = line.substring("WORDCHARS ".length());
+          //System.out.println("#" + wordCharsFromAff+ "#");
+          return Pattern.compile("(?![" + wordCharsFromAff.replace("-", "\\-") + "])" + NON_ALPHABETIC);
         }
       }
     }
-    nonWordPattern = Pattern.compile(wordChars + NON_ALPHABETIC);
+    return NON_ALPHABETIC_PATTERN;
   }
 
   @NotNull
@@ -525,12 +576,16 @@ public class HunspellRule extends SpellingCheckRule {
 
   private void addIgnoreWords() throws IOException {
     URL ignoreUrl = JLanguageTool.getDataBroker().getFromResourceDirAsUrl(getIgnoreFileName());
-    List<String> ignoreLines = Resources.readLines(ignoreUrl, StandardCharsets.UTF_8);
-    for (String ignoreLine : ignoreLines) {
-      if (!ignoreLine.startsWith("#")) {
-        wordsToBeIgnored.add(ignoreLine);
+    wordsToBeIgnored.addAll(ignoreFileContents.computeIfAbsent(ignoreUrl, (url) -> {
+      try  {
+        return Resources.readLines(url, StandardCharsets.UTF_8).stream()
+                .filter(line -> !line.startsWith("#"))
+                .collect(Collectors.toList());
+      } catch(IOException e) {
+        logger.error("Could not read ignore file: " + url, e);
+        return Collections.emptyList();
       }
-    }
+    }));
   }
 
   @Override

@@ -18,10 +18,8 @@
  */
 package org.languagetool.rules.de;
 
-import java.util.List;
 import java.util.ResourceBundle;
 
-import org.languagetool.AnalyzedToken;
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.Language;
 import org.languagetool.LinguServices;
@@ -37,8 +35,6 @@ public class StyleTooOftenUsedVerbRule extends AbstractStyleTooOftenUsedWordRule
   
   private static final int DEFAULT_MIN_PERCENT = 5;
 
-  String sentenceMessage = null;
-  
   public StyleTooOftenUsedVerbRule(ResourceBundle messages, Language lang, UserConfig userConfig) {
     super(messages, lang, userConfig, DEFAULT_MIN_PERCENT);
     if (userConfig != null) {
@@ -76,22 +72,12 @@ public class StyleTooOftenUsedVerbRule extends AbstractStyleTooOftenUsedWordRule
   }
 
   @Override
-  protected boolean isException(AnalyzedTokenReadings token) {
+  protected boolean isException(AnalyzedTokenReadings[] tokens, int n) {
+    AnalyzedTokenReadings token = tokens[n];
     return token.hasPosTagStartingWith("VER:MOD") || token.hasPosTagStartingWith("VER:AUX") || 
         token.hasPosTagStartingWith("ART") || token.hasPosTagStartingWith("ADJ");
   }
   
-  private String getLemmaForPosTagStartsWith(String startPos, AnalyzedTokenReadings token) {
-    List<AnalyzedToken> readings = token.getReadings();
-    for (AnalyzedToken reading : readings) {
-      String posTag = reading.getPOSTag();
-      if (posTag != null && posTag.startsWith(startPos)) {
-        return reading.getLemma();
-      }
-    }
-    return null;
-  }
-
   @Override
   protected String toAddedLemma(AnalyzedTokenReadings token) {
     return getLemmaForPosTagStartsWith("VER:", token);

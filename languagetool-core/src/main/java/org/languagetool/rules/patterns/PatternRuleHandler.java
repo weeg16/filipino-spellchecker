@@ -22,17 +22,26 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.languagetool.Language;
 import org.languagetool.Languages;
 import org.languagetool.ResourceBundleTools;
+import org.languagetool.RuleEntityResolver;
 import org.languagetool.rules.*;
 import org.languagetool.tagging.disambiguation.rules.DisambiguationPatternRule;
+import org.languagetool.tools.StringInterner;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class PatternRuleHandler extends XMLRuleHandler {
+
+  @Override
+  public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+    return new RuleEntityResolver().resolveEntity(publicId, systemId);
+  }
 
   public static final String TYPE = "type";
 
@@ -134,6 +143,10 @@ public class PatternRuleHandler extends XMLRuleHandler {
           categoryToneTags.addAll(Arrays.asList(attrs.getValue("tone_tags").split(" ")));
         }
         isGoalSpecificCategoryAttribute = attrs.getValue(GOAL_SPECIFIC);
+        String prioCategoryAttributeValue = attrs.getValue(PRIO);
+        if (prioCategoryAttributeValue != null) {
+          prioCategoryAttribute = Integer.parseInt(prioCategoryAttributeValue);
+        }
         break;
       case "rules":
         String languageStr = attrs.getValue("lang");
@@ -223,10 +236,10 @@ public class PatternRuleHandler extends XMLRuleHandler {
         }
         id = idPrefix != null ? idPrefix + id : id;
         if (inRuleGroup && ruleGroupDefaultOff && attrs.getValue(DEFAULT) != null) {
-          throw new RuntimeException("Rule group " + ruleGroupId + " is off by default, thus rule " + id + " cannot specify 'default=...'");
+          throw new RuntimeException("Rule group " + ruleGroupId + " is off by default, thus a subrule of " + id + " cannot specify 'default=...'. \033[1m Remove 'default=...' from rule group or subrule level in " + ruleGroupId + "!\033[0m");
         }
         if (inRuleGroup && ruleGroupDefaultTempOff && attrs.getValue(DEFAULT) != null) {
-          throw new RuntimeException("Rule group " + ruleGroupId + " is off by default, thus rule " + id + " cannot specify 'default=...'");
+          throw new RuntimeException("Rule group " + ruleGroupId + " is off by default, thus a subrule of " + id + " cannot specify 'default=...'. \033[1m Remove 'default=...' from rule group or subrule level in " + ruleGroupId + "!\033[0m");
         }
         if (inRuleGroup && ruleGroupDefaultOff) {
           defaultOff = true;
@@ -274,6 +287,10 @@ public class PatternRuleHandler extends XMLRuleHandler {
           }
         } else {
           isGoalSpecific = false;
+        }
+        String prioRuleAttributeValue = attrs.getValue(PRIO);
+        if (prioRuleAttributeValue != null) {
+          prioRuleAttribute = Integer.parseInt(prioRuleAttributeValue);
         }
         break;
       case PATTERN:
@@ -419,6 +436,10 @@ public class PatternRuleHandler extends XMLRuleHandler {
           ruleGroupDistanceTokens = Integer.parseInt(distanceTokensStr2);  
         }
         antipatternForRuleGroupsExamples = new ArrayList<>();
+        String prioRuleGroupAttributeValue = attrs.getValue(PRIO);
+        if (prioRuleGroupAttributeValue != null) {
+          prioRuleGroupAttribute = Integer.parseInt(prioRuleGroupAttributeValue);
+        }
         break;
       case MATCH:
         setMatchElement(attrs, inSuggestion && (isSuggestionSuppressMisspelled || isRuleSuppressMisspelled));
@@ -475,6 +496,7 @@ public class PatternRuleHandler extends XMLRuleHandler {
         isGoalSpecific = false;
         premiumCategoryAttribute = null;
         isGoalSpecificCategoryAttribute = null;
+        prioCategoryAttribute = 0;
         break;
       case "regexp":
         inRegex = false;
@@ -520,6 +542,7 @@ public class PatternRuleHandler extends XMLRuleHandler {
         ruleToneTags.clear();
         isPremiumRule = false;
         isGoalSpecific = false;
+        prioRuleAttribute = 0;
         break;
       case EXCEPTION:
         finalizeExceptions();
@@ -669,6 +692,7 @@ public class PatternRuleHandler extends XMLRuleHandler {
         premiumRuleGroupAttribute = null;
         isGoalSpecificRuleGroupAttribute = null;
         antipatternForRuleGroupsExamples.clear();
+        prioRuleGroupAttribute = 0;
         break;
       case MARKER:
         if (inCorrectExample) {
@@ -744,8 +768,8 @@ public class PatternRuleHandler extends XMLRuleHandler {
       AbstractPatternRule rule;
       if (tmpPatternTokens.size() > 0) {
         rule = new PatternRule(id, language, tmpPatternTokens, name,
-                internString(message.toString()), internString(shortMessage),
-                internString(suggestionsOutMsg.toString()), phrasePatternTokens.size() > 1, interpretPosTagsPreDisambiguation);
+          StringInterner.intern(message.toString()), StringInterner.intern(shortMessage),
+          StringInterner.intern(suggestionsOutMsg.toString()), phrasePatternTokens.size() > 1, interpretPosTagsPreDisambiguation);
         rule.addTags(ruleTags);
         rule.addTags(ruleGroupTags);
         rule.addTags(categoryTags);
@@ -858,7 +882,7 @@ public class PatternRuleHandler extends XMLRuleHandler {
     rule.addToneTags(categoryToneTags);
     rule.setGoalSpecific(isGoalSpecific);
     if (inRuleGroup) {
-      rule.setSubId(internString(Integer.toString(subId)));
+      rule.setSubId(StringInterner.intern(Integer.toString(subId)));
     } else {
       rule.setSubId("1");
     }
@@ -904,6 +928,17 @@ public class PatternRuleHandler extends XMLRuleHandler {
     } else if (categoryIssueType != null) {
       rule.setLocQualityIssueType(ITSIssueType.getIssueType(categoryIssueType));
     }
+    int prio = 0;
+    if (prioCategoryAttribute != 0) {
+      prio = prioCategoryAttribute;
+    }
+    if (prioRuleGroupAttribute != 0) {
+      prio = prioRuleGroupAttribute;
+    }
+    if (prioRuleAttribute != 0) {
+      prio = prioRuleAttribute;
+    }
+    rule.setPriority(prio);
   }
 
   private final Map<String, URL> internedUrls = new HashMap<>();

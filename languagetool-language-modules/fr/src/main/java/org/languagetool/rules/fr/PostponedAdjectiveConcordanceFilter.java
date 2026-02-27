@@ -124,7 +124,7 @@ public class PostponedAdjectiveConcordanceFilter extends RuleFilter {
 
   @Override
   public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> arguments, int patternTokenPos,
-      AnalyzedTokenReadings[] patternTokens) throws IOException {
+                                   AnalyzedTokenReadings[] patternTokens, List<Integer> tokenPositions) throws IOException {
     
 //    if (match.getSentence().getText().toString().contains("manifestement fausses")) {
 //      int i = 0;
@@ -458,8 +458,10 @@ public class PostponedAdjectiveConcordanceFilter extends RuleFilter {
     if (suggestions.contains(tokens[patternTokenPos].getToken().toLowerCase())) {
       suggestions.remove(tokens[patternTokenPos].getToken().toLowerCase());
     }
+    if (suggestions.isEmpty()) {
+      return null;
+    }
     match.setSuggestedReplacements(suggestions);
-
     return match;
 
   }

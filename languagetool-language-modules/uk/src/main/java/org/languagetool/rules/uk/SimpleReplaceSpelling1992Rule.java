@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.languagetool.AnalyzedSentence;
 import org.languagetool.AnalyzedTokenReadings;
+import org.languagetool.Language;
 import org.languagetool.rules.AbstractSimpleReplaceRule;
 import org.languagetool.rules.ITSIssueType;
 import org.languagetool.rules.RuleMatch;
@@ -45,16 +46,16 @@ public class SimpleReplaceSpelling1992Rule extends AbstractSimpleReplaceRule {
 
   static {
     dashPrefixes1992 = ExtraDictionaryLoader.loadMap("/uk/dash_prefixes.txt");
-    dashPrefixes1992.entrySet().removeIf(entry -> ! entry.getValue().equals(":ua_1992") );
+    dashPrefixes1992.entrySet().removeIf(entry -> ! entry.getValue().equals(":up92") );
   }
   
   @Override
-  protected Map<String, List<String>> getWrongWords() {
+  public Map<String, List<String>> getWrongWords() {
     return WRONG_WORDS;
   }
 
-  public SimpleReplaceSpelling1992Rule(ResourceBundle messages) throws IOException {
-    super(messages);
+  public SimpleReplaceSpelling1992Rule(ResourceBundle messages, Language language) throws IOException {
+    super(messages, language);
     setLocQualityIssueType(ITSIssueType.Misspelling);
   }
 
@@ -89,7 +90,7 @@ public class SimpleReplaceSpelling1992Rule extends AbstractSimpleReplaceRule {
     for (int i = 1; i < tokens.length; i++) {
       AnalyzedTokenReadings tokenReadings = tokens[i];
 
-      if( PosTagHelper.hasPosTagPartAll(tokenReadings, "ua_1992") ) {
+      if( PosTagHelper.hasPosTagPartAll(tokenReadings, "up92") ) {
         RuleMatch potentialRuleMatch = new RuleMatch(this, sentence, tokenReadings.getStartPos(), tokenReadings.getEndPos(), 
             getShort(), getShort());
         

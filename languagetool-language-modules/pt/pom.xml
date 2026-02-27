@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.languagetool</groupId>
         <artifactId>languagetool-parent</artifactId>
-        <version>6.2</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -25,25 +25,19 @@
 
     <developers>
         <developer>
-            <name>Tiago F. Santos</name>
-            <roles>
-                <role>Maintainer</role>
-            </roles>
-        </developer>
-        <developer>
-            <name>Marco A.G. Pinto</name>
-            <roles>
-                <role>Maintainer</role>
-            </roles>
-        </developer>
-        <developer>
             <name>Daniel Naber</name>
             <roles>
                 <role>Maintainer</role>
             </roles>
         </developer>
         <developer>
-            <name>Marcin Miłkowski</name>
+            <name>Pedro Goulart</name>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Marco A.G. Pinto</name>
             <roles>
                 <role>Maintainer</role>
             </roles>

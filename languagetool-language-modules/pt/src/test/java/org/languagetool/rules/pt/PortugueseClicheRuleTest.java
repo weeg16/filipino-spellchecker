@@ -42,8 +42,8 @@ public class PortugueseClicheRuleTest {
 
   @Before
   public void setUp() throws Exception {
-    rule = new PortugueseClicheRule(TestTools.getMessages("pt"), "/pt/cliches-pt.txt");
-    lt = new JLanguageTool(new Portuguese());
+    lt = new JLanguageTool(Portuguese.getInstance());
+    rule = new PortugueseClicheRule(TestTools.getMessages("pt"), "/pt/cliches.txt", lt.getLanguage());
   }
 
   @Test
@@ -54,6 +54,7 @@ public class PortugueseClicheRuleTest {
 
     // incorrect sentences:
     checkSimpleReplaceRule("Teste. A todo o vapor!", "O mais rápido possível");
+    checkSimpleReplaceRule("A todo o vapor!", "O mais rápido possível");
     checkSimpleReplaceRule("Teste, a todo o vapor!", "o mais rápido possível");
   }
 

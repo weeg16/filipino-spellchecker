@@ -22,8 +22,6 @@ import morfologik.stemming.DictionaryLookup;
 import morfologik.stemming.IStemmer;
 import org.jetbrains.annotations.Nullable;
 import org.languagetool.*;
-import org.languagetool.language.Catalan;
-import org.languagetool.language.ValencianCatalan;
 import org.languagetool.tagging.BaseTagger;
 import org.languagetool.tools.StringTools;
 
@@ -38,8 +36,8 @@ import java.util.regex.Pattern;
  */
 public class CatalanTagger extends BaseTagger {
 
-  public static final CatalanTagger INSTANCE_VAL = new CatalanTagger(new ValencianCatalan());
-  public static final CatalanTagger INSTANCE_CAT = new CatalanTagger(new Catalan());
+  public static final CatalanTagger INSTANCE_VAL = new CatalanTagger(Languages.getLanguageForShortCode("ca-ES-valencia"));
+  public static final CatalanTagger INSTANCE_CAT = new CatalanTagger(Languages.getLanguageForShortCode("ca-ES"));
   
   private static final Pattern ADJ_PART_FS = Pattern.compile("VMP00SF.|A[QO].[FC]S.");
   private static final Pattern VERB = Pattern.compile("V.+");
@@ -47,9 +45,9 @@ public class CatalanTagger extends BaseTagger {
   private static final Pattern ADJECTIU_COMPOST = Pattern.compile("(.*)o-(.*.*)",Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
   private static final List<String> ALLUPPERCASE_EXCEPTIONS = Arrays.asList("ARNAU", "CRISTIAN", "TOMÀS");
   private String variant;
-    
+
   public CatalanTagger(Language language) {
-    super("/ca/" + language.getShortCodeWithCountryAndVariant() + JLanguageTool.DICTIONARY_FILENAME_EXTENSION,  new Locale("ca"), false);
+    super("/ca/" + language.getShortCodeWithCountryAndVariant() + JLanguageTool.DICTIONARY_FILENAME_EXTENSION, new Locale("ca"), false);
     variant = language.getVariant();
   }
   
@@ -72,7 +70,7 @@ public class CatalanTagger extends BaseTagger {
       if (originalWord.length() > 1) {
         if (originalWord.contains("’")) {
           containsTypographicApostrophe = true;
-          originalWord = originalWord.replaceAll("’", "'");
+          originalWord = originalWord.replace("’", "'");
         }
       }
       String normalizedWord = StringTools.normalizeNFC(originalWord);
@@ -98,16 +96,17 @@ public class CatalanTagger extends BaseTagger {
         List<AnalyzedToken> firstupperTaggerTokens = asAnalyzedTokenListForTaggedWords(originalWord, getWordTagger().tag(firstUpper));
         addTokens(firstupperTaggerTokens, l);
       }
-
       // additional tagging with prefixes
       if (l.isEmpty() && !isMixedCase) {
         addTokens(additionalTags(originalWord, dictLookup), l);
       }
-
+      // emoji
+      if (l.isEmpty() && StringTools.isEmoji(originalWord)) {
+        l.add(new AnalyzedToken(originalWord, "_emoji_", "_emoji_"));
+      }
       if (l.isEmpty()) {
         l.add(new AnalyzedToken(originalWord, null, null));
       }
-
       AnalyzedTokenReadings atr = new AnalyzedTokenReadings(l, pos);
       if (containsTypographicApostrophe) {
         atr.setTypographicApostrophe();
@@ -209,7 +208,7 @@ public class CatalanTagger extends BaseTagger {
     // U+013F LATIN CAPITAL LETTER L WITH MIDDLE DOT
     // U+0140 LATIN SMALL LETTER L WITH MIDDLE DOT
     if (word.contains("\u0140") || word.contains("\u013f")) {
-      final String possibleWord = lowerWord.replaceAll("\u0140", "l·");
+      final String possibleWord = lowerWord.replace("\u0140", "l·");
       return asAnalyzedTokenList(word, dictLookup.lookup(possibleWord));
     }
     

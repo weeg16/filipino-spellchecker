@@ -1,6 +1,6 @@
-/* LanguageTool, a natural language style checker 
+/* LanguageTool, a natural language style checker
  * Copyright (C) 2007 Daniel Naber (http://www.danielnaber.de)
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -18,10 +18,11 @@
  */
 package org.languagetool.synthesis;
 
-import gnu.trove.THashSet;
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TIntObjectProcedure;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -32,18 +33,21 @@ import org.languagetool.tools.StringTools;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.Consumer;
+
+import static org.languagetool.tools.StringInterner.intern;
 
 /**
  * A synthesizer that reads the inflected form and POS information from a plain (UTF-8) text file.
  * This makes it possible for the user to edit the text file to let the system know
  * about new words or missing readings in the synthesizer *.dict file.
  * <p>
- * File Format: <tt>fullform baseform postags</tt> (tab separated)
- * 
+ * File Format: <code>fullform baseform postags</code> (tab separated)
+ *
  * @author Ionuț Păduraru
- * @see ManualTagger  
+ * @see ManualTagger
  * @see BaseSynthesizer
  */
 public final class ManualSynthesizer {
@@ -57,46 +61,46 @@ public final class ManualSynthesizer {
   private final String[] data;
 
   /** A map from lemma+POS hashes to encoded lemma+POS+word tuple offsets in {@link #data} */
-  private final TIntIntHashMap map;
+  private final Int2IntMap map;
 
   private final static String DEFAULT_SEPARATOR = "\t";
 
   public ManualSynthesizer(InputStream inputStream) throws IOException {
     Map<TaggedWord, List<String>> mapping = loadMapping(inputStream);
-    TIntObjectHashMap<List<Triple<String, String, String>>> byHash = groupByHash(mapping);
+    Int2ObjectOpenHashMap<List<Triple<String, String, String>>> byHash = groupByHash(mapping);
 
-    map = new TIntIntHashMap(byHash.size());
+    map = new Int2IntOpenHashMap(byHash.size());
     int valueCount = mapping.values().stream().mapToInt(v -> v.size()).sum();
     int firstIndex = ENTRY_SIZE; // skip an entry, as 0 means an absent value in TObjectIntHashMap
     data = new String[valueCount * ENTRY_SIZE + firstIndex];
     if (valueCount > MAX_OFFSET) {
       throw new UnsupportedOperationException("Too many values (" + valueCount + "), the storage needs adjusting");
     }
-    byHash.forEachEntry(new TIntObjectProcedure<List<Triple<String, String, String>>>() {
+    byHash.int2ObjectEntrySet().fastForEach(new Consumer<Int2ObjectMap.Entry<List<Triple<String, String, String>>>>() {
       int index = firstIndex;
 
       @Override
-      public boolean execute(int hash, List<Triple<String, String, String>> value) {
+      public void accept(Int2ObjectMap.Entry<List<Triple<String, String, String>>> listEntry) {
+        int hash = listEntry.getIntKey();
+        List<Triple<String, String, String>> value = listEntry.getValue();
         if (value.size() > MAX_LENGTH) {
           throw new UnsupportedOperationException(
             "Too many lemmas (" + value.size() + " for the same hash " + value + ", the storage needs adjusting");
         }
         map.put(hash, ((index / ENTRY_SIZE) << OFFSET_SHIFT) | value.size());
         for (Triple<String, String, String> triple : value) {
-          data[index++] = triple.getLeft();
-          data[index++] = triple.getMiddle();
-          data[index++] = triple.getRight();
+          data[index++] = intern(triple.getLeft());
+          data[index++] = intern(triple.getMiddle());
+          data[index++] = intern(triple.getRight());
         }
-        return true;
       }
     });
 
     possibleTags = Collections.unmodifiableSet(collectTags(mapping));
   }
 
-  private static TIntObjectHashMap<List<Triple<String, String, String>>> groupByHash(Map<TaggedWord, List<String>> mapping) {
-    TIntObjectHashMap<List<Triple<String, String, String>>> byHash = new TIntObjectHashMap<>(mapping.size());
-    Map<String, String> internedStrings = new HashMap<>();
+  private static Int2ObjectOpenHashMap<List<Triple<String, String, String>>> groupByHash(Map<TaggedWord, List<String>> mapping) {
+    Int2ObjectOpenHashMap<List<Triple<String, String, String>>> byHash = new Int2ObjectOpenHashMap<>(mapping.size());
     for (Map.Entry<TaggedWord, List<String>> entry : mapping.entrySet()) {
       TaggedWord tw = entry.getKey();
       String lemma = tw.getLemma();
@@ -109,7 +113,7 @@ public final class ManualSynthesizer {
         if (word.startsWith(SUFFIX_MARKER)) {
           throw new UnsupportedOperationException("Words can't start with " + SUFFIX_MARKER);
         }
-        String value = internedStrings.computeIfAbsent(encodeForm(lemma, word), Function.identity());
+        String value = intern(encodeForm(lemma, word));
         list.add(new ImmutableTriple<>(lemma, tw.getPosTag(), value));
       }
     }
@@ -136,12 +140,12 @@ public final class ManualSynthesizer {
     return word;
   }
 
-  private static THashSet<String> collectTags(Map<TaggedWord, List<String>> mapping) {
-    THashSet<String> tags = new THashSet<>();
+  private static ObjectOpenHashSet<String> collectTags(Map<TaggedWord, List<String>> mapping) {
+    ObjectOpenHashSet<String> tags = new ObjectOpenHashSet<>();
     for (TaggedWord tw : mapping.keySet()) {
-      tags.add(tw.getPosTag());
+      tags.add(intern(tw.getPosTag()));
     }
-    tags.trimToSize();
+    tags.trim();
     return tags;
   }
 
@@ -155,10 +159,10 @@ public final class ManualSynthesizer {
   public Set<String> getPossibleTags() {
     return possibleTags;
   }
-  
+
   /**
    * Look up a word's inflected form as specified by the lemma and POS tag.
-   * 
+   *
    * @param lemma the lemma to inflect.
    * @param posTag the required POS tag.
    * @return a list with all the inflected forms of the specified lemma having the specified POS tag.
@@ -186,10 +190,8 @@ public final class ManualSynthesizer {
   }
 
   private static Map<TaggedWord, List<String>> loadMapping(InputStream inputStream) throws IOException {
-    Map<String, String> internedStrings = new HashMap<>();
     Map<TaggedWord, List<String>> mapping = new HashMap<>();
-    Map<String, String> interned = new HashMap<>();
-    try (Scanner scanner = new Scanner(inputStream, "utf8")) {
+    try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
       String separator = DEFAULT_SEPARATOR;
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
@@ -211,8 +213,8 @@ public final class ManualSynthesizer {
         if (form.equals(lemma)) {
           form = lemma;
         }
-        lemma = interned.computeIfAbsent(lemma, Function.identity());
-        String posTag = internedStrings.computeIfAbsent(parts[2], Function.identity());
+        lemma = intern(lemma);
+        String posTag = intern(parts[2]);
         mapping.computeIfAbsent(new TaggedWord(lemma, posTag), __ -> new ArrayList<>()).add(form);
       }
     }

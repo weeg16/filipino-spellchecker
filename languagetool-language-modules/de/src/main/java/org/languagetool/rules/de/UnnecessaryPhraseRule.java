@@ -84,6 +84,20 @@ public class UnnecessaryPhraseRule extends AbstractStatisticStyleRule {
     return ((nToken != 1 || token.length() < 2) ? token : token.substring(0, 1).toLowerCase() + token.substring(1));
   }
   
+  private static boolean isException(AnalyzedTokenReadings[] tokens, String[] phrase) {
+    if (phrase.length == 2) {
+      if (phrase[0].equals("an") && phrase[1].equals("sich")) {
+        for (int j = 1; j <  tokens.length; j++) {
+          if (tokens[j].hasLemma("drücken")) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  
   @Override
   protected int conditionFulfilled(AnalyzedTokenReadings[] tokens, int nAnalysedToken) {
     for (int i = 0; i < unnecessaryPhrases.length; i++) {
@@ -91,7 +105,11 @@ public class UnnecessaryPhraseRule extends AbstractStatisticStyleRule {
       for (j = 0; j < unnecessaryPhrases[i].length && nAnalysedToken + j < tokens.length && 
           unnecessaryPhrases[i][j].equals(firstCharToLower(tokens, nAnalysedToken + j)); j++);
       if (j == unnecessaryPhrases[i].length) {
-        return nAnalysedToken + unnecessaryPhrases[i].length - 1;
+        if (isException(tokens, unnecessaryPhrases[i])) {
+          return -1;
+        } else {
+          return nAnalysedToken + unnecessaryPhrases[i].length - 1;
+        }
       }
     }
     return -1;
@@ -132,8 +150,13 @@ public class UnnecessaryPhraseRule extends AbstractStatisticStyleRule {
   }
 
   @Override
-  public String getConfigureText() {
+  public String getConfigurePercentText() {
     return "Anzeigen wenn mehr als ...‱ eines Kapitels potenzielle Phrasen sind:";
+  }
+
+  @Override
+  public String getConfigureWithoutDirectSpeachText() {
+    return "Keine direkte Rede und Zitate berücksichtigen";
   }
 
 }

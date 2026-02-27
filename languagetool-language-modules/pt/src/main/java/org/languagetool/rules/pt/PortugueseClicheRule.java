@@ -18,7 +18,7 @@
  */
 package org.languagetool.rules.pt;
 
-import org.languagetool.language.Portuguese;
+import org.languagetool.Language;
 import org.languagetool.rules.AbstractSimpleReplaceRule2;
 import org.languagetool.rules.Categories;
 import org.languagetool.rules.Example;
@@ -51,10 +51,10 @@ public class PortugueseClicheRule extends AbstractSimpleReplaceRule2 {
     return Collections.singletonList(path);
   }
 
-  public PortugueseClicheRule(ResourceBundle messages, String path) {
-    super(messages, new Portuguese());
+  public PortugueseClicheRule(ResourceBundle messages, String path, Language language) {
+    super(messages, language);
     this.path = Objects.requireNonNull(path);
-    super.setCategory(Categories.STYLE.getCategory(messages));
+    setCategory(Categories.STYLE.getCategory(messages));
     setLocQualityIssueType(ITSIssueType.Style);
     useSubRuleSpecificIds();
     addExamplePair(Example.wrong("<marker>quente como uma fornalha</marker>"),
@@ -68,7 +68,7 @@ public class PortugueseClicheRule extends AbstractSimpleReplaceRule2 {
 
   @Override
   public String getDescription() {
-    return "Frases-feitas e expressões idiomáticas";
+    return "Frases-feitas e expressões idiomáticas: $match";
   }
 
   @Override
@@ -78,7 +78,7 @@ public class PortugueseClicheRule extends AbstractSimpleReplaceRule2 {
 
   @Override
   public String getMessage() {
-    return "'$match' é uma frase-feita. É preferível dizer $suggestions.";
+    return "\"$match\" é uma frase-feita. É preferível dizer $suggestions.";
   }
 
   @Override

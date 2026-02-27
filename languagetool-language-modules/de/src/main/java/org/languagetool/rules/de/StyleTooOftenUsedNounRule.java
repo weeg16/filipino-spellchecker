@@ -18,10 +18,8 @@
  */
 package org.languagetool.rules.de;
 
-import java.util.List;
 import java.util.ResourceBundle;
 
-import org.languagetool.AnalyzedToken;
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.Language;
 import org.languagetool.LinguServices;
@@ -37,8 +35,6 @@ public class StyleTooOftenUsedNounRule extends AbstractStyleTooOftenUsedWordRule
   
   private static final int DEFAULT_MIN_PERCENT = 5;
 
-  String sentenceMessage = null;
-  
   public StyleTooOftenUsedNounRule(ResourceBundle messages, Language lang, UserConfig userConfig) {
     super(messages, lang, userConfig, DEFAULT_MIN_PERCENT);
     if (userConfig != null) {
@@ -76,21 +72,16 @@ public class StyleTooOftenUsedNounRule extends AbstractStyleTooOftenUsedWordRule
   }
 
   @Override
-  protected boolean isException(AnalyzedTokenReadings token) {
-    return token.hasPosTagStartingWith("PRO:") || token.getToken().equals("Ja");
+  protected boolean isException(AnalyzedTokenReadings[] tokens, int n) {
+    AnalyzedTokenReadings token = tokens[n];
+    return token.hasPosTagStartingWith("PRO:") 
+        || token.getToken().equals("Ich")
+        || token.getToken().equals("Aber")
+        || token.getToken().equals("Ja")
+        || (n < tokens.length - 1 && (token.getToken().equals("Frau") || token.getToken().equals("Herr")) 
+            && (tokens[n + 1].hasPosTagStartingWith("EIG:") || tokens[n + 1].isPosTagUnknown()));
   }
   
-  private String getLemmaForPosTagStartsWith(String startPos, AnalyzedTokenReadings token) {
-    List<AnalyzedToken> readings = token.getReadings();
-    for (AnalyzedToken reading : readings) {
-      String posTag = reading.getPOSTag();
-      if (posTag != null && posTag.startsWith(startPos)) {
-        return reading.getLemma();
-      }
-    }
-    return null;
-  }
-
   @Override
   protected String toAddedLemma(AnalyzedTokenReadings token) {
     return getLemmaForPosTagStartsWith("SUB:", token);

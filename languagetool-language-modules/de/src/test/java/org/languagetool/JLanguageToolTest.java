@@ -18,15 +18,15 @@
  */
 package org.languagetool;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.junit.Test;
 import org.languagetool.language.GermanyGerman;
 import org.languagetool.markup.AnnotatedTextBuilder;
 import org.languagetool.rules.RuleMatch;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class JLanguageToolTest {
 
@@ -84,7 +84,7 @@ public class JLanguageToolTest {
   
   @Test
   public void testAdvancedTypography() {
-    Language lang = GermanyGerman.INSTANCE;
+    Language lang = GermanyGerman.getInstance();
     assertEquals(lang.toAdvancedTypography("Das ist..."), "Das ist…");
     assertEquals(lang.toAdvancedTypography("Meinten Sie \"entschieden\" oder \"entscheidend\"?"), "Meinten Sie „entschieden“ oder „entscheidend“?");
     assertEquals(lang.toAdvancedTypography("Meinten Sie 'entschieden' oder 'entscheidend'?"), "Meinten Sie ‚entschieden‘ oder ‚entscheidend‘?");
@@ -108,4 +108,27 @@ public class JLanguageToolTest {
       assertEquals(1, lt.check(sentence2).size());
     }
   }
+
+  @Test
+  public void testMultitokenSpeller() throws IOException {
+    Language lang = GermanyGerman.getInstance();
+    assertEquals("[Karl-Heinz Rummenigge]", lang.getMultitokenSpeller().getSuggestions("KarlHeinz Rummenigge").toString());
+    assertEquals("[Leonardo DiCaprio]", lang.getMultitokenSpeller().getSuggestions("Leonardo Di-Caprio").toString());
+    assertEquals("[Marshall McLuhan]", lang.getMultitokenSpeller().getSuggestions("Marshall Mc-Luhan").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("Jochen Striebeck").toString());
+    assertEquals("[Ricardo Simonetti]", lang.getMultitokenSpeller().getSuggestions("Ricardo Simoneti").toString());
+    //assertEquals("[et al., El Al]", lang.getMultitokenSpeller().getSuggestions("et al").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("Clint Eastwoods").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("otto dvd").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("one place").toString());
+    assertEquals("[Yuval Noah Harari]", lang.getMultitokenSpeller().getSuggestions("Yuval Noha Harari").toString());
+    assertEquals("[Homo sapiens]", lang.getMultitokenSpeller().getSuggestions("Homos Sapiens").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("à la carte").toString());
+    assertEquals("[à la carte]", lang.getMultitokenSpeller().getSuggestions("a la carte").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("dierser Straße").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("Tum Universität").toString());
+    assertEquals("[]", lang.getMultitokenSpeller().getSuggestions("fuer Trump").toString());
+  }
+
 }
+

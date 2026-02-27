@@ -638,7 +638,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 			<example type="correct">muna</example>
 		</rule>
 		<rule id="EPEKTO_NG_HULAPI_E_TO_I" name="Pagpalit ng E sa I (Epekto ng Hulapi)">
-            <antipattern>
+      <antipattern>
 				<token regexp="yes">(?i)(sinehan|basehan)</token>            
 			</antipattern>
 			<pattern case_sensitive="no">

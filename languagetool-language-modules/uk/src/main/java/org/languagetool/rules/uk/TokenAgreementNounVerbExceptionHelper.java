@@ -50,8 +50,8 @@ public final class TokenAgreementNounVerbExceptionHelper {
     // Любителі фотографувати їжу
     // навичка збиратися швидко (але не «навички»)
     if( PosTagHelper.hasPosTag(tokens[verbPos], PosTagHelper.VERB_INF_PATTERN) ) {
-      if( CaseGovernmentHelper.hasCaseGovernment(tokens[nounPos], "v_inf") 
-          && ! PosTagHelper.hasPosTagStart(tokens[nounPos], "noun:inanim:p:v_naz") ) {
+      if( CaseGovernmentHelper.hasCaseGovernment(tokens[nounPos], "v_inf") ) { 
+          //&& ! PosTagHelper.hasPosTagStart(tokens[nounPos], "noun:inanim:p:v_naz") ) {
         logException();
         return true;
       }
@@ -179,6 +179,15 @@ public final class TokenAgreementNounVerbExceptionHelper {
     if( nounPos > 1
         && PosTagHelper.hasPosTag(tokens[nounPos], Pattern.compile("noun:anim:.:v_naz:prop:[fl]name.*"))
         && Arrays.asList("ім'я", "прізвище", "прізвисько").contains(tokens[nounPos-1].getCleanToken().toLowerCase()) ) {
+      logException();
+      return true;
+    }
+    
+    // матч Туреччина — Україна зіграють
+    if( nounPos > 2
+        && PosTagHelper.hasPosTag(tokens[nounPos], Pattern.compile("noun.*:v_naz.*prop.*"))
+        && tokens[nounPos-1].getCleanToken().matches("[-\u2013\u2014]")
+        && PosTagHelper.hasPosTag(tokens[nounPos-2], Pattern.compile("noun.*:v_naz.*prop.*")) ) {
       logException();
       return true;
     }
@@ -649,7 +658,7 @@ public final class TokenAgreementNounVerbExceptionHelper {
     // кандидат у губернатори штату Аризона їхав
     if( nounPos > 1 ) {
       if( PosTagHelper.hasPosTag(tokens[nounPos], Pattern.compile("noun:inanim:[mnf]:v_naz:prop:geo.*"))
-          && PosTagHelper.hasPosTag(tokens[nounPos-1], Pattern.compile("noun:inanim:[mnf]:v_(?!naz)(?!.*&pron).*")) ) {
+          && PosTagHelper.hasPosTag(tokens[nounPos-1], Pattern.compile("noun:inanim:[mnf]:v_(?!naz)(?!.*pron).*")) ) {
       
 //      Condition condition = new Condition() {
 //        @Override
@@ -676,6 +685,15 @@ public final class TokenAgreementNounVerbExceptionHelper {
 
       if( LemmaHelper.isPossiblyProperNoun(tokens[nounPos])
           && LemmaHelper.hasLemma(tokens[nounPos-1], GEO_QUALIFIERS) ) {
+        logException();
+        return true;
+      }
+      
+      // У місті Біла Церква було сформовано
+      if( nounPos > 2
+          && LemmaHelper.isPossiblyProperNoun(tokens[nounPos])
+          && LemmaHelper.isPossiblyProperNoun(tokens[nounPos-1])
+          && LemmaHelper.hasLemma(tokens[nounPos-2], GEO_QUALIFIERS) ) {
         logException();
         return true;
       }
@@ -742,7 +760,7 @@ public final class TokenAgreementNounVerbExceptionHelper {
     // TODO: do not ignore: вибори Київрада не завадили
     if( nounPos > 1
         && PosTagHelper.hasPosTag(tokens[nounPos-1], Pattern.compile("noun:inanim:.:v_naz.*"))
-        && ! PosTagHelper.hasPosTagPart(tokens[nounPos-1], ":&pron")
+        && ! PosTagHelper.hasPosTagPart(tokens[nounPos-1], ":pron")
         && ! PosTagHelper.hasPosTag(tokens[nounPos], "noun.*pron.*")
         && (! Collections.disjoint(VerbInflectionHelper.getNounInflections(tokens[nounPos-1].getReadings()), verbInflections)) ) {
       logException();
@@ -768,6 +786,13 @@ public final class TokenAgreementNounVerbExceptionHelper {
     List<String> pseudoPluralNouns = Arrays.asList("решта", "частина", "частка", "половина", "третина", "чверть");
     if( pseudoPluralNouns.contains(tokens[nounPos].getCleanToken().toLowerCase())
         && PosTagHelper.hasPosTag(verbTokenReadings, Pattern.compile(".*:[pn](:.*|$)")) ) {
+      logException();
+      return true;
+    }
+    
+    // з Василем Кричевським Оскар Германович разом брали участь
+    if( tokens[nounPos+1].getCleanToken().equalsIgnoreCase("разом")
+        && PosTagHelper.hasPosTag(verbTokenReadings, Pattern.compile(".*:p(:.*|$)")) ) {
       logException();
       return true;
     }

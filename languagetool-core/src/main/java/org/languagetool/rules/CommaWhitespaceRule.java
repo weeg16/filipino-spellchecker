@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import org.languagetool.AnalyzedSentence;
 import org.languagetool.AnalyzedTokenReadings;
@@ -38,6 +39,8 @@ import static org.languagetool.tools.StringTools.isEmpty;
 public class CommaWhitespaceRule extends Rule {
 
   private boolean quotesWhitespaceCheck;
+
+  private Pattern FILE_EXTENSION = Pattern.compile("([a-z]{3,4}|[A-Z]{3,4}|ai|mp[34]|MP[34])(-.+)?");
 
   /** @since 5.9 */
   public CommaWhitespaceRule(ResourceBundle messages, IncorrectExample incorrectExample, CorrectExample correctExample, URL url) {
@@ -187,12 +190,18 @@ public class CommaWhitespaceRule extends Rule {
     return toRuleMatchArray(ruleMatches);
   }
 
+  /**
+   * Case Insensitive check if the token at index i is a valid domain name (e.g. "com", "org", "net", etc.)
+   * @param tokens
+   * @param i
+   * @return true if the token at index i is a domain name, false otherwise
+   */
   private boolean isDomain(AnalyzedTokenReadings[] tokens, int i) {
-    return i < tokens.length && tokens[i].getToken().matches("(com|org|net|int|edu|gov|mil|[a-z]{2})");
+    return i < tokens.length && tokens[i].getToken().matches("(?i)(com|org|net|int|edu|gov|mil|[a-z]{2})");
   }
 
   private boolean isFileExtension(AnalyzedTokenReadings[] tokens, int i) {
-    return i < tokens.length && tokens[i].getToken().matches("([a-z]{3,4}|[A-Z]{3,4}|ai|mp[34])(-.+)?");
+    return i < tokens.length && FILE_EXTENSION.matcher(tokens[i].getToken()).matches();
   }
 
   private static boolean isWhitespaceToken(AnalyzedTokenReadings token) {
@@ -230,7 +239,7 @@ public class CommaWhitespaceRule extends Rule {
       return false;
     }
     char c = str.charAt(0);
-    return c == '(' || c == '[' || c == '{';
+    return c == '(';
   }
 
   private static boolean isRightBracket(String str) {
@@ -238,7 +247,7 @@ public class CommaWhitespaceRule extends Rule {
       return false;
     }
     char c = str.charAt(0);
-    return c == ')' || c == ']' || c == '}';
+    return c == ')';
   }
 
   private static boolean containsDigit(String str) {

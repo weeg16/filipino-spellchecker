@@ -1,6 +1,6 @@
-/* LanguageTool, a natural language style checker 
+/* LanguageTool, a natural language style checker
  * Copyright (C) 2005 Daniel Naber (http://www.danielnaber.de)
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -18,19 +18,21 @@
  */
 package org.languagetool;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.languagetool.broker.ResourceDataBroker;
 import org.languagetool.chunking.Chunker;
 import org.languagetool.language.Contributor;
 import org.languagetool.languagemodel.LanguageModel;
-import org.languagetool.languagemodel.LuceneLanguageModel;
+import org.languagetool.markup.AnnotatedText;
 import org.languagetool.rules.*;
 import org.languagetool.rules.patterns.AbstractPatternRule;
 import org.languagetool.rules.patterns.PatternRuleLoader;
 import org.languagetool.rules.patterns.Unifier;
 import org.languagetool.rules.patterns.UnifierConfiguration;
 import org.languagetool.rules.spelling.SpellingCheckRule;
+import org.languagetool.rules.spelling.multitoken.MultitokenSpeller;
 import org.languagetool.synthesis.Synthesizer;
 import org.languagetool.tagging.Tagger;
 import org.languagetool.tagging.disambiguation.Disambiguator;
@@ -46,17 +48,18 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.*;
 
 /**
  * Base class for any supported language (English, German, etc). Language classes
  * are detected at runtime by searching the classpath for files named
  * {@code META-INF/org/languagetool/language-module.properties}. Those file(s)
  * need to contain a key {@code languageClasses} which specifies the fully qualified
- * class name(s), e.g. {@code org.languagetool.language.English}. Use commas to specify 
+ * class name(s), e.g. {@code org.languagetool.language.English}. Use commas to specify
  * more than one class.
  *
  * <p>Sub classes should typically use lazy init for anything that's costly to set up.
@@ -69,27 +72,47 @@ public abstract class Language {
   private static final Tagger DEMO_TAGGER = new DemoTagger();
   private static final SentenceTokenizer SENTENCE_TOKENIZER = new SimpleSentenceTokenizer();
   private static final WordTokenizer WORD_TOKENIZER = new WordTokenizer();
-  private static final Pattern INSIDE_SUGGESTION = Pattern.compile("<suggestion>(.+?)</suggestion>");
-  private static final Pattern APOSTROPHE = Pattern.compile("([\\p{L}\\d-])'([\\p{L}«])",
-    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+  private static final Pattern INSIDE_SUGGESTION = compile("<suggestion>(.+?)</suggestion>");
+  private static final Pattern APOSTROPHE = compile("([\\p{L}\\d-])'([\\p{L}«])",
+    CASE_INSENSITIVE | UNICODE_CASE);
+
+  private static final String SUGGESTION_OPEN_TAG = "<suggestion>";
+  private static final String SUGGESTION_CLOSE_TAG = "</suggestion>";
+
+  private static final Pattern NBSPACE1 = compile("\\b([a-zA-Z]\\.) ([a-zA-Z]\\.)");
+  private static final Pattern NBSPACE2 = compile("\\b([a-zA-Z]\\.) ");
 
   private static final Map<Class<Language>, JLanguageTool> languagetoolInstances = new ConcurrentHashMap<>();
+  private static final Pattern QUOTED_CHAR_PATTERN = compile(" '(.)'");
+  private static final Pattern TYPOGRAPHY_PATTERN_1 = compile("([\\u202f\\u00a0 «\"\\(])'");
+  private static final Pattern TYPOGRAPHY_PATTERN_2 = compile("'([\u202f\u00a0 !\\?,\\.;:\"\\)])");
+  private static final Pattern TYPOGRAPHY_PATTERN_3 = compile("‘s\\b([^’])");
+  private static final Pattern TYPOGRAPHY_PATTERN_4 = compile("([ \\(])\"");
+  private static final Pattern TYPOGRAPHY_PATTERN_5 = compile("\"([\\u202f\\u00a0 !\\?,\\.;:\\)])");
+
+  private final Object patternRuleLock = new Object();
+  private final Object disambiguatorLock = new Object();
+  private final Object sentenceTokenizerLock = new Object();
+  private final Object wordTokenizerLock = new Object();
 
   private final UnifierConfiguration unifierConfig = new UnifierConfiguration();
   private final UnifierConfiguration disambiguationUnifierConfig = new UnifierConfiguration();
 
-  private final Pattern ignoredCharactersRegex = Pattern.compile("[\u00AD]");  // soft hyphen
-  
-  private List<AbstractPatternRule> patternRules;
-  private final AtomicBoolean noLmWarningPrinted = new AtomicBoolean();
+  private final Pattern ignoredCharactersRegex = compile("[\u00AD]");  // soft hyphen
 
-  private Disambiguator disambiguator;
+  private volatile List<AbstractPatternRule> patternRules;
+  private volatile Disambiguator disambiguator;
   private Tagger tagger;
-  private SentenceTokenizer sentenceTokenizer;
-  private Tokenizer wordTokenizer;
+  private volatile SentenceTokenizer sentenceTokenizer;
+  private volatile Tokenizer wordTokenizer;
   private Chunker chunker;
   private Chunker postDisambiguationChunker;
   private Synthesizer synthesizer;
+
+  private String shortCodeWithCountryAndVariant;
+
+  protected Language() {
+  }
 
   /**
    * Get this language's character code, e.g. <code>en</code> for English.
@@ -134,9 +157,9 @@ public abstract class Language {
    * @since 4.5
    */
   public String getCommonWordsPath() {
-    return getShortCode() + "/common_words.txt";     
+    return getShortCode() + "/common_words.txt";
   }
-  
+
   /**
    * Get this language's variant, e.g. <code>valencia</code> (as in <code>ca-ES-valencia</code>)
    * or <code>null</code>.
@@ -148,10 +171,10 @@ public abstract class Language {
   public String getVariant() {
     return null;
   }
-  
+
   /**
-   * Get enabled rules different from the default ones for this language variant. 
-   * 
+   * Get enabled rules different from the default ones for this language variant.
+   *
    * @return enabled rules for the language variant.
    * @since 2.4
    */
@@ -160,8 +183,8 @@ public abstract class Language {
   }
 
   /**
-   * Get disabled rules different from the default ones for this language variant. 
-   * 
+   * Get disabled rules different from the default ones for this language variant.
+   *
    * @return disabled rules for the language variant.
    * @since 2.4
    */
@@ -177,18 +200,6 @@ public abstract class Language {
   @Nullable
   public LanguageModel getLanguageModel(File indexDir) throws IOException {
     return null;
-  }
-
-  protected LanguageModel initLanguageModel(File indexDir, LanguageModel languageModel) {
-    if (languageModel == null) {
-      File topIndexDir = new File(indexDir, getShortCode());
-      if (topIndexDir.exists()) {
-        languageModel = new LuceneLanguageModel(topIndexDir);
-      } else if (noLmWarningPrinted.compareAndSet(false, true)) {
-        System.err.println("WARN: ngram index dir " + topIndexDir + " not found for " + getName());
-      }
-    }
-    return languageModel;
   }
 
   /**
@@ -212,7 +223,7 @@ public abstract class Language {
   }
 
   /**
-   * For rules that depend on a remote server; based on {@link org.languagetool.rules.RemoteRule}
+   * For rules that depend on a remote server; based on {@link RemoteRule}
    * will be executed asynchronously, with timeout, retries, etc.  as configured
    * Can return non-remote rules (e.g. if configuration missing, or for A/B tests), will be executed normally
    */
@@ -230,7 +241,7 @@ public abstract class Language {
   }
 
   /**
-   * For rules whose results are extended using some remote service, e.g. {@link org.languagetool.rules.BERTSuggestionRanking}
+   * For rules whose results are extended using some remote service, e.g. {@link BERTSuggestionRanking}
    * @return function that transforms old rule into remote-enhanced rule
    * @since 4.8
    */
@@ -370,9 +381,13 @@ public abstract class Language {
   /**
    * Get this language's part-of-speech disambiguator implementation.
    */
-  public synchronized Disambiguator getDisambiguator() {
+  public Disambiguator getDisambiguator() {
     if (disambiguator == null) {
-      disambiguator = createDefaultDisambiguator();
+      synchronized (disambiguatorLock) {
+        if (disambiguator == null) {
+          disambiguator = createDefaultDisambiguator();
+        }
+      }
     }
 
     return disambiguator;
@@ -424,9 +439,13 @@ public abstract class Language {
   /**
    * Get this language's sentence tokenizer implementation.
    */
-  public synchronized SentenceTokenizer getSentenceTokenizer() {
+  public SentenceTokenizer getSentenceTokenizer() {
     if (sentenceTokenizer == null) {
-      sentenceTokenizer = createDefaultSentenceTokenizer();
+      synchronized (sentenceTokenizerLock) {
+        if (sentenceTokenizer == null) {
+          sentenceTokenizer = createDefaultSentenceTokenizer();
+        }
+      }
     }
     return sentenceTokenizer;
   }
@@ -449,9 +468,13 @@ public abstract class Language {
   /**
    * Get this language's word tokenizer implementation.
    */
-  public synchronized Tokenizer getWordTokenizer() {
+  public Tokenizer getWordTokenizer() {
     if (wordTokenizer == null) {
-      wordTokenizer = createDefaultWordTokenizer();
+      synchronized (wordTokenizerLock) {
+        if (wordTokenizer == null) {
+          wordTokenizer = createDefaultWordTokenizer();
+        }
+      }
     }
     return wordTokenizer;
   }
@@ -522,6 +545,11 @@ public abstract class Language {
   /**
    * Create a shared instance of JLanguageTool to use in rules for further processing
    * Instances are shared by Language
+   * As this is a shared instance, do not modify (add or remove) any rules or filters.
+   * The alternative to disabling/enabling rules is to select the desired rules from getAllActiveRules(), and run them separately with rule.match(analizedSentence).
+   *
+   * Do not call this in a static block or to initialize a static JLanguageTool field in rules or filters classes, this could lead to a deadlock during initialization.
+   *
    * @since 6.1
    * @return a shared JLanguageTool instance for this language
    */
@@ -565,7 +593,7 @@ public abstract class Language {
   public Unifier getUnifier() {
     return unifierConfig.createUnifier();
   }
-  
+
   /**
    * Get this language's feature unifier used for disambiguation.
    * Note: it might be different from the normal rule unifier.
@@ -588,7 +616,7 @@ public abstract class Language {
   public UnifierConfiguration getDisambiguationUnifierConfiguration() {
     return disambiguationUnifierConfig;
   }
-  
+
   /**
    * Get the name of the language translated to the current locale,
    * if available. Otherwise, get the untranslated name.
@@ -604,7 +632,7 @@ public abstract class Language {
       }
     }
   }
-  
+
   /**
    * Get the short name of the language with country and variant (if any), if it is
    * a single-country language. For generic language classes, get only a two- or
@@ -612,6 +640,17 @@ public abstract class Language {
    * @since 3.6
    */
   public final String getShortCodeWithCountryAndVariant() {
+    if (shortCodeWithCountryAndVariant == null) {
+      synchronized (this) {
+        if (shortCodeWithCountryAndVariant == null) {
+          shortCodeWithCountryAndVariant = buildShortCodeWithCountryAndVariant();
+        }
+      }
+    }
+    return shortCodeWithCountryAndVariant;
+  }
+
+  private String buildShortCodeWithCountryAndVariant() {
     String name = getShortCode();
     if (getCountries().length == 1 && !name.contains("-x-")) {   // e.g. "de-DE-x-simple-language"
       name += "-" + getCountries()[0];
@@ -621,48 +660,56 @@ public abstract class Language {
     }
     return name;
   }
-  
+
   /**
    * Get the pattern rules as defined in the files returned by {@link #getRuleFileNames()}.
    * @since 2.7
    */
   @SuppressWarnings("resource")
-  protected synchronized List<AbstractPatternRule> getPatternRules() throws IOException {
+  protected List<AbstractPatternRule> getPatternRules() throws IOException {
     // use lazy loading to speed up server use case and start of stand-alone LT, where all the languages get initialized:
     if (patternRules == null) {
-      List<AbstractPatternRule> rules = new ArrayList<>();
-      PatternRuleLoader ruleLoader = new PatternRuleLoader();
-      for (String fileName : getRuleFileNames()) {
-        InputStream is = null;
-        try {
-          is = JLanguageTool.getDataBroker().getAsStream(fileName);
-          boolean ignore = false;
-          if (is == null) {                     // files loaded via the dialog
-            try {
-              is = new FileInputStream(fileName);
-            } catch (FileNotFoundException e) {
-              if (fileName.contains("-test-")) {
-                // ignore, used for testing
-                ignore = true;
-              } else {
-                throw e;
-              }
-            }
-          }
-          if (!ignore) {
-            rules.addAll(ruleLoader.getRules(is, fileName, this));
-            patternRules = Collections.unmodifiableList(rules);
-          }
-        } finally {
-          if (is != null) {
-            is.close();
-          }
+      synchronized (patternRuleLock) {
+        if (patternRules == null) {
+          patternRules = initializePatternRules();
         }
       }
     }
     return patternRules;
   }
-  
+
+  private List<AbstractPatternRule> initializePatternRules() throws IOException {
+    List<AbstractPatternRule> rules = new ArrayList<>();
+    PatternRuleLoader ruleLoader = new PatternRuleLoader();
+    for (String fileName : getRuleFileNames()) {
+      InputStream is = null;
+      try {
+        is = JLanguageTool.getDataBroker().getAsStream(fileName);
+        boolean ignore = false;
+        if (is == null) {                     // files loaded via the dialog
+          try {
+            is = new FileInputStream(fileName);
+          } catch (FileNotFoundException e) {
+            if (fileName.contains("-test-")) {
+              // ignore, used for testing
+              ignore = true;
+            } else {
+              throw e;
+            }
+          }
+        }
+        if (!ignore) {
+          rules.addAll(ruleLoader.getRules(is, fileName, this));
+        }
+      } finally {
+        if (is != null) {
+          is.close();
+        }
+      }
+    }
+    return Collections.unmodifiableList(rules);
+  }
+
   @Override
   public final String toString() {
     return getName();
@@ -742,9 +789,9 @@ public abstract class Language {
   public LanguageMaintainedState getMaintainedState() {
     return LanguageMaintainedState.LookingForNewMaintainer;
   }
-  
+
   /*
-   * True if language should be hidden on GUI (i.e. en, de, pt, 
+   * True if language should be hidden on GUI (i.e. en, de, pt,
    * instead of en-US, de-DE, pt-PT)
    * @since 3.3
    */
@@ -758,7 +805,7 @@ public abstract class Language {
     }
     return false;
   }
-  
+
   /**
    * Returns a priority for Rule or Category Id (default: 0).
    * Positive integers have higher priority.
@@ -769,12 +816,15 @@ public abstract class Language {
     if (id.equalsIgnoreCase("TOO_LONG_SENTENCE")) {
       return -101;  // don't hide spelling errors
     }
-    if (id.equalsIgnoreCase("STYLE")) {  // category
+    if (id.equals("REPETITIONS_STYLE")) {  // category
+      return -55;  // don't let style issues hide more important errors
+    }
+    if (id.contains("STYLE")) {  // category
       return -50;  // don't let style issues hide more important errors
     }
     return 0;
   }
-  
+
   /**
    * Returns a priority for Rule (default: 0).
    * Positive integers have higher priority.
@@ -784,12 +834,22 @@ public abstract class Language {
   public int getRulePriority(Rule rule) {
     int categoryPriority = this.getPriorityForId(rule.getCategory().getId().toString());
     int rulePriority = this.getPriorityForId(rule.getId());
+    int rulePriorityFromRule = rule.getPriority();
     // if there is a priority defined for rule it takes precedence over category priority
     if (rulePriority != 0) {
       return rulePriority;
-    } else {
+    } else if ( rulePriorityFromRule != 0) {
+      return rulePriorityFromRule;
+    } else if (categoryPriority != 0) {
       return categoryPriority;
+    } else if (getDefaultRulePriorityForStyle() != 0 && rule.getLocQualityIssueType().equals(ITSIssueType.Style)) {
+      return getDefaultRulePriorityForStyle();
     }
+    return 0;
+  }
+
+  protected int getDefaultRulePriorityForStyle() {
+    return 0;
   }
 
   /**
@@ -818,7 +878,7 @@ public abstract class Language {
   public String getClosingDoubleQuote() {
     return "\"";
   }
-  
+
   /** @since 5.1 */
   public String getOpeningSingleQuote() {
     return "'";
@@ -828,70 +888,72 @@ public abstract class Language {
   public String getClosingSingleQuote() {
     return "'";
   }
-  
+
   /** @since 5.1 */
   public boolean isAdvancedTypographyEnabled() {
     return false;
   }
-  
+
   /** @since 5.1 */
   public String toAdvancedTypography(String input) {
     if (!isAdvancedTypographyEnabled()) {
-      return input.replaceAll("<suggestion>", getOpeningDoubleQuote()).replaceAll("</suggestion>", getClosingDoubleQuote());
+      return input.replace(SUGGESTION_OPEN_TAG, getOpeningDoubleQuote())
+        .replace(SUGGESTION_CLOSE_TAG, getClosingDoubleQuote());
     }
     String output = input;
-   
+
     //Preserve content inside <suggestion></suggestion>
     List<String> preservedStrings = new ArrayList<>();
-    int countPreserved = 0; 
+    int countPreserved = 0;
     Matcher m = INSIDE_SUGGESTION.matcher(output);
     int offset = 0;
     while (m.find(offset)) {
       String group = m.group(1);
       preservedStrings.add(group);
-      output = output.replaceFirst("<suggestion>" + Pattern.quote(group) + "</suggestion>", "\\\\" + String.valueOf(countPreserved));
+      output = StringUtils.replaceOnce(output, "<suggestion>" + group + "</suggestion>", "\\" + countPreserved);
       countPreserved++;
       offset = m.end();
     }
-    
+
     // Ellipsis (for all languages?)
-    output = output.replaceAll("\\.\\.\\.", "…");
-    
+    output = output.replace("...", "…");
+
     // non-breaking space
-    output = output.replaceAll("\\b([a-zA-Z]\\.) ([a-zA-Z]\\.)", "$1\u00a0$2");
-    output = output.replaceAll("\\b([a-zA-Z]\\.) ", "$1\u00a0");
-    
+    output = NBSPACE1.matcher(output).replaceAll("$1\u00a0$2");
+    output = NBSPACE2.matcher(output).replaceAll("$1\u00a0");
+
     Matcher matcher = APOSTROPHE.matcher(output);
     output = matcher.replaceAll("$1’$2");
-    
+
     // single quotes
-    if (output.startsWith("'")) { 
-      output = output.replaceFirst("'", getOpeningSingleQuote());
+    if (output.startsWith("'")) {
+      output = getOpeningSingleQuote() + output.substring(1);
     }
-    if (output.endsWith("'")) { 
+    if (output.endsWith("'")) {
       output = output.substring(0, output.length() - 1 ) + getClosingSingleQuote();
     }
-    output = output.replaceAll(" '(.)'", " " + getOpeningSingleQuote()+"$1"+getClosingSingleQuote()); //exception single character
-    output = output.replaceAll("([\\u202f\\u00a0 «\"\\(])'", "$1" + getOpeningSingleQuote());
-    output = output.replaceAll("'([\u202f\u00a0 !\\?,\\.;:\"\\)])", getClosingSingleQuote() + "$1");
-    output = output.replaceAll("‘s\\b([^’])", "’s$1"); // exception genitive
-    
+    output = QUOTED_CHAR_PATTERN.matcher(output).replaceAll(" " + getOpeningSingleQuote() + "$1" + getClosingSingleQuote()); //exception single character
+    output = TYPOGRAPHY_PATTERN_1.matcher(output).replaceAll("$1" + getOpeningSingleQuote());
+    output = TYPOGRAPHY_PATTERN_2.matcher(output).replaceAll(getClosingSingleQuote() + "$1");
+    output = TYPOGRAPHY_PATTERN_3.matcher(output).replaceAll("’s$1"); // exception genitive
+
     // double quotes
-    if (output.startsWith("\"")) { 
-      output = output.replaceFirst("\"", getOpeningDoubleQuote());
+    if (output.startsWith("\"")) {
+      output = getOpeningDoubleQuote() + output.substring(1);
     }
-    if (output.endsWith("\"")) { 
+    if (output.endsWith("\"")) {
       output = output.substring(0, output.length() - 1 ) + getClosingDoubleQuote();
     }
-    output = output.replaceAll("([ \\(])\"", "$1" + getOpeningDoubleQuote());
-    output = output.replaceAll("\"([\\u202f\\u00a0 !\\?,\\.;:\\)])", getClosingDoubleQuote() + "$1");   
-    
+    output = TYPOGRAPHY_PATTERN_4.matcher(output).replaceAll("$1" + getOpeningDoubleQuote());
+    output = TYPOGRAPHY_PATTERN_5.matcher(output).replaceAll(getClosingDoubleQuote() + "$1");
+
     //restore suggestions
     for (int i = 0; i < preservedStrings.size(); i++) {
-      output = output.replaceFirst("\\\\" + i, getOpeningDoubleQuote() + Matcher.quoteReplacement(preservedStrings.get(i)) + getClosingDoubleQuote() );
+      output = StringUtils.replaceOnce(output, "\\" + i, getOpeningDoubleQuote() + preservedStrings.get(i) + getClosingDoubleQuote() );
     }
-    
-    return output.replaceAll("<suggestion>", getOpeningDoubleQuote()).replaceAll("</suggestion>", getClosingDoubleQuote());
+
+    return output.replace(SUGGESTION_OPEN_TAG, getOpeningDoubleQuote())
+      .replace(SUGGESTION_CLOSE_TAG, getClosingDoubleQuote());
   }
 
   /**
@@ -909,29 +971,52 @@ public abstract class Language {
   public int hashCode() {
     return getShortCodeWithCountryAndVariant().hashCode();
   }
-  
+
   /**
-   * @since 5.1 
-   * Some rules contain the field min_matches to check repeated patterns 
+   * @since 5.1
+   * Some rules contain the field min_matches to check repeated patterns
    */
   public boolean hasMinMatchesRules() {
     return false;
   }
-  
-  /** 
-   * @since 5.6 
-   * Adjust suggestions depending on the enabled rules
-   */
-  public List<RuleMatch> adaptSuggestions(List<RuleMatch> ruleMatches, Set<String> enabledRules) {
-	  return ruleMatches;
-  }
-  
+
   /**
-   * @since 6.0 
-   * Adjust suggestion 
+   * @since 6.0
+   * Adjust suggestion
    */
-  public String adaptSuggestion(String s) {
+  public String adaptSuggestion(String s, String originalErrorStr) {
     return s;
   }
-  
+
+  public String getConsistencyRulePrefix() {
+    return "PREFIXFORCONSISTENCYRULES_";
+  }
+
+  public RuleMatch adjustMatch(RuleMatch rm, List<String> features) {
+    return rm;
+  }
+
+  public List<String> prepareLineForSpeller(String s) {
+    return Collections.singletonList(s);
+  }
+
+  /**
+   * This function is called by JLanguageTool before CleanOverlappingFilter removes overlapping ruleMatches
+   * @return filtered ruleMatches
+   */
+  public List<RuleMatch> filterRuleMatches(List<RuleMatch> ruleMatches, AnnotatedText text, Set<String> enabledRules) {
+    return ruleMatches;
+  }
+
+  public MultitokenSpeller getMultitokenSpeller() {
+    return null;
+  }
+
+  /**
+   * @since 6.4
+   */
+  public Map<String, Integer> getPriorityMap() {
+    return new HashMap<>();
+  }
+
 }

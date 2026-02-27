@@ -141,7 +141,7 @@ public class TokenAgreementAdjNounRule extends Rule {
         //TODO: nv still can be wrong if :np/:ns is present to it's not much gain for lots of work
         if( PosTagHelper.hasPosTagPart(tokens[i], PosTagHelper.NO_VIDMINOK_SUBSTR)
             //TODO: turn back on when we can handle pron
-//            || PosTagHelper.hasPosTagPart(tokens[i], "&pron")
+//            || PosTagHelper.hasPosTagPart(tokens[i], "pron")
 //            || Arrays.asList("сам").contains(tokens[i].getCleanToken())
             || LemmaHelper.hasLemma(tokens[i], Arrays.asList("який", "котрий", "сам"))
             || PosTagHelper.hasPosTagPart(tokens[i], "<") )
@@ -187,7 +187,7 @@ public class TokenAgreementAdjNounRule extends Rule {
       
       if( // ! PosTagHelper.hasPosTagPart(tokens[i+1], "noun:")
           PosTagHelper.hasPosTagPart(tokens[i], PosTagHelper.NO_VIDMINOK_SUBSTR)
-          || PosTagHelper.hasPosTagPart(tokens[i], "&pron")
+          || PosTagHelper.hasPosTagPart(tokens[i], "pron")
          // || PosTagHelper.hasPosTagPart(tokens[i], "<") 
          ) {
         
@@ -255,11 +255,11 @@ public class TokenAgreementAdjNounRule extends Rule {
 
         if( PosTagHelper.hasPosTagPart(state.adjTokenReadings, ":m:v_rod")
             && tokens[i].getToken().matches(".*[ую]")
-            && PosTagHelper.hasPosTag(nounTokenReadings, "noun.*?:m:v_dav.*") ) {
+            && PosTagHelper.hasPosTag(nounTokenReadings, Pattern.compile("noun.*?:m:v_dav.*")) ) {
           msg += CaseGovernmentHelper.USED_U_INSTEAD_OF_A_MSG;
         }
         else if( state.adjAnalyzedTokenReadings.getToken().contains("-")
-            && Pattern.compile(".*([23]-є|[02-9]-а|[0-9]-ма)").matcher(state.adjAnalyzedTokenReadings.getToken()).matches() ) {
+            && Pattern.compile(".*([23]-є|[02-9]-а|[0-9]-м[иа])").matcher(state.adjAnalyzedTokenReadings.getToken()).matches() ) {
           msg += ". Можливо, вжито зайве літерне нарощення після кількісного числівника?";
         }
         else if( state.adjAnalyzedTokenReadings.getToken().startsWith("не")
@@ -334,8 +334,12 @@ public class TokenAgreementAdjNounRule extends Rule {
           throw new RuntimeException(e);
         }
 
-//        System.err.println("### " + suggestions);
-
+        if( msg.contains("кількісного числівника") ) {
+          String suggNum = state.adjAnalyzedTokenReadings.getCleanToken().replaceFirst("[-–]м[аи]$", "")
+              + " " + tokenReadings.getToken();
+          suggestions.add(suggNum);
+        }
+        
         if( suggestions.size() > 0 ) {
             potentialRuleMatch.setSuggestedReplacements(suggestions);
         }

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.languagetool.rules.Categories.*;
 
 public class LanguageSpecificTest {
 
@@ -75,7 +76,8 @@ public class LanguageSpecificTest {
       for (Rule rule : lt.getAllActiveRules()) {
         if (rule instanceof AbstractSimpleReplaceRule2) {
           AbstractSimpleReplaceRule2 replRule = (AbstractSimpleReplaceRule2) rule;
-          List<Map<String, SuggestionWithMessage>> wrongWords = replRule.getWrongWords(false);
+          boolean checkingCase = rule instanceof AbstractCheckCaseRule;
+          List<Map<String, SuggestionWithMessage>> wrongWords = replRule.getWrongWords();
           for (Map<String, SuggestionWithMessage> entry : wrongWords) {
             for (String s : entry.keySet()) {
               String repl = entry.get(s).getSuggestion();
@@ -84,6 +86,52 @@ public class LanguageSpecificTest {
                 System.err.println("*** WARNING: replacement '" + repl + "' for '" + s + "' from one of " + replRule.getFileNames() +
                   " isn't known to spell checker of " + lang + ": " + Arrays.toString(matches));
               }
+              if (replRule.checkKeyWordsAreKnownToSpeller()) {
+                RuleMatch[] matches2 = spellRule.match(lt.getAnalyzedSentence(s));
+                if (matches2.length > 0) {
+                  System.err.println("*** WARNING: key word '" + s + "' from one of " + replRule.getFileNames() +
+                    " isn't known to spell checker of " + lang + ": " + Arrays.toString(matches2));
+                }
+              }
+              if (replRule.checkKeyWordsAreUnknownToSpeller()) {
+                RuleMatch[] matches2 = spellRule.match(lt.getAnalyzedSentence(s));
+                if (matches2.length == 0) {
+                  System.err.println("*** WARNING: key word '" + s + "' from one of " + replRule.getFileNames() +
+                    " is known to spell checker of " + lang + ": " + Arrays.toString(matches2));
+                }
+              }
+              if (replRule.separateKeyWordsBySpeller()) {
+                RuleMatch[] matches2 = spellRule.match(lt.getAnalyzedSentence(s));
+                if (matches2.length > 0) {
+                  System.err.println("SPELLER_WRONG: " + s + "=" + repl);
+                } else {
+                  System.err.println("SPELLER_OK: " + s + "=" + repl);
+                }
+              }
+            }
+          }
+        }
+        if (rule instanceof AbstractSimpleReplaceRule) {
+          if (lang.getShortCode().equals("ca")) {
+            if (rule.getId().equals("CA_SIMPLE_REPLACE_DNV_SECONDARY")) {
+              spellRule = Languages.getLanguageForShortCode("ca-ES-valencia").getDefaultSpellingRule();
+            } else {
+              spellRule = lang.getDefaultSpellingRule();
+            }
+          }
+          if (lang.getShortCode().equals("de") && rule.getId().equals("DE_DUPLICATED_CHAR")) {
+            // too many warnings and DE_DUPLICATED_CHAR has low impact, so ignore for now (even
+            // though the warnings are correct):
+            continue;
+          }
+          AbstractSimpleReplaceRule replRule = (AbstractSimpleReplaceRule) rule;
+          Map<String, List<String>> wrongWords = replRule.getWrongWords();
+          for (String key : wrongWords.keySet()) {
+            String repl = wrongWords.get(key).toString();
+            RuleMatch[] matches = spellRule.match(lt.getAnalyzedSentence(repl));
+            if (matches.length > 0) {
+              System.err.println("*** WARNING: replacement '" + repl + "' for '" + key + "' from rule " + rule.getId() + ", files: [\"replace.txt\", \"replace_custom.txt\"]" +
+                " isn't known to spell checker of " + lang + ": " + Arrays.toString(matches));
             }
           }
         }
@@ -236,14 +284,13 @@ public class LanguageSpecificTest {
       System.out.println("Skipping testNoQuotesAroundSuggestion for " + lang.getName());
       return;
     }
-    System.out.println("Testing that there no quotes around <suggestion>s...");
-    String dirBase = JLanguageTool.getDataBroker().getRulesDir() + "/" + lang.getShortCode() + "/";
+    System.out.println("Testing that there are no quotes around <suggestion>s...");
     for (String ruleFileName : lang.getRuleFileNames()) {
       if (ruleFileName.contains("-test-")) {
         continue;
       }
       InputStream is = this.getClass().getResourceAsStream(ruleFileName);
-      List<AbstractPatternRule> rules = new PatternRuleLoader().getRules(is, dirBase + "/" + ruleFileName, lang);
+      List<AbstractPatternRule> rules = new PatternRuleLoader().getRules(is, ruleFileName, lang);
       for (AbstractPatternRule rule : rules) {
         String message = rule.getMessage();
         if (message.matches(".*['\"«»“”’]<suggestion.*") && message.matches(".*</suggestion>['\"«»“”’].*")) {
@@ -271,6 +318,20 @@ public class LanguageSpecificTest {
       }
       i++;
     }
+  }
+
+  protected static Set<String> getAllRuleIds(Language... langs) {
+    Set<String> ids = new HashSet<>();
+    for (Language lang : langs) {
+      JLanguageTool lt = new JLanguageTool(lang);
+      for (Rule rule : lt.getAllRules()) {
+        ids.add(rule.getId());
+      }
+    }
+    for (Categories cat : ALL) {
+      ids.add(cat.getId().toString());
+    }
+    return ids;
   }
 
   private void failTest(Language lang, String text, List<String> expectedMatchIds, List<String> actualRuleIds) {

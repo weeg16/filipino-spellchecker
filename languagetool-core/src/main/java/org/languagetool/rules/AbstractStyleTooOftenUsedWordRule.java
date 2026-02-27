@@ -26,10 +26,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-import org.languagetool.AnalyzedSentence;
-import org.languagetool.AnalyzedTokenReadings;
-import org.languagetool.Language;
-import org.languagetool.UserConfig;
+import org.languagetool.*;
 import org.languagetool.rules.Category.Location;
 
 /**
@@ -46,11 +43,9 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
 
   private final int minPercent;
   private final int defaultMinPercent;
+  private final Map<String, Integer> wordMap = new HashMap<>();
+
   private boolean withoutDirectSpeech = false;
-  
-  private int numWords;
-  
-  private Map<String, Integer> wordMap = new HashMap<>();
 
   public AbstractStyleTooOftenUsedWordRule(ResourceBundle messages, Language lang, UserConfig userConfig, int minPercent) {
     this(messages, lang, userConfig, minPercent, DEFAULT_ACTIVATION);
@@ -76,7 +71,7 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
   /**
    * An exception is defined for the token
    */
-  protected abstract boolean isException(AnalyzedTokenReadings token);
+  protected abstract boolean isException(AnalyzedTokenReadings[] tokens, int n);
   
   /**
    * Gives back the lemma that should be added to the word map
@@ -88,42 +83,27 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
    */
   protected abstract String getLimitMessage(int minPercent);
   
-  /* (non-Javadoc)
-   * @see org.languagetool.rules.Rule#getConfigureText()
-   */
-  @Override
   public abstract String getConfigureText();
 
   private int getMinPercent(UserConfig userConfig, int minPercentDefault) {
     if (userConfig != null) {
-      int confPercent = userConfig.getConfigValueByID(getId());
-      if (confPercent >= 0) {
-        return confPercent;
+      Object[] cf = userConfig.getConfigValueByID(getId());
+      if (cf != null) {
+        return (int) cf[0];
       }
     }
     return minPercentDefault;
   }
 
+  /**
+   *  give the user the possibility to configure the function
+   */
   @Override
-  public boolean hasConfigurableValue() {
-    return true;
+  public RuleOption[] getRuleOptions() {
+    RuleOption[] ruleOptions = { new RuleOption(defaultMinPercent, getConfigureText(), 1, 100) };
+    return ruleOptions;
   }
 
-  @Override
-  public int getDefaultValue() {
-    return defaultMinPercent;
-  }
-
-  @Override
-  public int getMinConfigurableValue() {
-    return 1;
-  }
-
-  @Override
-  public int getMaxConfigurableValue() {
-    return 100;
-  }
-  
   public Map<String, Integer> getWordMap() {
     return wordMap;
   }
@@ -150,7 +130,7 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
         } else if (excludeDirectSpeech && isDirectSpeech && ENDING_QUOTES.matcher(sToken).matches() && n > 1 && !tokens[n].isWhitespaceBefore()) {
           isDirectSpeech = false;
         } else if (!isDirectSpeech && !token.isWhitespace() && !token.isNonWord() &&
-            isToCountedWord(token) && !isException(token)) {
+            isToCountedWord(token) && !isException(tokens, n)) {
           String lemma = toAddedLemma(token);
           if (lemma != null) {
             if (wordMap.containsKey(lemma)) {
@@ -170,7 +150,7 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
    */
   private List<String> getTooOftenUsedWords() {
     List<String> words = new ArrayList<>();
-    numWords = 0;
+    int numWords = 0;
     for (String word : wordMap.keySet()) {
       numWords += wordMap.get(word);
     }
@@ -211,7 +191,7 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
         } else if (excludeDirectSpeech && isDirectSpeech && ENDING_QUOTES.matcher(sToken).matches() && n > 1 && !tokens[n].isWhitespaceBefore()) {
           isDirectSpeech = false;
         } else if (!isDirectSpeech && !token.isWhitespace() && !token.isNonWord() &&
-            isToCountedWord(token) && !isException(token)) {
+            isToCountedWord(token) && !isException(tokens, n)) {
           String lemma = toAddedLemma(token);
           if (lemma != null) {
             for (String word : tooOftenUsedWords) {
@@ -234,5 +214,16 @@ public abstract class AbstractStyleTooOftenUsedWordRule extends TextLevelRule {
   public int minToCheckParagraph() {
     return -1;
   }
- 
+
+  protected String getLemmaForPosTagStartsWith(String startPos, AnalyzedTokenReadings token) {
+    List<AnalyzedToken> readings = token.getReadings();
+    for (AnalyzedToken reading : readings) {
+      String posTag = reading.getPOSTag();
+      if (posTag != null && posTag.startsWith(startPos)) {
+        return reading.getLemma();
+      }
+    }
+    return null;
+  }
+
 }

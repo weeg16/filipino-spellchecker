@@ -18,7 +18,7 @@
  */
 package org.languagetool.rules.pt;
 
-import org.languagetool.language.Portuguese;
+import org.languagetool.Language;
 import org.languagetool.rules.AbstractSimpleReplaceRule2;
 import org.languagetool.rules.Categories;
 import org.languagetool.rules.Example;
@@ -49,10 +49,10 @@ public class PortugueseWordinessRule extends AbstractSimpleReplaceRule2 {
     return Collections.singletonList(path);
   }
 
-  public PortugueseWordinessRule(ResourceBundle messages, String path) {
-    super(messages, new Portuguese());
+  public PortugueseWordinessRule(ResourceBundle messages, String path, Language language) {
+    super(messages, language);
     this.path = Objects.requireNonNull(path);
-    super.setCategory(Categories.REDUNDANCY.getCategory(messages));
+    setCategory(Categories.REDUNDANCY.getCategory(messages));
     setLocQualityIssueType(ITSIssueType.Style);
     useSubRuleSpecificIds();
     addExamplePair(Example.wrong("<marker>Raramente é o caso em que acontece</marker> isto."),
@@ -66,7 +66,7 @@ public class PortugueseWordinessRule extends AbstractSimpleReplaceRule2 {
 
   @Override
   public String getDescription() {
-    return "2. Expressões prolixas";
+    return "2. Expressões prolixas: $match";
   }
 
   @Override
@@ -76,7 +76,7 @@ public class PortugueseWordinessRule extends AbstractSimpleReplaceRule2 {
 
   @Override
   public String getMessage() {
-    return "'$match' é uma expressão prolixa. É preferível dizer $suggestions.";
+    return "\"$match\" é uma expressão prolixa. É preferível dizer $suggestions.";
   }
 
   @Override

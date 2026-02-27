@@ -31,6 +31,8 @@ import org.languagetool.Language;
 import org.languagetool.tokenizers.WordTokenizer;
 import org.languagetool.tools.StringTools;
 
+import static java.util.regex.Pattern.compile;
+
 /**
  * Checks that a sentence starts with an uppercase letter.
  * 
@@ -39,17 +41,23 @@ import org.languagetool.tools.StringTools;
 public class UppercaseSentenceStartRule extends TextLevelRule {
 
   private static final Pattern NUMERALS_EN =
-          Pattern.compile("[a-z]|(m{0,4}(c[md]|d?c{0,3})(x[cl]|l?x{0,3})(i[xv]|v?i{0,3}))$");
-  private static final Pattern WHITESPACE_OR_QUOTE = Pattern.compile("[ \"'„«»‘’“”\\n]"); //only ending quote is necessary?
-  private static final Pattern SENTENCE_END1 = Pattern.compile("[.?!…]|");
+          compile("[a-z]|(m{0,4}(c[md]|d?c{0,3})(x[cl]|l?x{0,3})(i[xv]|v?i{0,3}))$");
+  private static final Pattern CONTAINS_DIGIT = compile(".*\\d.*");
+  private static final Pattern ONLY_LOWERCASE_START = compile("[a-z][A-Z].*");
+  private static final Pattern WHITESPACE_OR_QUOTE = compile("[ \"'„«»‘’“”\\n]"); //only ending quote is necessary?
+  private static final Pattern SENTENCE_END1 = compile("[.?!…]|");
   private static final Set<String> EXCEPTIONS = new HashSet<>(Arrays.asList(
           "n", // n/a
           "w", // w/o
           "x86",
           "ⓒ",
           "ø", // used as bullet point
-          "cc" // cc @daniel => "Cc @daniel" is strange
+          "cc", // cc @daniel => "Cc @daniel" is strange
+          "pH",
+          "heylogin" // trade mark name
   ));
+  private static final Pattern DIGIT_DOT = compile("\\d+\\. .*");
+  private static final Pattern LINEBREAK_DIGIT_DOT = compile(".*\n\\d+\\. ");
 
   private final Language language;
 
@@ -126,8 +134,9 @@ public class UppercaseSentenceStartRule extends TextLevelRule {
         matchTokenPos = 3;
       }
 
-      if( isException(tokens, matchTokenPos) )
+      if (isException(tokens, matchTokenPos)) {
         return toRuleMatchArray(ruleMatches);
+      }
 
       String checkToken = firstToken;
       if (thirdToken != null) {
@@ -146,6 +155,9 @@ public class UppercaseSentenceStartRule extends TextLevelRule {
       if (lastParagraphString.equals(",") || lastParagraphString.equals(";")) {
         preventError = true;
       }
+      if (CONTAINS_DIGIT.matcher(tokens[matchTokenPos].getToken()).matches()) {
+        preventError = true;
+      }
       if (!SENTENCE_END1.matcher(lastParagraphString).matches() && !isSentenceEnd(lastToken)) {
         preventError = true;
       }
@@ -162,19 +174,25 @@ public class UppercaseSentenceStartRule extends TextLevelRule {
         preventError = true;
       }
 
-      if (isPrevSentenceNumberedList || isUrl(checkToken) || isEMail(checkToken) || firstTokenObj.isImmunized()) {
+      if (isPrevSentenceNumberedList || isUrl(checkToken) || isEMail(checkToken) || firstTokenObj.isImmunized()
+          || tokens[matchTokenPos].hasPosTag("_IS_URL")) {
         preventError = true;
       }
 
       if (checkToken.length() > 0) {
         char firstChar = checkToken.charAt(0);
-        if (!preventError && Character.isLowerCase(firstChar) && !EXCEPTIONS.contains(checkToken) && !StringTools.isCamelCase(checkToken)) {
+        String capitalized = StringTools.uppercaseFirstChar(checkToken);
+        if (!capitalized.equals(checkToken) &&
+          !preventError && Character.isLowerCase(firstChar)
+          && !ONLY_LOWERCASE_START.matcher(checkToken).matches()
+          && !EXCEPTIONS.contains(checkToken) && !StringTools.isCamelCase(checkToken)) {
           RuleMatch ruleMatch = new RuleMatch(this, sentence,
                   pos+tokens[matchTokenPos].getStartPos(),
                   pos+tokens[matchTokenPos].getEndPos(),
                   messages.getString("incorrect_case"));
-          ruleMatch.setSuggestedReplacement(StringTools.uppercaseFirstChar(checkToken));
+          ruleMatch.setSuggestedReplacement(capitalized);
           ruleMatches.add(ruleMatch);
+          ruleMatch.setShortMessage(messages.getString("category_case"));
         }
       }
       pos += sentence.getCorrectedTextLength();
@@ -182,7 +200,7 @@ public class UppercaseSentenceStartRule extends TextLevelRule {
       // work around that here so the items don't create an error when starting lowercase:
       // 1. item one
       // 2. item two
-      isPrevSentenceNumberedList = sentence.getText().matches("\\d+\\. .*") || sentence.getText().matches(".*\n\\d+\\. ");
+      isPrevSentenceNumberedList = DIGIT_DOT.matcher(sentence.getText()).matches() || LINEBREAK_DIGIT_DOT.matcher(sentence.getText()).matches();
     }
     return toRuleMatchArray(ruleMatches);
   }

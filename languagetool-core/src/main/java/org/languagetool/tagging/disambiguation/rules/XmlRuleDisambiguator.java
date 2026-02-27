@@ -96,7 +96,7 @@ public class XmlRuleDisambiguator extends AbstractDisambiguator {
   protected List<DisambiguationPatternRule> loadPatternRules(String filename, Language language)
       throws ParserConfigurationException, SAXException, IOException {
     DisambiguationRuleLoader ruleLoader = new DisambiguationRuleLoader();
-    return ruleLoader.getRules(JLanguageTool.getDataBroker().getFromResourceDirAsStream(filename), language);
+    return ruleLoader.getRules(JLanguageTool.getDataBroker().getFromResourceDirAsStream(filename), language, filename);
   }
 
 }

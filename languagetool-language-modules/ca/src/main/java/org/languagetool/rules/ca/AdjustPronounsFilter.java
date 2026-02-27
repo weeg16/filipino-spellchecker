@@ -1,6 +1,6 @@
-/* LanguageTool, a natural language style checker 
+/* LanguageTool, a natural language style checker
  * Copyright (C) 2021 Daniel Naber (http://www.danielnaber.de)
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -21,134 +21,39 @@ package org.languagetool.rules.ca;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.AnalyzedToken;
+import org.languagetool.chunking.ChunkTag;
 import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.patterns.RuleFilter;
-import org.languagetool.synthesis.ca.CatalanSynthesizer;
+import org.languagetool.synthesis.Synthesizer;
 import org.languagetool.tools.StringTools;
 
+import static org.languagetool.rules.ca.PronomsFeblesHelper.*;
+
 /*
- * Add the pronoun "en" in the required place with all the necessary transformations, 
+ * Add the pronoun "en" in the required place with all the necessary transformations,
  * including moving the <marker> positions.
  */
 
 public class AdjustPronounsFilter extends RuleFilter {
 
-  Pattern pApostropheNeeded = Pattern.compile("h?[aeiouàèéíòóú].*", Pattern.CASE_INSENSITIVE);
-
-  static private CatalanSynthesizer synth = CatalanSynthesizer.INSTANCE;
-
-  private static Map<String, String> addEnApostrophe = new HashMap<>();
-  static {
-    addEnApostrophe.put("m'", "me n'");
-    addEnApostrophe.put("t'", "te n'");
-    addEnApostrophe.put("s'", "se n'");
-    addEnApostrophe.put("ens", "ens n'");
-    addEnApostrophe.put("us", "us n'");
-    addEnApostrophe.put("vos", "vos n'");
-    addEnApostrophe.put("li", "li n'");
-    addEnApostrophe.put("els", "els n'");
-    addEnApostrophe.put("se m'", "se me n'");
-    addEnApostrophe.put("se t'", "se te n'");
-    addEnApostrophe.put("se li", "se li n'");
-    addEnApostrophe.put("se'ns", "se'ns n'");
-    addEnApostrophe.put("se us", "se us n'");
-    addEnApostrophe.put("se vos", "se vos n'");
-    addEnApostrophe.put("se'ls", "se'ls n'");
-    addEnApostrophe.put("hi", "n'hi ");
-    addEnApostrophe.put("", "n'");
-  }
-
-  private static Map<String, String> addEn = new HashMap<>();
-  static {
-    addEn.put("em", "me'n");
-    addEn.put("et", "te'n");
-    addEn.put("es", "se'n");
-    addEn.put("ens", "ens en");
-    addEn.put("us", "us en");
-    addEn.put("li", "li'n");
-    addEn.put("els", "els en");
-    addEn.put("se'm", "se me'n");
-    addEn.put("se't", "se te'n");
-    addEn.put("se li", "se li'n");
-    addEn.put("se'ns", "se'ns en");
-    addEn.put("se us", "se us en");
-    addEn.put("se vos", "se vos en");
-    addEn.put("se'ls", "se'ls en");
-    addEn.put("hi", "n'hi");
-    addEn.put("", "en");
-  }
-
-  private static Map<String, String> removeReflexive = new HashMap<>();
-  static {
-    removeReflexive.put("em", "");
-    removeReflexive.put("me", "");
-    removeReflexive.put("m'", "");
-    removeReflexive.put("et", "");
-    removeReflexive.put("te", "");
-    removeReflexive.put("t'", "");
-    removeReflexive.put("es", "");
-    removeReflexive.put("se", "");
-    removeReflexive.put("s'", "");
-    removeReflexive.put("ens", "");
-    removeReflexive.put("us", "");
-    removeReflexive.put("vos", "");
-    removeReflexive.put("se'm", "em");
-    removeReflexive.put("se m'", "m'");
-    removeReflexive.put("se't", "et");
-    removeReflexive.put("se t'", "t'");
-    removeReflexive.put("se li", "li");
-    removeReflexive.put("se'ns", "ens");
-    removeReflexive.put("se us", "us");
-    removeReflexive.put("se'ls", "els");
-  }
-
-  private static Map<String, String> addReflexiveVowel = new HashMap<>();
-  static {
-    addReflexiveVowel.put("1S", "m'");
-    addReflexiveVowel.put("2S", "t'");
-    addReflexiveVowel.put("3S", "s'");
-    addReflexiveVowel.put("1P", "ens ");
-    addReflexiveVowel.put("2P", "us ");
-    addReflexiveVowel.put("3P", "s'");
-  }
-
-  private static Map<String, String> addReflexiveConsonant = new HashMap<>();
-  static {
-    addReflexiveConsonant.put("1S", "em ");
-    addReflexiveConsonant.put("2S", "et ");
-    addReflexiveConsonant.put("3S", "es ");
-    addReflexiveConsonant.put("1P", "ens ");
-    addReflexiveConsonant.put("2P", "us ");
-    addReflexiveConsonant.put("3P", "es ");
-  }
-
-  private static Map<String, String> addReflexiveImperative = new HashMap<>();
-  static {
-    addReflexiveImperative.put("2S", "'t");
-    addReflexiveImperative.put("3S", "'s");
-    addReflexiveImperative.put("1P", "-nos");
-    addReflexiveImperative.put("2P", "-vos");
-    addReflexiveImperative.put("3P", "-se");
-  }
 
   @Override
   public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> arguments, int patternTokenPos,
-      AnalyzedTokenReadings[] patternTokens) throws IOException {
-
+                                   AnalyzedTokenReadings[] patternTokens, List<Integer> tokenPositions) throws IOException {
     List<String> replacements = new ArrayList<>();
     List<String> actions = Arrays.asList(getRequired("actions", arguments).split(","));
+    Synthesizer synth = getSynthesizerFromRuleMatch(match);
     String newLemma = getOptional("newLemma", arguments);
+    String newOnlyLemma = getOptional("newOnlyLemma", arguments);
     int posWord = 0;
     AnalyzedTokenReadings[] tokens = match.getSentence().getTokensWithoutWhitespace();
     while (posWord < tokens.length
-        && (tokens[posWord].getStartPos() < match.getFromPos() || tokens[posWord].isSentenceStart())) {
+      && (tokens[posWord].getStartPos() < match.getFromPos() || tokens[posWord].isSentenceStart())) {
       posWord++;
     }
     int toLeft = 0;
@@ -159,12 +64,12 @@ public class AdjustPronounsFilter extends RuleFilter {
     String replacementVerb = "";
     int firstVerbPos = 0;
     boolean inPronouns = false;
-    boolean firstVerbValid = false;
+    boolean firstVerbInflected = false;
     while (!done && posWord - toLeft > 0) {
       AnalyzedTokenReadings currentTkn = tokens[posWord - toLeft];
       String currentTknStr = currentTkn.getToken();
       // change lemma if asked
-      if (toLeft == 0 && newLemma != null) {
+      if (toLeft == 0 && (newLemma != null || newOnlyLemma != null)) {
         List<String> postags = new ArrayList<>();
         for (AnalyzedToken reading : currentTkn) {
           if (reading.getPOSTag() != null && reading.getPOSTag().startsWith("V")) {
@@ -173,11 +78,17 @@ public class AdjustPronounsFilter extends RuleFilter {
         }
         String targetPostag = synth.getTargetPosTag(postags, "");
         if (!targetPostag.isEmpty()) {
-          AnalyzedToken at = new AnalyzedToken(currentTknStr, targetPostag, newLemma);
+          AnalyzedToken at;
+          if (newLemma != null) {
+            at = new AnalyzedToken(currentTknStr, targetPostag, newLemma);
+          } else {
+            at = new AnalyzedToken(currentTknStr, targetPostag, newOnlyLemma);
+          }
           String[] synthForms = synth.synthesize(at, targetPostag);
           if (synthForms != null && synthForms.length > 0) {
             replacementVerb = synthForms[0];
           }
+
         }
       }
       boolean isVerb = currentTkn.hasPosTagStartingWith("V");
@@ -185,13 +96,13 @@ public class AdjustPronounsFilter extends RuleFilter {
       if (isPronoun) {
         inPronouns = true;
       }
-      if (isPronoun || (isVerb && !inPronouns && !firstVerbValid) || currentTknStr.equalsIgnoreCase("de")
-          || currentTknStr.equalsIgnoreCase("d'")) {
+      boolean isInGV = currentTkn.getChunkTags().contains(new ChunkTag("GV"));
+      if (isPronoun || (isVerb && !inPronouns && !firstVerbInflected && (toLeft == 0 || isInGV)) || (isInGV && !firstVerbInflected)) {
         if (isVerb) {
           firstVerb = currentTknStr;
           firstVerbPos = toLeft;
-          firstVerbValid = currentTkn.matchesPosTagRegex("V.[SI].*");
-          if (firstVerbValid) {
+          firstVerbInflected = currentTkn.matchesPosTagRegex("V.[SI].*");
+          if (firstVerbInflected) {
             firstVerbPersonaNumber = currentTkn.readingWithTagRegex("V.[SI].*").getPOSTag().substring(4, 6);
           }
           if (currentTkn.matchesPosTagRegex("V.M.*")) {
@@ -206,7 +117,11 @@ public class AdjustPronounsFilter extends RuleFilter {
         }
       }
     }
-    if (!firstVerbValid) {
+    if (posWord - toLeft == 0) {
+      // avoid the SENT_START token
+      toLeft--;
+    }
+    if (!firstVerbInflected) {
       return null;
     }
     StringBuilder sb = new StringBuilder();
@@ -219,7 +134,7 @@ public class AdjustPronounsFilter extends RuleFilter {
     String pronounsStr = sb.toString().trim();
     sb = new StringBuilder();
     for (int i = posWord - firstVerbPos; i <= posWord; i++) {
-      if (i == posWord && !replacementVerb.isEmpty()) {
+      if (i == posWord && !replacementVerb.isEmpty() && newLemma != null) {
         sb.append(replacementVerb);
       } else {
         sb.append(tokens[i].getToken());
@@ -229,111 +144,74 @@ public class AdjustPronounsFilter extends RuleFilter {
       }
     }
     String verbStr = sb.toString().trim();
+
+    if (newOnlyLemma != null) {
+      sb = new StringBuilder();
+      for (int i = posWord - firstVerbPos; i <= posWord; i++) {
+        if (i == posWord && !replacementVerb.isEmpty() && newOnlyLemma != null) {
+          sb.append(replacementVerb);
+        } else {
+          sb.append(tokens[i].getToken());
+        }
+        if (i + 1 < tokens.length && tokens[i + 1].isWhitespaceBefore()) {
+          sb.append(" ");
+        }
+      }
+    }
+    String verbStr2 = sb.toString().trim();
+
     for (String action : actions) {
       String replacement = "";
       switch (action) {
-      case "addPronounEn":
-        replacement = doAddPronounEn(firstVerb, pronounsStr, verbStr);
-        break;
-      case "removePronounReflexive":
-        replacement = doRemovePronounReflexive(firstVerb, pronounsStr, verbStr);
-        break;
-      case "replaceEmEn":
-        replacement = doReplaceEmEn(firstVerb, pronounsStr, verbStr);
-        break;
-      case "addPronounReflexive":
-        replacement = doAddPronounReflexive(firstVerb, pronounsStr, verbStr, firstVerbPersonaNumber);
-        break;
-      case "addPronounReflexiveImperative":
-        replacement = doAddPronounReflexiveImperative(firstVerb, pronounsStr, verbStr,
+        case "removePronounEn":
+          String pr = pronounsStr.replace("en","").replace("n'","").replace("'n","").strip();
+          replacement = transformDavant(pr, verbStr) + verbStr;
+          break;
+        case "addPronounEn":
+          String newPronoun = doAddPronounEn(pronounsStr, verbStr);
+          if (!newPronoun.isEmpty()) {
+            replacement = newPronoun + verbStr;
+          }
+          break;
+        case "removePronounReflexive":
+          replacement = doRemovePronounReflexive(pronounsStr, verbStr, false);
+          break;
+        case "replaceEmEn":
+          replacement = doReplaceEmEn(pronounsStr, verbStr, false);
+          break;
+        case "replaceHiEn":
+          replacement = doAddPronounEn(transform(pronounsStr.replace("hi","").trim(), PronounPosition.NORMALIZED), verbStr) + verbStr;
+          break;
+        case "addPronounReflexive":
+          replacement = doAddPronounReflexive(pronounsStr, verbStr, firstVerbPersonaNumber, false);
+          break;
+        case "addPronounReflexiveHi":
+          replacement = doAddPronounReflexive(pronounsStr, "hi " + verbStr, firstVerbPersonaNumber, false);
+          break;
+        case "addPronounReflexiveImperative":
+          replacement = doAddPronounReflexiveImperative(pronounsStr, verbStr,
             firstVerbPersonaNumberImperative);
-        break;
+          break;
+        case "changeOnlyLemma":
+          if (actions.contains("replaceHiEn")) {
+            pronounsStr = pronounsStr.replace("hi", "").trim();
+          }
+          pronounsStr = transformDavant(pronounsStr, verbStr2);
+          replacement = pronounsStr + verbStr2;
+          break;
       }
       if (!replacement.isEmpty()) {
-        replacements.add(replacement);
+        replacements.add(StringTools.preserveCase(replacement, tokens[posWord - toLeft].getToken()).trim());
       }
     }
     if (replacements.isEmpty()) {
       return null;
     }
     RuleMatch ruleMatch = new RuleMatch(match.getRule(), match.getSentence(), tokens[posWord - toLeft].getStartPos(),
-        match.getToPos(), match.getMessage(), match.getShortMessage());
+      match.getToPos(), match.getMessage(), match.getShortMessage());
     ruleMatch.setType(match.getType());
     ruleMatch.setSuggestedReplacements(replacements);
     return ruleMatch;
-  }
-
-  private String doAddPronounEn(String firstVerb, String pronounsStr, String verbStr) {
-    Map<String, String> transform;
-    String replacement = "";
-    String between = "";
-    if (pApostropheNeeded.matcher(firstVerb).matches()) {
-      transform = addEnApostrophe;
-    } else {
-      transform = addEn;
-      between = " ";
-    }
-    String pronounsReplacement = transform.get(pronounsStr.toLowerCase());
-    if (pronounsReplacement != null) {
-      replacement = StringTools.preserveCase(pronounsReplacement, (pronounsStr + between + verbStr).trim()) + between
-          + verbStr.toLowerCase();
-    }
-    return replacement;
-  }
-
-  private String doRemovePronounReflexive(String firstVerb, String pronounsStr, String verbStr) {
-    String replacement = "";
-    String between = " ";
-    String pronounsReplacement = removeReflexive.get(pronounsStr.toLowerCase());
-    if (pronounsReplacement != null) {
-      replacement = StringTools.preserveCase(pronounsReplacement + between + verbStr, pronounsStr).trim()
-          .replaceAll("' ", "'");
-    }
-    return replacement;
-  }
-
-  private String doAddPronounReflexive(String firstVerb, String pronounsStr, String verbStr,
-      String firstVerbPersonaNumber) {
-    String pronounToAdd = "";
-    String replacement = "";
-    if (pronounsStr.isEmpty()) {
-      if (pApostropheNeeded.matcher(verbStr).matches()) {
-        pronounToAdd = addReflexiveVowel.get(firstVerbPersonaNumber);
-      } else {
-        pronounToAdd = addReflexiveConsonant.get(firstVerbPersonaNumber);
-      }
-      if (pronounToAdd != null) {
-        replacement = StringTools.preserveCase(pronounToAdd + verbStr, verbStr).trim().replaceAll("' ", "'");
-      }
-    }
-    return replacement;
-  }
-
-  private String doAddPronounReflexiveImperative(String firstVerb, String pronounsStr, String verbStr,
-      String firstVerbPersonaNumber) {
-    String pronounToAdd = "";
-    String replacement = "";
-    if (pronounsStr.isEmpty()) {
-      pronounToAdd = addReflexiveImperative.get(firstVerbPersonaNumber);
-      if (pronounToAdd != null) {
-        replacement = StringTools.preserveCase(verbStr + pronounToAdd, verbStr).trim();
-      }
-    }
-    return replacement;
-  }
-
-  private String doReplaceEmEn(String firstVerb, String pronounsStr, String verbStr) {
-    String replacement = "";
-    if (pronounsStr.equalsIgnoreCase("em")) {
-      replacement = StringTools.preserveCase("en", pronounsStr) + " " + verbStr;
-    }
-    if (pronounsStr.equalsIgnoreCase("m'")) {
-      replacement = StringTools.preserveCase("n'", pronounsStr) + verbStr;
-    }
-    if (pronounsStr.equalsIgnoreCase("m'hi")) {
-      replacement = StringTools.preserveCase("n'hi ", pronounsStr) + verbStr;
-    }
-    return replacement;
   }
 
 }

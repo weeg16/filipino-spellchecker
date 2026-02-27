@@ -29,9 +29,152 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
     <!ENTITY apostrophe "['’`´‘ʻ]">
     <!ENTITY quote '["“”„]'>
     <!ENTITY hyphen "(?:[–\-—])">
+    <!ENTITY non_english '[ÀàÁáÅåĀāĂăĄąÆĆćĈĉĊċČčÇçĎďĐđĒēĔĕĖėĘęĚěëĜĝĞğĠġĢģĤĥĦħİĨĩĪīĬĭĮįıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒòÓóØøŌōŎŏŐőÖöŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя]'>
+    <!ENTITY months "January|February|March|April|May|Ju(ne|ly)|August|September|October|November|December">
+    <!ENTITY abbrevMonths "Jan|Feb|Mar|Apr|Ju[ln]|Aug|Sept?|Oct|Nov|Dec">
+    <!ENTITY weekdays "Monday|Wednesday|T(ue|hur)sday|Friday|S(atur|un)day">
+    <!ENTITY abbrevWeekdays "Mon?|Tu(e|es)?|We(d|ds)?|Th(u|ur|urs)?|Fri?|Sat?|Sun?">
+    <!ENTITY plural_singular_nouns_2 "accused|army|audience|club|community|council|(counter)?party|couple|duo|faculty|family|following|former|innocent|latter|majority|management|minority|pair|poor|public|remainder|rest|rich|staff|team|trio|youth">
 ]>
 <rules lang="en" xsi:noNamespaceSchemaLocation="../../../../../../../../../languagetool-core/src/main/resources/org/languagetool/rules/remote-rules.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <category name="Machine learning rules" id="AI_RULES">
+        <rulegroup id="QB_NEW_EN_OTHER.*" name="">
+            <rule>
+                <pattern>
+                    <marker>
+                        <token>(</token>
+                        <token spacebefore="no" skip="-1">=</token>
+                    </marker>
+                    <token>)</token>
+                </pattern>
+                <example correction="">Remove test setup and roll out test2 to all users <marker>(=</marker> make it the default).</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <token postag="SENT_START|CC|PCT" postag_regexp="yes" />
+                    <marker>
+                        <token regexp="yes">@[a-z0-9_-]+</token>
+                    </marker>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                </pattern>
+                <example correction=""><marker>@jack</marker> you are right.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <token regexp="yes">@[a-z0-9_-]+</token>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                </pattern>
+                <example correction=""><marker>@jack you</marker> are right.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <token regexp="yes">@[a-z0-9_-]+</token>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                    <token regexp="yes" spacebefore="no">'[a-z]+</token>
+                </pattern>
+                <example correction=""><marker>@jack I'm</marker> here.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <marker>
+                        <token regexp="yes">@[a-z0-9_-]+</token>
+                        <token spacebefore="no">.</token>
+                        <token regexp="yes" spacebefore="no">[a-z0-9_-]+</token>
+                    </marker>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                </pattern>
+                <example correction=""><marker>@jack.smith</marker> you are right.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <token regexp="yes">@[a-z0-9_-]+</token>
+                    <token spacebefore="no">.</token>
+                    <token regexp="yes" spacebefore="no">[a-z0-9_-]+</token>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                </pattern>
+                <example correction=""><marker>@jack.smith you</marker> are right.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @jack -->
+                <pattern>
+                    <token regexp="yes">@[a-z0-9_-]+</token>
+                    <token spacebefore="no">.</token>
+                    <token regexp="yes" spacebefore="no">[a-z0-9_-]+</token>
+                    <token regexp="yes">.*[a-z0-9].*</token>
+                    <token regexp="yes" spacebefore="no">'[a-z]+</token>
+                </pattern>
+                <example correction=""><marker>@jack.smith I'm</marker> here.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @Jessia Schwarz -->
+                <pattern>
+                    <token postag="SENT_START|CC|PCT" postag_regexp="yes" />
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">@[A-Z].+</token>
+                        <token regexp="yes" case_sensitive="yes">[A-Z].+</token>
+                        <token regexp="yes">.*[a-z0-9].*</token>
+                    </marker>
+                </pattern>
+                <example correction=""><marker>@Jessica Schwarz could</marker> you have a look?</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @Jessia Schwarz -->
+                <pattern>
+                    <token postag="SENT_START|CC|PCT" postag_regexp="yes" />
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">@[A-Z].+</token>
+                        <token regexp="yes" case_sensitive="yes">[A-Z].+</token>
+                        <token regexp="yes">.*[a-z0-9].*</token>
+                        <token regexp="yes" spacebefore="no">'[a-z]+</token>
+                    </marker>
+                </pattern>
+                <example correction=""><marker>@Jessica Schwarz I'm</marker> here.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @Jessia Schwarz -->
+                <pattern>
+                    <token postag="SENT_START|CC|PCT" postag_regexp="yes" />
+                    <token regexp="yes" case_sensitive="yes">@[A-Z].+</token>
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">[A-Z].+</token>
+                    </marker>
+                </pattern>
+                <example correction="">@Jessica <marker>Schwarz</marker> could you have a look?</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @Jessia Schwarz -->
+                <pattern>
+                    <token postag="SENT_START|CC|PCT" postag_regexp="yes" />
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">@[A-Z].+</token>
+                        <token regexp="yes">v[oa]n|del</token>
+                        <token regexp="yes" min="0">der?</token>
+                        <token regexp="yes" case_sensitive="yes">[A-Z].+</token>
+                        <token regexp="yes">.*[a-z0-9].*</token>
+                        <token regexp="yes" spacebefore="no">'[a-z]+</token>
+                    </marker>
+                </pattern>
+                <example correction=""><marker>@Jessica van der Heet I'm</marker> here.</example>
+            </rule>
+            <rule>
+                <!-- # No commas after twitter handles e.g. @Jessia Schwarz -->
+                <pattern>
+                    <token postag="SENT_START" />
+                    <token regexp="yes" case_sensitive="yes">@[A-Z].+</token>
+                    <token regexp="yes">v[oa]n|del</token>
+                    <token regexp="yes" min="0">der?</token>
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">[A-Z].+</token>
+                    </marker>
+                </pattern>
+                <example correction="">@Jessica van der <marker>Heet</marker> could you have a look?</example>
+            </rule>
+        </rulegroup>
         <rulegroup id="AI_HYDRA_LEO_CP_ME_MY" name="">
             <rule>  <!-- acronyms -->
                 <pattern>
@@ -93,6 +236,18 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
         <rulegroup id="AI_EN_LECTOR_REPLACEMENT_VERB_TENSE" name="">
             <rule>
                 <pattern>
+                    <token chunk="B-NP-singular" />
+                    <token chunk="E-NP-singular" />
+                    <marker>
+                        <token>confirm</token>
+                    </marker>
+                    <token min="0" postag="RB" />
+                    <token postag="VB[DZ]" postag_regexp="yes" chunk="B-VP" />
+                </pattern>
+                <example correction="">The broker <marker>confirm</marker> indicates we sold the swap.</example>
+            </rule>
+            <rule>
+                <pattern>
                     <token>.</token>
                     <token>.</token>
                     <token>.</token>
@@ -131,8 +286,74 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                 <example correction="">It <marker>is</marker>n't what I was looking for.</example>
                 <example correction="">That <marker>is</marker>n't what I was looking at.</example>
             </rule>
+            <rule>
+                <pattern>
+                    <token inflected="yes" chunk="B-VP">do</token>
+                    <token min="0" max="2" postag="RB" chunk="I-VP" />
+                    <marker>
+                        <token postag="VB" chunk="I-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">We did just <marker>see</marker> the film.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token postag="SENT_START" />
+                    <token min="1" max="3" chunk_re="[BI]-NP-singular" />
+                    <token postag="NN" chunk="E-NP-singular" />
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token postag="VBZ" chunk_re=".-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">The bus <marker>has</marker> already departed from the station.</example>
+            </rule>
         </rulegroup>
         <rulegroup id="AI_EN_LECTOR_REPLACEMENT_VERB_AGREEMENT" name="">
+            <rule>
+                <pattern>
+                    <token regexp="yes">t?here</token>
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token skip="2">are</token>
+                    </marker>
+                    <token postag="NNS" chunk="E-NP-plural" />
+                    <token skip="2">of</token>
+                    <token postag="NN:UN?" postag_regexp="yes" chunk="E-NP-plural" />
+                </pattern>
+                <example correction="">There <marker>are</marker> tons of useful data generated by users.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token postag="WRB" />
+                    <token inflected="yes">do</token>
+                    <token min="1" max="3" chunk_re="[BI]-NP.*" />
+                    <marker>
+                        <token postag="VB" />
+                    </marker>
+                </pattern>
+                <example correction="">I want to understand how does permission mapping <marker>work</marker> for bind mounts of a rootless Docker container running on Windows 11 using Docker Desktop.</example>
+            </rule>
+            <rule>  <!-- former/latter/etc. -->
+                <pattern>
+                    <token regexp="yes" chunk="E-NP-singular">&plural_singular_nouns_2;</token>
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token postag="VBP" chunk_re=".-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">The latter <marker>do</marker>n't need to be taken into account.</example>
+                <example correction="">The former <marker>are</marker> not as strong as the latter, though.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">you|we|they</token>
+                    <marker>
+                        <token>were</token>
+                    </marker>
+                </pattern>
+                <example correction="">I texted him, and he said that you <marker>were</marker> doing his banking.</example>
+            </rule>
             <rule>
                 <pattern>
                     <token regexp="yes">is|['a]re|was|were</token>
@@ -224,18 +445,54 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                     </pattern>
                     <example correction="">Neither Tom nor Mary <marker>has</marker> played a lot of basketball.</example>
             </rule>
-        </rulegroup>
-        <rulegroup id="AI_EN_LECTOR_REPLACEMENT_VERB_TENSE" name="">
             <rule>
                 <pattern>
-                    <token inflected="yes" chunk="B-VP">do</token>
-                    <token min="0" max="2" postag="RB" chunk="I-VP" />
+                    <token regexp="yes">it|s?he</token>
                     <marker>
-                        <token postag="VB" chunk="I-VP" />
+                        <token>has</token>
                     </marker>
-                    </pattern>
-                    <example correction="">We did just <marker>see</marker> the film.</example>
-                </rule>
+                </pattern>
+                <example correction="">Okay, it <marker>has</marker> changed my mind.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="AI_EN_LECTOR_MISSING_DETERMINER" name="">
+            <rule>
+                <pattern>
+                    <token chunk="B-PP" />
+                    <token min="0" max="3" chunk_re="[BI]-NP.*" />
+                    <token chunk_re="E-NP.*" />
+                    <token min="0">,</token>
+                    <marker>
+                        <token postag="VBN" chunk="B-VP" />
+                    </marker>
+                    <token min="0" postag="RB" />
+                    <token>as</token>
+                    <token><exception>expected</exception></token>
+                </pattern>
+                <example correction="">It happened also with this app, <marker>started</marker> as container:</example>
+                <example>In previous versions worked as expected</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="AI_EN_LECTOR_MISSING_DETERMINER_THE" name="">
+            <rule>  <!-- incorrect capitalization -->
+                <antipattern>
+                    <token>
+                        <exception postag="NNP" />
+                        <exception>FYI</exception>
+                    </token>
+                    <token postag="," />
+                    <token regexp="yes" case_sensitive="yes" postag="V.*" postag_regexp="yes">[A-Z][a-z]+</token>
+                </antipattern>
+                <pattern>
+                    <token postag="," />
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes" postag="V.*" postag_regexp="yes">[A-Z][a-z]+</token>
+                    </marker>
+                    <token regexp="yes" case_sensitive="yes">[a-z]+</token>
+                </pattern>
+                <example correction="">FYI, <marker>Attached</marker> document is a specification of the network design optimization program.</example>
+                <example correction="">Mike, <marker>Following</marker> request has been made for a number of people.</example>
+            </rule>
         </rulegroup>
         <rulegroup id="AI_EN_LECTOR_MISSING_PUNCTUATION" name="">
             <rule>
@@ -348,6 +605,16 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                     <token postag="RB" />
                 </pattern>
                 <example correction="">Yes, we do have a new trading game, link <marker>below</marker>, essentially you can play with up to 10 people and they play against each other.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token postag="SENT_START" />
+                    <token regexp="yes" skip="-1">[*\u2022]</token>
+                    <marker>
+                        <token postag="SENT_END" />
+                    </marker>
+                </pattern>
+                <example correction="">• I'm a bullet <marker>point</marker></example>
             </rule>
         </rulegroup>
         <rulegroup id="AI_EN_LECTOR_REPLACEMENT_WORD_ORDER" name="">
@@ -533,6 +800,51 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
             </rule>
         </rulegroup>
         <rulegroup id="AI_EN_LECTOR_REPLACEMENT_VERB_FORM" name="">
+            <rule>
+                <pattern>
+                    <token inflected="yes">have</token>
+                    <token min="0" max="2" postag="RB" />
+                    <marker>
+                        <token postag="VBN" chunk="I-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">I feel a bit stupid because I have not <marker>thought</marker> of buying some eggs yesterday.</example>
+                <example correction="">I feel a bit stupid because I have not <marker>seen</marker> him buying some eggs yesterday.</example>
+            </rule>
+            <rule>  <!-- former/latter/etc. -->
+                <pattern>
+                    <token regexp="yes" chunk="E-NP-singular">&plural_singular_nouns_2;</token>
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token postag="VBP" chunk_re=".-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">The latter <marker>do</marker>n't need to be taken into account.</example>
+                <example correction="">The former <marker>are</marker> not as strong as the latter, though.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token skip="10" postag="VBN" chunk_re=".-VP" />
+                    <token chunk_re="B-(PP|SBAR)">that</token>
+                    <token chunk="B-NP-singular" />
+                    <token min="0" max="3" chunk="I-NP-singular" />
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token regexp="yes" postag="VB[DN]" postag_regexp="yes">cost|hit|hurt|let|put|quit|set|shut|split|spread</token>
+                    </marker>
+                </pattern>
+                <example correction="">Or have you been so cold that your face <marker>hurt</marker> from being outside?</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token>intention</token>
+                    <token>to</token>
+                    <marker>
+                        <token postag="VB"/>
+                    </marker>
+                </pattern>
+                <example correction="">I am learning English with the intention to <marker>study</marker> abroad.</example>
+            </rule>
             <rule>
                 <pattern>
                     <token>excited</token>
@@ -775,6 +1087,18 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                 </pattern>
                 <example correction="">I would think as long as we are sending LD's back to Riverside, we are better off for the first day to just <marker>let</marker> them go to the imbalance market in Cal.</example>
             </rule>
+            <rule>
+                <pattern>
+                    <token postag="SENT_START" />
+                    <token min="1" max="3" chunk_re="[BI]-NP-singular" />
+                    <token postag="NN" chunk="E-NP-singular" />
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token postag="VBZ" chunk_re=".-VP" />
+                    </marker>
+                </pattern>
+                <example correction="">The bus <marker>has</marker> already departed from the station.</example>
+            </rule>
         </rulegroup>
         <rulegroup id="AI_HYDRA_LEO_CP_THE_THEY" name="">
             <rule>
@@ -824,6 +1148,23 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
             </rule>
         </rulegroup>
         <rulegroup id="AI_HYDRA_LEO_APOSTROPHE_S_XS" name="">
+            <rule>
+                <pattern>
+                    <token chunk_re=".-VP" />
+                    <token chunk="B-PP" />
+                    <marker>
+                        <token chunk_re="B-NP.*">its</token>
+                    </marker>
+                    <token chunk_re="[IE]-NP.*">
+                        <exception postag="VBG" />
+                        <exception>just</exception>
+                    </token>
+                </pattern>
+                <example correction="">Hello, are you waiting for <marker>its</marker> time?</example>
+                <example>Grandpa says people are calling, (I wonder if its just one or two people), but nevertheless, we still need to get something out.</example>
+                <example>So we're pinned down, trying to suppress this truck while dodgin 50 Cal laser blasts (since its just MILES a blade of grass can deflect the laser).</example>
+                <example>Thats right around $37.5 to $38.0 That is lower than where it liquedated last summer and based on the fundamentals regarding gas, it looks like its heading lower than that by April.</example>
+            </rule>
             <rule>
                 <pattern>
                     <marker>
@@ -1794,6 +2135,16 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
         <rulegroup id="AI_HYDRA_LEO_MISSING_TO" name="">
             <rule>
                 <pattern>
+                    <token>to</token>
+                    <token min="0" postag="RB" />
+                    <marker>
+                        <token postag="VB" />
+                    </marker>
+                </pattern>
+                <example correction="">➡️To <marker>have</marker> a better view of the current state of knowledge quality, we could also create a questionnaire so we can gather information.</example>
+            </rule>
+            <rule>
+                <pattern>
                     <token>send</token>
                     <token postag_regexp="yes" postag="PRP|NNP"/>
                     <marker>
@@ -1818,10 +2169,89 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
         <rulegroup id="AI_HYDRA_LEO_MISSING_COMMA" name="">
             <rule>
                 <pattern>
+                    <token>neither</token>
+                    <token min="0" max="3" chunk_re="[BI]-NP.*" />
+                    <marker>
+                        <token chunk_re="E-NP.*" />
+                    </marker>
+                    <token>nor</token>
+                    <token chunk_re=".-NP.*" />
+                </pattern>
+                <example correction="">But neither <marker>deployment</marker> nor the local development flow, is containerized yet.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token postag="SENT_START|CC|PCT|TO" postag_regexp="yes" />
+                    <token regexp="yes">an?|another|more|one</token>
+                    <token min="0" max="2" chunk="I-NP-singular" />
+                    <marker>
+                        <token chunk="E-NP-singular" />
+                    </marker>
+                    <token postag="JJR" />
+                </pattern>
+                <example correction="">Another <marker>year</marker> wiser and greater!</example>
+            </rule>
+            <rule>  <!-- no comma in middle of noun phrase I -->
+                <antipattern>
+                    <token chunk="B-NP-plural" />
+                    <token chunk="B-NP-plural" />
+                </antipattern>
+                <pattern>
+                    <marker>
+                        <token postag="CD" chunk="B-NP-plural" />
+                    </marker>
+                    <token min="0" max="2" chunk="I-NP-plural" />
+                    <token chunk="E-NP-plural" />
+                </pattern>
+                <example correction="">She was found guilty and sentenced to <marker>ninety</marker> days in the Sacramento County</example>
+                <example>Like all the great things on earth traveling teaches us by example.</example>
+            </rule>
+        <!--<rule>
+                <antipattern>
+                    <token chunk="B-NP-singular" />
+                    <token chunk="B-NP-singular" />
+                </antipattern>
+                <pattern>
+                    <marker>
+                        <token chunk="B-NP-singular" />
+                    </marker>
+                    <token chunk_re="[IE]-NP-singular" />
+                </pattern>
+                <example correction="">She was found guilty and sentenced to <marker>a</marker> day</example>
+            </rule>-->
+            <rule>  <!-- pattern taken from IF_NO_COMMA -->
+                <pattern>
+                    <marker>
+                        <token chunk_re="E-NP.*" />
+                    </marker>
+                    <token skip="3" spacebefore="yes">when
+                        <exception scope="next" regexp="yes">,|–|-</exception>
+                    </token>
+                    <token skip="3" chunk_re=".-VP">
+                        <exception scope="next" regexp="yes">,|–|-</exception>
+                    </token>
+                    <token postag="SENT_END" regexp="yes">[.!?]</token>
+                </pattern>
+                <example correction="">What we mean by this is that if you ask yourself how much you exercised last week, you may conclude that it was five or six <marker>times</marker> when it was really only three.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token chunk_re="E-NP.*" postag="NN.*" postag_regexp="yes" />
+                    <marker>
+                        <token>but</token>
+                    </marker>
+                    <token>also</token>
+                    <token postag="VB[DPZ]|MD" postag_regexp="yes" chunk_re=".-VP" />
+                </pattern>
+                <suggestion>, but</suggestion>
+                <example correction=", but">This not only saves you time<marker> but</marker> also maximizes your sales efforts, leading to higher revenue and business growth.</example>
+            </rule>
+            <rule>
+                <pattern>
                     <marker>
                         <token>to</token>
                     </marker>
-                    <token regexp="yes">\d+</token>
+                    <token regexp="yes">\d+[a-z$€]?</token>
                 </pattern>
                 <example correction="">In the current release we are limited to values up <marker>to</marker> 65535 I believe.</example>
             </rule>
@@ -1947,7 +2377,7 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
             </rule>
             <rule>
                 <pattern>
-                    <token chunk_re="E-NP.*" />
+                    <token chunk_re=".-(AD|NP|PP).*" />
                     <marker>
                         <token>but</token>
                     </marker>
@@ -1957,6 +2387,19 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                 </pattern>
                 <suggestion>, but</suggestion>
                 <example correction=", but">Fuel prices have hit record highs this year<marker> but</marker> are anticipated to start failing in 2024/25.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token chunk_re=".-(AD|NP|PP).*" />
+                    <marker>
+                        <token regexp="yes">but|and|or</token>
+                    </marker>
+                    <token inflected="yes" regexp="yes">do|will|should|[wc]ould|can|cannot</token>
+                    <token postag="RB" min="0" />
+                    <token postag="VB" />
+                </pattern>
+                <suggestion>, but</suggestion>
+                <example correction=", but">I contacted Recurly support two days ago<marker> but</marker> did not receive an acknowledgement of receipt.</example>
             </rule>
             <rule>
                 <!-- #1 Single non-alphanumeric characters. -->
@@ -2074,6 +2517,17 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                 <example correction="">On Sep. <marker>2nd</marker> of the year 2021.</example>
                 <example correction="">On Sep <marker>2nd</marker> of the year 2021.</example>
                 <example correction="">On Sep <marker>20th</marker> of the year 2021.</example>
+            </rule>
+            <rule>
+                <!-- #12 more money more problems -->
+                <pattern>
+                    <marker>
+                        <token postag="IN|RP|TO" postag_regexp="yes" />
+                    </marker>
+                    <token postag="CD" />
+                    <token regexp="yes">[\$€£¥]</token>
+                </pattern>
+                <example correction="">Please find attached the adjustment to the price: The former shareholders will get a payment <marker>of</marker> 5001 € in total.</example>
             </rule>
             <rule>
                 <pattern>
@@ -2663,6 +3117,17 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                 </pattern>
                 <example correction=""><marker>Attached</marker> you can find all details.</example>
             </rule>
+            <rule>
+                <pattern>
+                    <marker>
+                        <token regexp="yes">.*[a-z0-9].*</token>
+                    </marker>
+                    <token>so</token>
+                    <token postag="PRP_S.*|NN.*|DT" chunk_re=".-NP.*" postag_regexp="yes" skip="2" />
+                    <token chunk_re=".-VP" />
+                </pattern>
+                <example correction="">The affiliate system is built <marker>in-house</marker> so we can manually assign conversions.</example>
+            </rule>
         </rulegroup>
         <rulegroup id="AI_EN_G_REPLACE_ORTH" name="">
             <rule>
@@ -2876,6 +3341,271 @@ To ignore a remote rule match, set the <marker> so that it exactly covers the te
                     <token postag="SENT_END"/>
                 </pattern>
                 <example correction="">I don't want to go in <marker>there</marker>.</example>
+            </rule>
+        </rulegroup>
+
+        <!-- ====================================================================== -->
+        <!-- QuillBot Antipatterns -->
+        <!-- ====================================================================== -->
+        <rulegroup id="QB_NEW_EN_DECAPITALIZE.*" name="">
+            <rule>  <!-- Don't decapitalize first word in the sentence -->
+                <pattern>
+                    <token postag="SENT_START" />
+                    <marker><token /></marker>
+                </pattern>
+                <example correction=""><marker>Would</marker> be funny if it performs just as good.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_NEW_EN_OTHER" name="">
+            <rule>
+                <pattern>
+                    <marker><token regexp="yes">.*(https?://|www\.).+</token></marker>
+                </pattern>
+                <example correction="">It’s the storage policy <marker>https://quillbot.slack.com/archives/D084BE5DY0M/p1744109799019819</marker> It's a real-time policy.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <marker><token regexp="yes">.+\.com.*</token></marker>
+                </pattern>
+                <example correction="">It’s the storage policy <marker>quillbot.slack.com/archives/D084BE5DY0M/p1744109799019819</marker> It's a real-time policy.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN_OTHER" name="">
+            <rule>
+                <pattern>
+                    <marker>
+                        <token />
+                    </marker>
+                    <token>because</token>
+                    <token min="2" max="15" />
+                    <token postag="SENT_END" />
+                </pattern>
+                <example correction="">A particularly noteworthy case is the electric field between two concentric <marker>cylinders</marker> because such an arrangement is commonly found in devices for aerodynamic DMA.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <marker>
+                        <token regexp="yes">.*[a-z].*</token>
+                        <token regexp="yes" spacebefore="no" postag="SENT_END">:</token>
+                    </marker>
+                </pattern>
+                <example correction="">READ WHAT NUTRITIONISTS AND SCIENTISTS SAY ABOUT MINDFUL <marker>SNACKING:</marker></example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN_MERGED_MATCH" name="">
+            <rule>
+                <pattern>
+                    <token postag="WRB" />
+                    <token inflected="yes">do</token>
+                    <token min="1" max="3" chunk_re="[BI]-NP.*" />
+                    <marker>
+                        <token postag="VB" />
+                        <token>for</token>
+                        <token chunk_re="B-NP.*" />
+                    </marker>
+                </pattern>
+                <example correction="">I want to understand how does permission mapping <marker>work for bind</marker> mounts of a rootless Docker container running on Windows 11 using Docker Desktop.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN_MERGED_MATCH_PICKY" name="">
+            <rule>
+                <pattern>
+                    <token regexp="yes" case_sensitive="yes" max="2">[A-Z].*</token>
+                    <token>/</token>
+                    <token regexp="yes" case_sensitive="yes" max="2">[A-Z].*</token>
+                </pattern>
+                <example correction="">Dear Nick, We are happy to provide gift funds of $100,000 per year, over three years, to support a program in your research group, related to <marker>Bandwidth Markets/Trading</marker> and Networking Technologies.</example>
+                <example correction="">Coldcut created the Energy Union show for the tour, a one hour <marker>Audio/Visual</marker> montage on the theme of Intelligent Energy.</example>
+                <example correction="">Due to the current state of affairs we are canceling all of the <marker>Associate / Analyst</marker> recruiting.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN" name="">
+            <rule>  <!-- curly to straight quotes - opening  pt. I -->
+                <pattern>
+                    <marker>
+                        <token regexp="yes">“|‘</token>
+                        <token />
+                    </marker>
+                </pattern>
+                <example correction="">This is <marker>“a</marker> new test" to check quotes.</example>
+                <example correction="">They had to have a <marker>‘birds</marker> and bees" conversation.</example>
+            </rule>
+            <rule>  <!-- curly to straight quotes - opening  pt. II -->
+                <pattern>
+                    <marker>
+                        <token regexp="yes">“|‘</token>
+                        <token />
+                        <token regexp="yes">['’].+</token>
+                    </marker>
+                </pattern>
+                <example correction=""><marker>“You’d</marker> know."</example>
+                <example correction=""><marker>“I'm</marker> not mad at you...</example>
+            </rule>
+            <rule>  <!-- curly to straight quotes - closing pt. I -->
+                <pattern>
+                    <marker>
+                        <token><exception postag="PCT" /></token>
+                        <token min="0" postag="PCT" />
+                        <token regexp="yes">”|’</token>
+                    </marker>
+                </pattern>
+                <example correction="">This is "a new <marker>test”</marker> to check quotes.</example>
+                <example correction="">They had to have a "birds and <marker>bees’</marker> conversation.</example>
+                <example correction="">“Everything <marker>alright?”</marker></example>
+            </rule>
+            <rule>  <!-- curly to straight quotes - closing pt. II -->
+                <pattern>
+                    <marker>
+                        <token regexp="yes">”|’</token>
+                    </marker>
+                </pattern>
+                <example correction="">“Yes.<marker>”</marker></example>
+            </rule>
+            <rule>  <!-- curly apostrophes to straight quotes -->
+                <pattern>
+                    <marker>
+                        <token regexp="yes">[‘'“]</token>
+                        <token />
+                        <token regexp="yes">[’'”]</token>
+                    </marker>
+                </pattern>
+                <example correction="">He took up employment at <marker>‘Securonix’</marker>.</example>
+                <example correction="">There is no <marker>'average'</marker>.</example>
+                <example correction="">The checker is saying that the word <marker>“strongness”</marker> is wrong, but the word is right.</example>
+            </rule>
+            <rule>  <!-- don't replace apostrophes used as quotes - opening -->
+                <pattern>
+                    <marker>
+                        <token>'</token>
+                        <token skip="-1"><exception scope="next" regexp="yes">&quote;</exception></token>
+                    </marker>
+                    <token>'</token>
+                </pattern>
+                <example correction="">Please explain the grammar of <marker>'as</marker> may be'.</example>
+            </rule>
+            <rule>  <!-- don't move period inside of quote -->
+                <pattern>
+                    <marker>
+                        <token />
+                        <token regexp="yes">'|"|”</token>
+                    </marker>
+                    <token>.</token>
+                </pattern>
+                <example correction="">Country musicians began recording boogie in 1939, shortly after it had been played at Carnegie Hall, when Johnny Barfield recorded "Boogie <marker>Woogie"</marker>.</example>
+                <example correction="">Please explain the grammar of 'as may <marker>be'</marker>.</example>
+            </rule>
+            <rule>  <!-- don't de-capitalize first word of sentence -->
+                <pattern>
+                    <token postag="SENT_START" />
+                    <marker>
+                        <token skip="-1" regexp="yes" case_sensitive="yes">[A-Z][a-z]*</token>
+                    </marker>
+                    <token regexp="yes" postag="SENT_END">[\.\?\!]</token>
+                </pattern>
+                <example correction=""><marker>Characterizes</marker> invertebrates and compares them with vertebrates.</example>
+                <example correction=""><marker>Identifies</marker> the location and functions of the senses of hearing, sight, and touch and thinks of ways to protect them.</example>
+            </rule>
+            <rule>  <!-- don't insert inconsistent quote and delete space -->
+                <pattern>
+                    <token skip="-1">“
+                        <exception regexp="yes" scope="next">&quote;</exception>
+                    </token>
+                    <marker>
+                        <token postag="PARA_END" />
+                    </marker>
+                </pattern>
+                <example correction="">“Nope.<marker> </marker></example>
+                <example correction="">“My husband’s right.<marker> </marker></example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN_DECAPITALIZE" name="">
+            <rule>
+                <pattern>
+                    <marker>
+                        <token regexp="yes" max="30">[\{~¶♪âª]</token>
+                        <token regexp="yes" case_sensitive="yes">[A-Z][a-z]*</token>
+                    </marker>
+                </pattern>
+                <example correction="">Who the machine has been reassigned to <marker>{Contact</marker> name}, the new contact phone # AND the location of the machine.</example>
+                <example correction=""><marker>~ But</marker>... one of them gets hit by lightning.</example>
+                <example correction="">For more information on advertising in The Industry Standard West Coast East Coast FEEDBACK AND PROBLEMS <marker>~~~~~~~~~~~~~~~~~~~~~ Send</marker> letters to the editor to letters@thestandard.com.</example>
+                <example correction=""><marker>♪ ♪ Through</marker> rampaging vikings and cannibal elves</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                    <token min="0" postag="," />
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                    </marker>
+                    <token min="0" postag="," />
+                    <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                </pattern>
+                <example correction="">3. Exclusion of Certain Damages. Purchaser will not be liable under any circumstances for any lost profits or INDIRECT, <marker>INCIDENTAL</marker>, CONSEQUENTIAL or special damages, even if it has notice of that those kinds of damages may occur.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <marker>
+                        <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                    </marker>
+                    <token min="0" postag="," />
+                    <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                    <token min="0" postag="," />
+                    <token regexp="yes" case_sensitive="yes">[A-Z]+</token>
+                </pattern>
+                <example correction="">3. Exclusion of Certain Damages. Purchaser will not be liable under any circumstances for any lost profits or <marker>INDIRECT</marker>, INCIDENTAL, CONSEQUENTIAL or special damages, even if it has notice of that those kinds of damages may occur.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="QB_EN_OXFORD" name="">
+        <!-- Deprecated, but not removing it in case we bring it back -->
+            <rule>
+                <pattern>
+                    <token regexp="yes">&months;|&abbrevMonths;</token>
+                    <token regexp="yes">[0-9]{1,2}</token>
+                    <token postag="," />
+                    <marker>
+                        <token regexp="yes">[0-9]{4}</token>
+                    </marker>
+                    <token><exception postag="," /></token>
+                </pattern>
+                <example correction="">Noah Haynes Swayne, nominated January 21, <marker>1862</marker> and appointed January 24, 1862, was chosen as an anti-slavery lawyer who was committed to the Union.</example>
+                <example correction="">Steinmetz died on October 26, <marker>1923</marker> and was buried in Vale Cemetery, Schenectady.</example>
+                <example correction="">He has also assured me that I will be credited with my initial start date which is March 9, <marker>1967</marker> and be fully vested in the various benefit, retirement and vacation plans.</example>
+                <example correction="">The OEX Skybox was first introduced by Pinnacle on November 1, <marker>1998</marker> and its team of experienced OEX traders generated an impressive 292% over two short months.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">&weekdays;|&abbrevWeekdays;</token>
+                    <token postag="," />
+                    <token regexp="yes">&months;|&abbrevMonths;</token>
+                    <marker>
+                        <token regexp="yes">[0-9]{1,2}(st|nd|rd|th)?</token>
+                    </marker>
+                </pattern>
+                <example correction="">Order any elements or design sets before Monday, April <marker>1st</marker> and we will reserve your 20% off discount, which can be used at any time during the 2002 calendar year.</example>
+                <example correction="">Please let me know your availability on Monday, May <marker>1st</marker> or Thursday; May 4th.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">thanks?</token>
+                    <marker>
+                        <token>you</token>
+                    </marker>
+                </pattern>
+                <example correction="">If you have already RSVP'd, thank <marker>you</marker> and we will see you Thursday.</example>
+                <example correction="">Again, thank <marker>you</marker> and I look forward to working with you.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <marker>
+                        <token regexp="yes">[0-9]{4}</token>
+                    </marker>
+                    <token>and</token>
+                    <token>
+                        <exception regexp="yes">[0-9]+</exception>
+                    </token>
+                </pattern>
+                <example correction="">He directed his first film, The Squaw Man, released in <marker>1914</marker> and would go on to direct dozens of silent films before crossing to sound films in 1929.</example>
             </rule>
         </rulegroup>
     </category>

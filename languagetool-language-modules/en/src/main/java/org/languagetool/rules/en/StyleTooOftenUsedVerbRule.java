@@ -18,10 +18,8 @@
  */
 package org.languagetool.rules.en;
 
-import java.util.List;
 import java.util.ResourceBundle;
 
-import org.languagetool.AnalyzedToken;
 import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.Language;
 import org.languagetool.LinguServices;
@@ -76,22 +74,12 @@ public class StyleTooOftenUsedVerbRule extends AbstractStyleTooOftenUsedWordRule
   }
 
   @Override
-  protected boolean isException(AnalyzedTokenReadings token) {
+  protected boolean isException(AnalyzedTokenReadings[] tokens, int n) {
+    AnalyzedTokenReadings token = tokens[n];
     return token.hasAnyLemma("be", "have", "do") || token.hasPosTagStartingWith("IN") ||
         token.hasPosTagStartingWith("NN");
   }
   
-  private String getLemmaForPosTagStartsWith(String startPos, AnalyzedTokenReadings token) {
-    List<AnalyzedToken> readings = token.getReadings();
-    for (AnalyzedToken reading : readings) {
-      String posTag = reading.getPOSTag();
-      if (posTag != null && posTag.startsWith(startPos)) {
-        return reading.getLemma();
-      }
-    }
-    return null;
-  }
-
   @Override
   protected String toAddedLemma(AnalyzedTokenReadings token) {
     return getLemmaForPosTagStartsWith("VB", token);

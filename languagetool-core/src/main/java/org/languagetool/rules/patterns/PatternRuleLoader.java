@@ -26,9 +26,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ public class PatternRuleLoader extends DefaultHandler {
    * @param file XML file with pattern rules
    */
   public final List<AbstractPatternRule> getRules(File file, Language lang) throws IOException {
-    try (InputStream inputStream = new FileInputStream(file)) {
+    try (InputStream inputStream = Files.newInputStream(file.toPath())) {
       PatternRuleLoader ruleLoader = new PatternRuleLoader();
       return ruleLoader.getRules(inputStream, file.getAbsolutePath(), lang);
     }
@@ -73,6 +73,9 @@ public class PatternRuleLoader extends DefaultHandler {
         Tools.setPasswordAuthenticator();
       }
       saxParser.getXMLReader().setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      saxParser.getXMLReader().setProperty("jdk.xml.maxGeneralEntitySizeLimit", 0);
+      saxParser.getXMLReader().setProperty("jdk.xml.totalEntitySizeLimit", 0);
+      saxParser.getXMLReader().setProperty("jdk.xml.entityExpansionLimit", 0);
       saxParser.parse(is, handler);
       return handler.getRules();
     } catch (Exception e) {
