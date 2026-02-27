@@ -86,7 +86,7 @@ public class Tagalog extends Language {
             new CommaWhitespaceRule(messages),
             new DoublePunctuationRule(messages),
             new GenericUnpairedBracketsRule(messages),
-            new UppercaseSentenceStartRule(messages, this),
+            //new UppercaseSentenceStartRule(messages, this),
             new MultipleWhitespaceRule(messages, this),
             // specific to Tagalog:
             new MorfologikTagalogSpellerRule(messages, this, userConfig, altLanguages)
