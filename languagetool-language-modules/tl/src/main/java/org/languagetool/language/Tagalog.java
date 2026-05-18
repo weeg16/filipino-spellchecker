@@ -77,7 +77,10 @@ public class Tagalog extends Language {
   public Contributor[] getMaintainers() {
     return new Contributor[] {
             new Contributor("Nathaniel Oco"),
-            new Contributor("Allan Borra")
+            new Contributor("Allan Borra"),
+            new Contributor("Luis Miguel Robles"),
+            new Contributor("Ian Gabriel De Jesus"),
+            new Contributor("Anton Luis Vale"),
     };
   }
 
