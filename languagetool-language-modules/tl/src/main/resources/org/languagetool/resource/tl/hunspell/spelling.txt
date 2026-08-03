@@ -380,7 +380,6 @@ wasák
 -ng
 a
 a cappella
-a!
 aa
 aab
 aagaw
@@ -437,7 +436,7 @@ abelyano
 abenida
 abentura
 abenturero
-aber!
+aber
 aberno
 aberya
 abese
@@ -589,7 +588,7 @@ adhikain
 adidas
 adik
 adiksiyon
-adilus!
+adilus
 ading
 adisyon
 adisyonal
@@ -797,8 +796,8 @@ agwat-agwat
 agwatan
 agwatiyempo
 agwela
-agyamanak!
-aha!
+agyamanak
+aha
 ahas
 ahas-na-tulog
 ahasan
@@ -955,7 +954,6 @@ akyat
 akyatan
 akyatin
 ala
-ala!
 alaala
 alab
 alabat
@@ -1074,7 +1072,6 @@ alegorya
 alegriya
 alegro
 aleluya
-aleluya!
 aleman
 alemanya
 alembong
@@ -1305,7 +1302,6 @@ altimetro
 altitud
 altitude
 alto
-alto!
 altruwismo
 altruwista
 altura
@@ -1393,7 +1389,6 @@ ambunan
 ambusan
 ambush
 amen
-amen!
 amenorrhea
 amerika
 amerikana
@@ -1609,7 +1604,6 @@ anno domini
 announcer
 annulment
 ano
-ano!
 anod
 anomalya
 anonang
@@ -1854,7 +1848,7 @@ araw ng mga puso
 araw ng paghuhukom
 araw-araw
 arawan
-aray!
+aray
 arayan
 arbis
 arbitra
@@ -1894,7 +1888,6 @@ aristokrata
 aritmetika
 ariwanas
 ariya
-ariya!
 arka
 arkanghel
 arkeologo
@@ -1977,7 +1970,7 @@ aruga
 arugaan
 arugain
 aruhin
-aruy!
+aruy
 arya
 asa
 asad
@@ -2114,7 +2107,7 @@ asuntuhan
 asuntuhin
 asupre
 asuprehan
-asus!
+asus
 asusena
 aswang
 aswangin
@@ -2268,7 +2261,6 @@ ay-ay
 aya
 ayam
 ayan
-ayan!
 ayap
 ayapana
 ayaw
@@ -2370,7 +2362,7 @@ bagakbak
 bagal
 bagalan
 bagaman
-bagama’t
+bagama't
 bagamundo
 bagang
 bagansiya
@@ -2881,7 +2873,7 @@ bando
 bandurya
 bandwagon
 bandwidth
-bang!
+bang
 banga
 bangal
 bangan
@@ -3124,7 +3116,6 @@ baso
 basol
 basong-basong
 basta
-basta!
 basta-bastahin
 bastante
 bastardo
@@ -3321,7 +3312,7 @@ bekwa
 bela
 belada
 belasyon
-belat!
+belat
 belekoy
 belen
 belita
@@ -3665,7 +3656,7 @@ biyatiko
 biyay
 biyaya
 biyenan
-biyenbenida!
+biyenbenida
 biyenes
 biyernes
 biyograpiya
@@ -3980,7 +3971,7 @@ bulabog
 bulacan
 buladas
 bulag
-bulaga!
+bulaga
 bulagaw
 bulagin
 bulagsak
@@ -4234,7 +4225,8 @@ butod
 butol
 butones
 butong
-buto’t balat
+buto't balat
+
 butsay
 butse
 butsi
@@ -4286,7 +4278,7 @@ cadastre
 caddie
 cadet
 caesarian
-caesar’s salad
+caesar's salad
 caffeine
 cake
 calamity
@@ -4583,7 +4575,7 @@ countercheck
 counterfeit
 counterfeiter
 countersign
-coup d’etat
+coup d'etat
 courier
 court
 court martial
@@ -5201,7 +5193,7 @@ denunsiyador
 denunsiyante
 deodorant
 departamento
-department of health (doh)
+department of health
 department store
 depeksiyon
 depektibo
@@ -5528,7 +5520,6 @@ diwata
 diyabetes
 diyabetiko
 diyablo
-diyablo!
 diyadema
 diyagonal
 diyagrama
@@ -5540,7 +5531,6 @@ diyametro
 diyan
 diyaryo
 diyaski
-diyaski!
 diyatetika
 diyes
 diyeta
@@ -5866,7 +5856,7 @@ egypt
 ehe
 ehekusyon
 ehekutibo
-ehem!
+ehem
 ehemoniya
 ehemplo
 ehersisyo
@@ -6360,7 +6350,7 @@ eukaristiya
 euphemism
 euponiko
 euponiya
-eureka!
+eureka
 europa
 europe
 euthanasia
@@ -6754,7 +6744,6 @@ gambit
 gambling den
 gambol
 game
-game!
 gamit
 gamitin
 gamot
@@ -7323,7 +7312,7 @@ gymnastics
 gynecologist
 gynecology
 h
-ha!
+ha
 haba
 habag
 habagat
@@ -7477,11 +7466,10 @@ halay
 halaya
 halayhay
 halbot
-hale!
+hale
 half slip
 halhal
 hali
-hali!
 hali-halili
 halibas
 halibukay
@@ -7490,9 +7478,9 @@ haligi
 halihali
 halihaw
 halik
-halika!
+halika
 halikan
-halikayo!
+halikayo
 halikwat
 halikwatan
 halili
@@ -7505,7 +7493,6 @@ halimhim
 halimunmon
 halimuyak
 halina
-halina!
 haling
 halinghing
 halinhan
@@ -7517,9 +7504,7 @@ haliparot
 halipawpaw
 halit
 hallelujah
-hallelujah!
 halo
-halo!
 halo-halo
 halos
 halpok
@@ -7604,7 +7589,7 @@ handulong
 handulungin
 handusay
 handwashing
-hane!
+hane
 hanga
 hangad
 hangal
@@ -7614,7 +7599,8 @@ hangga
 hanggahan
 hanggan
 hanggang
-hangga’t
+hangga't
+
 hangin
 hanging banayad
 hanging haginit
@@ -7686,7 +7672,7 @@ hardinero
 hardware
 hari
 haribon
-harinawa!
+harinawa
 hariraya
 harmonika
 harmoniya
@@ -7754,7 +7740,6 @@ hayblad
 hayhay
 haylayt
 hayo
-hayo!
 hayok
 hayop
 haypotesis
@@ -7771,7 +7756,7 @@ hazing
 headphone
 headquarters
 headset
-health declaration checklist (hdc)
+health declaration checklist
 hearing
 heat index
 heavy duty
@@ -7786,7 +7771,7 @@ helatina
 hele
 hele-hele
 helikopter
-hello!
+hello
 helmet
 hemisphere
 hemophilia
@@ -7870,7 +7855,7 @@ hikaban
 hikabin
 hikahos
 hikain
-hikan!
+hikan
 hikap
 hikaw
 hikayat
@@ -7902,7 +7887,6 @@ hilamos
 hilampot
 hilantad
 hilat
-hilat!
 hilata
 hilatlat
 hilatsa
@@ -8020,7 +8004,6 @@ hindi
 hindian
 hindik
 hindot
-hindot!
 hindulos
 hindusay
 hindutan
@@ -8124,7 +8107,6 @@ hiyas-bato
 hiyaw
 hiyawan
 ho
-ho!
 hoarder
 hoarding
 holdap
@@ -8161,7 +8143,7 @@ hotcake
 hotdog
 hotel
 hototay
-hoy!
+hoy
 hoya
 hoyeriya
 hoyero
@@ -8450,7 +8432,6 @@ ika
 ika-
 ikaapat
 ikan
-ikan!
 ikang
 ikang-
 ikapag-
@@ -9494,7 +9475,7 @@ kahilera
 kahilian
 kahilingan
 kahiman
-kahimanawari!
+kahimanawari
 kahimay
 kahina-hinala
 kahinaan
@@ -10272,7 +10253,7 @@ karakot
 karakter
 karalitaan
 karamay
-karamba!
+karamba
 karambola
 karamdaman
 karamelo
@@ -11492,7 +11473,6 @@ kyutiks
 l
 la
 la nina
-la!
 laab
 laan
 laang
@@ -11522,7 +11502,6 @@ labanos
 labantulot
 labanusan
 labas
-labas!
 labasa
 labasan
 labasin
@@ -11671,7 +11650,6 @@ lagom
 lagong
 lagos
 lagot
-lagot!
 lagot-lagot
 lagpak
 lagpakan
@@ -12192,7 +12170,6 @@ larawang-buhay
 larawang-diwa
 larawang-guhit
 larga
-larga!
 largabista
 largado
 largahan
@@ -12312,7 +12289,6 @@ layak
 layang
 layang-layang
 layas
-layas!
 layasan
 layaw
 laylay
@@ -12753,7 +12729,6 @@ lintal
 lintawanin
 linti
 lintik
-lintik!
 lintog
 linu
 linuknok
@@ -13440,7 +13415,6 @@ mabisa
 mabubo
 mabubog
 mabuhay
-mabuhay!
 mabulaklak
 mabulo
 mabulos
@@ -13800,7 +13774,6 @@ magulo
 maguluhan
 magwalang-bahala
 magwalang-kibo
-mag–
 maha-blangka
 mahaba
 mahabagin
@@ -16714,7 +16687,7 @@ motosikleta
 motosiklista
 motto
 mountaineer
-mo·der·ni·sa·syon
+modernisasyon
 msg
 mucho
 mucous membrane
@@ -17036,7 +17009,7 @@ nakikinabang
 nakikinig
 nakikita
 naknak
-naku!
+naku
 nakunan
 nakusim
 nalalaban
@@ -17659,7 +17632,6 @@ okupante
 okupasyon
 okyular
 ola
-ola!
 olasiman
 ole
 oleo
@@ -17856,10 +17828,10 @@ overture
 overweight
 ovule
 ovum
-ow!
+ow
 owido
 oxygen
-oy!
+oy
 oya
 oyayi
 oyayihin
@@ -17897,7 +17869,6 @@ paalaala
 paalak
 paalala
 paalam
-paalam!
 paalaman
 paanan
 paanbalibis
@@ -17910,7 +17881,8 @@ paangkin
 paanitan
 paano
 paano man
-paano’t paano man
+paano't paano man
+
 paanyaya
 paapa-apa
 paapi
@@ -19815,7 +19787,7 @@ pananagalog
 pananagot
 pananagumpay
 pananagutan
-pananahi [tahi] png. paggagawa, makinang panahi. <pananahi ang pinagkakakitaan ni amy.>
+pananahi
 pananaig
 pananakit
 pananakop
@@ -19895,7 +19867,7 @@ panday-pilak
 panday-yero
 pandayan
 pandayin
-panday–ginto
+panday-ginto
 pandemic
 pandemya
 panderetas
@@ -20634,7 +20606,7 @@ parikala
 parikit
 parikit-bangka
 parilya
-parini!
+parini
 parinig
 parinigan
 parinlas
@@ -20646,12 +20618,12 @@ pariseo
 parisidyo
 parisukat
 parisulok
-parito!
+parito
 paritulot
 parity
 pariugat
 pariwara
-pariyan!
+pariyan
 park
 parke
 parking
@@ -21131,11 +21103,11 @@ perpumeriya
 persekusyon
 persentahe
 persiyana
-person under monitoring (pum)
+person under monitoring
 person-to-person
 persona
 personahe
-personal protective equipment (ppe)
+personal protective equipment
 personalan
 personalidad
 personipikasyon
@@ -22111,7 +22083,7 @@ puntod
 puntos
 punyagi
 punyal
-punyeta!
+punyeta
 punyos
 pupa
 pupil
@@ -22171,13 +22143,12 @@ putahe
 putak
 putaki
 putakti
-putangina!
+putangina
 putat
 putaw
 puthaw
 puti
 putik
-putik!
 putikan
 putla
 putlain
@@ -22266,7 +22237,7 @@ quorum
 quota
 quotation
 quote
-qur’an
+qur'an
 r
 raang
 rabaw
@@ -23056,7 +23027,6 @@ salalayan
 salamangka
 salamangkero
 salamat
-salamat!
 salambaw
 salamin
 salaminan
@@ -23606,7 +23576,6 @@ saya
 sayad
 sayahan
 sayang
-sayang!
 sayaw
 sayawan
 sayi
@@ -23818,7 +23787,7 @@ shabu
 shampoo
 shares
 sharpshooter
-sha’ban
+sha'ban
 sheet
 sheriff
 shineboy
@@ -23879,7 +23848,6 @@ sigay
 sigbay
 sigbo
 sige
-sige!
 sige-sige
 sigid
 sigida
@@ -24187,7 +24155,6 @@ siraulo
 sirbiyenta
 sirena
 sirit
-sirit!
 sirkera
 sirkero
 sirkito
@@ -24450,7 +24417,7 @@ strong wind
 studio
 stunt man
 styro
-su!
+su
 suam
 suba
 subali
@@ -24821,14 +24788,14 @@ surtido
 surutin
 survey
 surveyor
-sus!
+sus
 susesyon
 susi
 susian
 suskribi
 suskripsiyon
 suskritor
-susmaryosep!
+susmaryosep
 suso
 susog
 suson
@@ -24953,7 +24920,6 @@ taberna
 tabernakulo
 tabernero
 tabi
-tabi!
 tabig
 tabigi
 tabike
@@ -25545,7 +25511,7 @@ tamsi
 tamsik
 tamtam
 tamulaw
-tana!
+tana
 tanaga
 tanan
 tanaw
@@ -25699,7 +25665,6 @@ tapyok
 tapyoka
 tar
 tara
-tara!
 tarabilya
 tarak
 tarakan
@@ -25827,7 +25792,7 @@ tayamutam
 tayantang
 tayarak
 tayasak
-tayna!
+tayna
 tayo
 tayog
 tayom
@@ -25862,7 +25827,7 @@ tehedor
 teheras
 tehero
 tehido
-teka!
+teka
 tekas
 tekla
 teklado
@@ -26565,7 +26530,7 @@ tsasi
 tsasis
 tsasko
 tsata
-tse!
+tse
 tseke
 tseker
 tsibog
@@ -26594,7 +26559,7 @@ tsoker
 tsokolate
 tsonggo
 tsoriso
-tsu!
+tsu
 tsubasko
 tsugi
 tsukoy
@@ -27286,7 +27251,7 @@ uway
 uwi
 uwian
 uwido
-uy!
+uy
 uya
 uyad
 uyak
@@ -27347,7 +27312,7 @@ viral
 virus
 visa
 visayas
-viva!
+viva
 vivace
 vocal
 vocal solo
@@ -27362,7 +27327,7 @@ voyavoy
 vugi
 vukig
 w
-wa!
+wa
 waag
 wadwad
 wagas
@@ -27403,7 +27368,7 @@ walang-modo
 walang-pakialam
 walang-pakinabang
 walang-pakundangan
-walang-puno’t dulo
+walang-puno't dulo
 walang-saysay
 walang-sentido-komun
 walang-sigla
@@ -27523,7 +27488,7 @@ workbook
 worksiyap
 worktext
 world health organization
-wow!
+wow
 wrestling
 x
 x-rated
@@ -27544,7 +27509,7 @@ xylography
 xyloid
 xylophone
 y
-ya!
+ya
 yaang
 yabag
 yabang
@@ -27586,6 +27551,7 @@ yangkaw
 yangot
 yangutngot
 yangyang
+yan
 yanig
 yano
 yanot
@@ -27611,7 +27577,6 @@ yatab
 yate
 yatyat
 yawa
-yawa!
 yawe
 yawihan
 yaya
@@ -27625,10 +27590,12 @@ yema
 yerba
 yero
 yeso
-yi!
+yi
 yibok
+yo
 yodo
 yoga
+yon
 yosi
 yoyo
 yugto
@@ -27698,4 +27665,4 @@ zoom
 zoom bombing
 zucchetto
 zygote
-’ika
+'ika

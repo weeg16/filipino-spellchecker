@@ -27,6 +27,7 @@ import org.languagetool.language.tl.MorfologikTagalogSpellerRule;
 import org.languagetool.language.tokenizers.TagalogWordTokenizer;
 import org.languagetool.rules.*;
 import org.languagetool.rules.tl.PangVowelWordRule;
+import org.languagetool.rules.tl.ReduplicationRule;
 import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.languagetool.tagging.Tagger;
 import org.languagetool.tagging.tl.TagalogTagger;
@@ -94,6 +95,7 @@ public class Tagalog extends Language {
             new MultipleWhitespaceRule(messages, this),
             // specific to Tagalog:
             new PangVowelWordRule(messages, this),
+            new ReduplicationRule(messages, this),
             new MorfologikTagalogSpellerRule(messages, this, userConfig, altLanguages)
     );
   }
