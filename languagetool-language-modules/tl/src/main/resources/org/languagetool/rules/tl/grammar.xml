@@ -250,7 +250,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
 		<rule id="KASUNOD_NG_DI" name="Paggamit ng gitling sa 'di'">
 			<pattern case_sensitive="no">
 				<token>di</token>
-				<token regexp="yes">(mahapayang-gatang|mahipo|kagandahan|maitulak-kabigin|mahugot=hugot|maliparang-uwak)</token>
+				<token regexp="yes">(mahapayang-gatang|mahipo|kagandahan|maitulak-kabigin|mahugot-hugot|maliparang-uwak)</token>
 			</pattern>
 			<message>Ibig mo bang gumamit ng gitling? Gamitin ang <suggestion><match no="1"/>-<match no="2"/></suggestion>.</message>
 			<short>Gamitin ang gitling pagkatapos ng 'di' kapag sinusundan ito ng salita.</short>
@@ -562,14 +562,22 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
         </rule>
         <rule id="DISIPLINA_EI_IBA" name="Disiplina sa E/I (ibang salita)">
             <pattern case_sensitive="no">
-                <token regexp="yes">\b(minudo|liyon|nigatibo)\b</token>
+                <token regexp="yes">\b(minudo|nigatibo)\b</token>
             </pattern>
             <message>Iwasan ang balbal na ugaling gawing 'i' ang 'e' sa unahan ng salita. Isaalang-alang ang <suggestion><match no="1" regexp_match="^(\w)i(\w*)$" regexp_replace="$1e$2"/></suggestion>.</message>
-            <short>Ang tamang baybay ay 'menudo', 'leon', o 'negatibo'.</short>
+            <short>Ang tamang baybay ay 'menudo' o 'negatibo'.</short>
             <example correction="menudo">Magluto ka ng <marker>minudo</marker>.</example>
-            <example correction="leyon">Mukhang <marker>liyon</marker> ang aso.</example>
             <example correction="negatibo">Laging <marker>nigatibo</marker> ang sagot niya.</example>
             <example type="correct">menudo</example>
+        </rule>
+        <rule id="LIYON_LEON" name="liyon -> leon">
+            <pattern case_sensitive="no">
+                <token>liyon</token>
+            </pattern>
+            <message>Ang wastong baybay ng hayop na ito (mula sa Espanyol na 'leon') ay <suggestion>leon</suggestion>, hindi 'liyon'.</message>
+            <short>Ang tamang baybay ay 'leon'.</short>
+            <example correction="leon">Mukhang <marker>liyon</marker> ang aso.</example>
+            <example type="correct">leon</example>
         </rule>
         <rule id="DISIPLINA_OU" name="Disiplina sa O/U">
             <pattern case_sensitive="no">
@@ -585,22 +593,30 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <example type="correct">koryente</example>
             <example type="correct">kompanya</example>
         </rule>
-		<rule id="KATINIG_KUMP" name="Palitang O/U (kon-/kom- → kump)">
+		<rule id="KATINIG_KUMP" name="Palitang O/U (kon-/kom- -> kump)">
 			<antipattern>
-				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon|komplikado|kompanyang|kompletong|kompetisyon|kompromisong|komplikadong)</token>
+				<token regexp="yes">(?i)(kompanya|kompleto|kompetisyon|kompromiso|kompanyon|komplikado|kompanyang|kompletong|kompromisong|komplikadong|conferencia)</token>
 			</antipattern>
 			<pattern case_sensitive="no">
 				<token regexp="yes">(?i)(con|kon|kom)[pf][a-záéíóúñ]+</token>
 			</pattern>
 			<message>Ibig mo bang sabihin, <suggestion><match no="1" regexp_match="(?i)^(?:con|kon|kom)[pf](.+)$" regexp_replace="kump$1"/></suggestion>?</message>
-			<example correction="kumperencia" type="incorrect"><marker>conferencia</marker></example>
 			<example correction="kumportable" type="incorrect"><marker>komportable</marker></example>
 			<example correction="kumportable" type="incorrect"><marker>confortable</marker></example>
 			<example type="correct">kompanya</example>
 			<example type="correct">kompleto</example>
 		</rule>
+		<rule id="CONFERENCIA_KUMPERENSIYA" name="conferencia -> kumperensiya">
+			<pattern case_sensitive="no">
+				<token>conferencia</token>
+			</pattern>
+			<message>Ang wastong baybay ay <suggestion>kumperensiya</suggestion>.</message>
+			<short>Ang tamang baybay ay 'kumperensiya'.</short>
+			<example correction="kumperensiya">Dumalo sa <marker>conferencia</marker>.</example>
+			<example type="correct">kumperensiya</example>
+		</rule>
 
-		<rule id="KATINIG_KUMB" name="Palitang O/U (kon-/kom- → kumb-)">
+		<rule id="KATINIG_KUMB" name="Palitang O/U (kon-/kom- -> kumb-)">
 			<antipattern>
 				<token regexp="yes">(?i)(kombinasyon|kombat|kumb.*)</token>
 			</antipattern>
@@ -616,7 +632,7 @@ See tagset.txt for the different POS, Lexical Categories, and corresponding attr
             <pattern case_sensitive="no">
                 <token regexp="yes">kum(panya|pleto|petisyon|binasyon|plikado)</token>
             </pattern>
-            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(kum)(panya|pleto|petisyon|binasyon)$" regexp_replace="kom$2"/></suggestion>?</message>
+            <message>Ibig mo bang sabihin <suggestion><match no="1" regexp_match="^(kum)(panya|pleto|petisyon|binasyon|plikado)$" regexp_replace="kom$2"/></suggestion>?</message>
             <short>Dapat 'kom-' (hindi 'kum-') ang baybay ng salitang ito. Isa itong eksepsiyon.</short>
             <example correction="kompanya" type="incorrect"><marker>kumpanya</marker></example>
             <example correction="kompleto" type="incorrect"><marker>kumpleto</marker></example>
